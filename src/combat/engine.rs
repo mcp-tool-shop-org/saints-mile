@@ -633,12 +633,33 @@ impl EncounterState {
 
     /// Check all objectives against current state.
     pub fn evaluate_objectives(&mut self) {
-        // Auto-victory: all enemies down
-        let all_enemies_down = self.enemies.iter().all(|e| e.down || e.panicked);
-        if all_enemies_down {
+        // Auto-victory: all enemies down or panicked
+        let all_enemies_neutralized = self.enemies.iter().all(|e| e.down || e.panicked);
+        if all_enemies_neutralized {
             for obj in &mut self.objectives {
                 if obj.objective_type == ObjectiveType::Primary && obj.status == ObjectiveStatus::Active {
                     obj.status = ObjectiveStatus::Succeeded;
+                }
+            }
+
+            // Resolve secondary objectives based on HOW enemies were neutralized
+            let any_killed = self.enemies.iter().any(|e| e.down); // hp = 0
+            let all_broke = self.enemies.iter().all(|e| e.panicked && !e.down); // all nerve-broken, none killed
+
+            for obj in &mut self.objectives {
+                if obj.objective_type == ObjectiveType::Secondary && obj.status == ObjectiveStatus::Active {
+                    // "Minimize civilian casualties" succeeds if casualties are low
+                    // (more panicked than killed), fails if casualties are high
+                    if obj.id.contains("casualties") || obj.id.contains("civilian") {
+                        if all_broke {
+                            obj.status = ObjectiveStatus::Succeeded;
+                        } else {
+                            obj.status = ObjectiveStatus::Failed;
+                        }
+                    } else {
+                        // Default: secondary objectives succeed with primary
+                        obj.status = ObjectiveStatus::Succeeded;
+                    }
                 }
             }
         }
