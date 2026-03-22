@@ -5,4 +5,5 @@ pub mod cedar_wake;
 pub mod saints_mile_convoy;
 pub mod black_willow;
 pub mod ropehouse_blood;
+pub mod dust_revival;
 pub mod builders;

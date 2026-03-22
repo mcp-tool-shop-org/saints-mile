@@ -198,6 +198,41 @@ pub fn rosa() -> PartyTemplate {
     }
 }
 
+/// Build Reverend Miriam Slate — Preacher.
+/// She is not "the buff class." She holds rooms by voice, conviction, and timing.
+pub fn miriam() -> PartyTemplate {
+    PartyTemplate {
+        id: "miriam", name: "Rev. Miriam Slate",
+        hp: 28, nerve: 35, ammo: 3,  // near-unarmed, highest nerve in the game
+        speed: 7,      // deliberate, not slow — measured
+        accuracy: 35,   // not a shooter
+        damage: 3,      // shotgun is last resort
+        skills: vec![
+            SkillId::new("hymn"),           // party nerve restoration
+            SkillId::new("witness"),         // battlefield awareness, enemy-read buff
+            SkillId::new("sermon"),          // channeled party buff — her signature
+            SkillId::new("rebuke"),          // single-target nerve attack through conviction
+            SkillId::new("shotgun"),         // last resort — slow, devastating, rare
+        ],
+        duo_techs: vec![
+            DuoTechId::new("false_confession"),   // Miriam + Eli
+            DuoTechId::new("sheltered_fire"),      // Miriam + Rosa
+        ],
+    }
+}
+
+/// Build the Ch5 roster: Galen + Eli + Ada + Rosa + Miriam.
+/// 5 members, 4 active slots. First swap decision.
+pub fn ch5_roster() -> Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<SkillId>, Vec<DuoTechId>, Vec<Wound>)> {
+    vec![
+        galen(AgePhase::Adult).to_combat_tuple(),
+        eli_adult().to_combat_tuple(),
+        ada().to_combat_tuple(),
+        rosa().to_combat_tuple(),
+        miriam().to_combat_tuple(),
+    ]
+}
+
 /// Build the Ch4 full party: Galen + Eli + Ada + Rosa.
 /// This is the 90s JRPG party in full.
 pub fn ch4_party() -> Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<SkillId>, Vec<DuoTechId>, Vec<Wound>)> {
