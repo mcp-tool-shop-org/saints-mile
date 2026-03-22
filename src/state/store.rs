@@ -66,6 +66,14 @@ impl StateStore {
         }
     }
 
+    /// Create a store from an existing state (for fixtures/quickstart).
+    pub fn from_state(state: GameState, save_dir: impl Into<PathBuf>) -> Self {
+        Self {
+            state,
+            save_dir: save_dir.into(),
+        }
+    }
+
     /// Load from a save file. Returns an error if the version is incompatible.
     pub fn load(path: &Path) -> Result<Self> {
         let contents = std::fs::read_to_string(path)
