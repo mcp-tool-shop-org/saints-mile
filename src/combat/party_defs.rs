@@ -175,3 +175,36 @@ pub fn ch3_party_pre_ada() -> Vec<(String, String, i32, i32, i32, i32, i32, i32,
         eli_adult().to_combat_tuple(),
     ]
 }
+
+/// Build Rosa Varela — Ranch Hand.
+/// She is not "the tank." She is land, blood, memory, distrust, and physical certainty.
+pub fn rosa() -> PartyTemplate {
+    PartyTemplate {
+        id: "rosa", name: "Rosa Varela",
+        hp: 38, nerve: 22, ammo: 6,
+        speed: 9,      // not fast — deliberate, physical
+        accuracy: 55,   // rifle, not pistol
+        damage: 11,     // hardest-hitting party member besides older Galen
+        skills: vec![
+            SkillId::new("lariat"),       // rope restraint, crowd control
+            SkillId::new("brace"),        // damage reduction stance, bodyguard
+            SkillId::new("rifle_shot"),   // strong, slow
+            SkillId::new("grit"),         // self-heal through stubbornness (shared with Galen)
+        ],
+        duo_techs: vec![
+            DuoTechId::new("rope_and_shot"),    // Rosa + Galen
+            DuoTechId::new("fencepost_thunder"), // Rosa + Lucien (later)
+        ],
+    }
+}
+
+/// Build the Ch4 full party: Galen + Eli + Ada + Rosa.
+/// This is the 90s JRPG party in full.
+pub fn ch4_party() -> Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<SkillId>, Vec<DuoTechId>, Vec<Wound>)> {
+    vec![
+        galen(AgePhase::Adult).to_combat_tuple(),
+        eli_adult().to_combat_tuple(),
+        ada().to_combat_tuple(),
+        rosa().to_combat_tuple(),
+    ]
+}
