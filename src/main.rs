@@ -3,6 +3,14 @@
 //! A weathered frontier road story with sharp banter, real consequences,
 //! and just enough mystery to make the horizon feel haunted.
 
+#[macro_use]
+pub mod types;
+pub mod scene;
+pub mod combat;
+pub mod state;
+pub mod pressure;
+pub mod content;
+
 fn main() {
     println!("Saint's Mile — coming soon");
 }

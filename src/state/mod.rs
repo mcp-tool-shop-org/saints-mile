@@ -1,0 +1,7 @@
+//! State system — what the game remembers across scenes, encounters, and chapters.
+//!
+//! The state contract: relay branch is first-class, reputation is a web,
+//! evidence has integrity, witness states track alive/location/integrity/testified,
+//! memory objects are explicit, the hand injury is a first-class field.
+
+pub mod types;
