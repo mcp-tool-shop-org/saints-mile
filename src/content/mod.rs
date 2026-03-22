@@ -10,4 +10,5 @@ pub mod fuse_country;
 pub mod iron_ledger;
 pub mod burned_mission;
 pub mod long_wire;
+pub mod deadwater_trial;
 pub mod builders;
