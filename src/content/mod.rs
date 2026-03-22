@@ -11,4 +11,6 @@ pub mod iron_ledger;
 pub mod burned_mission;
 pub mod long_wire;
 pub mod deadwater_trial;
+pub mod breakwater_junction;
+pub mod names_in_dust;
 pub mod builders;
