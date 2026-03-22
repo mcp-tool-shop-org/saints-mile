@@ -1,0 +1,16 @@
+/* Saint's Mile — amber accent for Starlight handbook */
+:root {
+  --sl-color-accent-low: #451a03;
+  --sl-color-accent: #d97706;
+  --sl-color-accent-high: #fbbf24;
+}
+
+/* Dark background alignment with site-theme */
+:root[data-theme='dark'] {
+  --sl-color-bg: #09090b;
+  --sl-color-bg-nav: #0a0a0c;
+  --sl-color-bg-sidebar: #0a0a0c;
+  --sl-color-hairline: #27272a;
+  --sl-color-text: #e4e4e7;
+  --sl-color-text-accent: #fbbf24;
+}

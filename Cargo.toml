@@ -1,0 +1,19 @@
+[package]
+name = "saints-mile"
+version = "0.1.0"
+edition = "2021"
+description = "A frontier JRPG for the adults who loved those games first"
+license = "MIT"
+repository = "https://github.com/mcp-tool-shop-org/saints-mile"
+keywords = ["jrpg", "terminal", "rpg", "western", "tui"]
+categories = ["games"]
+
+[dependencies]
+ratatui = "0.30"
+crossterm = { version = "0.28", features = ["event-stream"] }
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serde = { version = "1.0", features = ["derive"] }
+ron = "0.8"
