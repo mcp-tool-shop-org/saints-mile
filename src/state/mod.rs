@@ -10,3 +10,4 @@ pub mod argument;
 pub mod evidence;
 pub mod investigation;
 pub mod history;
+pub mod reassembly;

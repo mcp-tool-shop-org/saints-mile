@@ -14,4 +14,5 @@ pub mod deadwater_trial;
 pub mod breakwater_junction;
 pub mod names_in_dust;
 pub mod fifteen_years_gone;
+pub mod old_friends;
 pub mod builders;
