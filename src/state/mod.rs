@@ -9,3 +9,4 @@ pub mod store;
 pub mod argument;
 pub mod evidence;
 pub mod investigation;
+pub mod history;
