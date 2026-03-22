@@ -6,4 +6,5 @@ pub mod saints_mile_convoy;
 pub mod black_willow;
 pub mod ropehouse_blood;
 pub mod dust_revival;
+pub mod fuse_country;
 pub mod builders;

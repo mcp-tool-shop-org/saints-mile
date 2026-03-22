@@ -233,6 +233,29 @@ pub fn ch5_roster() -> Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<Sk
     ]
 }
 
+/// Build Lucien "Fuse" Marr — Dynamiter.
+/// He is NOT a party member in Chapter 6. He is an antagonist.
+/// Do not make him likable. Make him competent and hateable.
+pub fn lucien() -> PartyTemplate {
+    PartyTemplate {
+        id: "lucien", name: "Lucien \"Fuse\" Marr",
+        hp: 32, nerve: 18, ammo: 5,  // demolitions, not gunfighting
+        speed: 8,
+        accuracy: 48,   // not a marksman
+        damage: 8,      // moderate direct, massive environmental
+        skills: vec![
+            SkillId::new("throw_dynamite"),    // delayed AOE
+            SkillId::new("quick_fuse"),         // instant but weaker
+            SkillId::new("pistol"),             // standard shot
+            SkillId::new("demolish"),           // destroy cover/terrain
+            SkillId::new("gut_feeling"),         // self-buff when wounded
+        ],
+        duo_techs: vec![
+            DuoTechId::new("fencepost_thunder"), // Lucien + Rosa
+        ],
+    }
+}
+
 /// Build the Ch4 full party: Galen + Eli + Ada + Rosa.
 /// This is the 90s JRPG party in full.
 pub fn ch4_party() -> Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<SkillId>, Vec<DuoTechId>, Vec<Wound>)> {

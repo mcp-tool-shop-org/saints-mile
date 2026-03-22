@@ -4,5 +4,6 @@ pub mod types;
 pub mod engine;
 pub mod convoy;
 pub mod crowd;
+pub mod environment;
 pub mod party_defs;
 pub mod wounds;
