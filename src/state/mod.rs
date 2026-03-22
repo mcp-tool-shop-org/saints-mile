@@ -5,3 +5,4 @@
 //! memory objects are explicit, the hand injury is a first-class field.
 
 pub mod types;
+pub mod store;
