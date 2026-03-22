@@ -8,3 +8,4 @@ pub mod types;
 pub mod store;
 pub mod argument;
 pub mod evidence;
+pub mod investigation;

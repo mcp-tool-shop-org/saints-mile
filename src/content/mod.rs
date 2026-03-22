@@ -8,4 +8,5 @@ pub mod ropehouse_blood;
 pub mod dust_revival;
 pub mod fuse_country;
 pub mod iron_ledger;
+pub mod burned_mission;
 pub mod builders;
