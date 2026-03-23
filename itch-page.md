@@ -4,7 +4,7 @@
 Saint's Mile
 
 ## Short description (max 200 chars)
-A frontier JRPG for the adults who grew up on 90s classics. Four decades of one life. Turn-based party combat. Terminal-native. The command menu carries biography.
+A frontier JRPG built in Rust for the terminal. Four decades of one life. Turn-based party combat. The command menu carries biography.
 
 ## Classification
 - Kind: Game
@@ -18,7 +18,7 @@ A frontier JRPG for the adults who grew up on 90s classics. Four decades of one 
 
 ---
 
-A frontier JRPG for the adults who grew up on 90s classics.
+A frontier JRPG built in Rust for the terminal.
 
 You play as Galen Rook across four decades — from a nineteen-year-old deputy's runner to an older man returning to the place where his life was written wrong. Turn-based party combat with standoff-driven initiative, a six-member roster with distinct battlefield roles, and a western road-story where the same skills mean different things when the world changes around them.
 
@@ -28,7 +28,7 @@ Built in Rust for the terminal. No graphics bloat. Full focus on party mechanics
 
 - A 90s-style JRPG with a 4-slot party, distinct roles, duo techniques, and standoff-driven combat
 - A frontier western where reputation is a web, distance changes decisions, and the trail is the dungeon
-- A game for adults — themes of regret, duty, compromise, aging, loyalty, and starting over
+- Themes of regret, duty, compromise, aging, loyalty, and starting over
 - A terminal-native experience: runs in any terminal, any OS
 
 ### The story
