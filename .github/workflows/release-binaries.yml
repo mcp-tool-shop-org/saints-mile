@@ -53,8 +53,46 @@ jobs:
           name: binary-${{ matrix.target }}
           path: target/release/${{ env.ASSET_NAME }}
 
+  msix:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Generate MSIX assets
+        run: node msix/gen-assets.mjs
+
+      - name: Build MSIX
+        shell: pwsh
+        run: |
+          $SdkBin = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\makeappx.exe" |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          $MakeAppx = $SdkBin.FullName
+
+          $LayoutDir = "msix\layout"
+          New-Item -ItemType Directory -Path $LayoutDir -Force | Out-Null
+          New-Item -ItemType Directory -Path "$LayoutDir\Assets" -Force | Out-Null
+
+          Copy-Item "target\release\saints-mile.exe" -Destination $LayoutDir
+          Copy-Item "msix\AppxManifest.xml" -Destination $LayoutDir
+          Get-ChildItem "msix\Assets\*.png" | ForEach-Object {
+            Copy-Item $_.FullName -Destination "$LayoutDir\Assets"
+          }
+
+          & $MakeAppx pack /d $LayoutDir /p "msix\SaintsMile.msix" /o
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: msix
+          path: msix/SaintsMile.msix
+
   release:
-    needs: build
+    needs: [build, msix]
     runs-on: ubuntu-latest
     permissions:
       contents: write

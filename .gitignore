@@ -7,6 +7,11 @@ Cargo.lock
 /dist/
 *.zip
 
+# MSIX build output
+msix/layout/
+msix/*.msix
+msix/*.pfx
+
 # Site
 site/.astro/
 site/dist/
