@@ -1,6 +1,6 @@
 [package]
 name = "saints-mile"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 description = "A frontier JRPG for the adults who loved those games first"
 license = "MIT"

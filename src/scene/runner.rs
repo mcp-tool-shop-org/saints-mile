@@ -226,37 +226,64 @@ impl SceneRunner {
         }
     }
 
-    /// Describe why a choice is locked — for UI display.
+    /// Describe why a choice is locked — human language, not mechanical.
     fn describe_lock(conditions: &[Condition], store: &StateStore) -> String {
         for condition in conditions {
             if !store.state().check_condition(condition) {
                 return match condition {
                     Condition::Flag { id, .. } =>
-                        format!("[Requires: {}]", id),
-                    Condition::Reputation { axis, op, threshold } =>
-                        format!("[Requires: {:?} {:?} {}]", axis, op, threshold),
+                        format!("[Requires: {}]", Self::humanize_id(&id.0)),
+                    Condition::Reputation { axis, op, threshold } => {
+                        let axis_name = match axis {
+                            ReputationAxis::TownLaw => "law standing",
+                            ReputationAxis::Railroad => "railroad trust",
+                            ReputationAxis::Rancher => "rancher trust",
+                        };
+                        let dir = match op {
+                            CompareOp::Gt | CompareOp::Gte => "higher",
+                            CompareOp::Lt | CompareOp::Lte => "lower",
+                            _ => "different",
+                        };
+                        format!("[Needs {} {}]", dir, axis_name)
+                    }
                     Condition::PartyMember { character, present: true } =>
-                        format!("[Requires: {} in party]", character),
+                        format!("[{} must be with you]", Self::humanize_id(&character.0)),
                     Condition::PartyMember { character, present: false } =>
-                        format!("[Requires: {} absent]", character),
+                        format!("[{} must not be present]", Self::humanize_id(&character.0)),
                     Condition::HasSkill { character, skill } =>
-                        format!("[Requires: {} has {}]", character, skill),
+                        format!("[{} needs {}]", Self::humanize_id(&character.0), Self::humanize_id(&skill.0)),
                     Condition::HasEvidence(id) =>
-                        format!("[Requires: evidence {}]", id),
+                        format!("[Requires evidence: {}]", Self::humanize_id(&id.0)),
                     Condition::HasMemoryObject(id) =>
-                        format!("[Requires: {}]", id),
+                        format!("[Requires: {}]", Self::humanize_id(&id.0)),
                     Condition::Witness { id, alive: true } =>
-                        format!("[Requires: {} alive]", id),
+                        format!("[{} must be alive]", Self::humanize_id(&id.0)),
                     Condition::Witness { id, alive: false } =>
-                        format!("[Requires: {} dead]", id),
-                    Condition::RelayBranch(branch) =>
-                        format!("[Requires: {:?} branch]", branch),
-                    Condition::PrologueChoice(choice) =>
-                        format!("[Requires: {:?}]", choice),
+                        format!("[{} must be dead]", Self::humanize_id(&id.0)),
+                    Condition::RelayBranch(branch) => {
+                        let name = match branch {
+                            RelayBranch::Tom => "Tom",
+                            RelayBranch::Nella => "Nella",
+                            RelayBranch::Papers => "the papers",
+                        };
+                        format!("[Requires saving {} at the relay]", name)
+                    }
+                    Condition::PrologueChoice(choice) => {
+                        let name = match choice {
+                            PrologueChoice::TownDirect => "riding straight to town",
+                            PrologueChoice::HomesteadFirst => "diverting to the homestead",
+                        };
+                        format!("[Requires {}]", name)
+                    }
                 };
             }
         }
         "[Locked]".to_string()
+    }
+
+    /// Convert a snake_case ID to human-readable text.
+    fn humanize_id(id: &str) -> String {
+        id.replace('_', " ")
     }
 }
 
@@ -408,7 +435,7 @@ mod tests {
         assert!(!choices[2].available);
         assert!(choices[2].lock_reason.is_some());
         let reason = choices[2].lock_reason.as_ref().unwrap();
-        assert!(reason.contains("cold_read"), "reason was: {}", reason);
+        assert!(reason.contains("cold read"), "reason was: {}", reason);
     }
 
     #[test]
