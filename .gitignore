@@ -3,6 +3,10 @@
 **/*.rs.bk
 Cargo.lock
 
+# Build artifacts
+/dist/
+*.zip
+
 # Site
 site/.astro/
 site/dist/
