@@ -18,9 +18,30 @@ use saints_mile::ui::input::handle_event;
 use saints_mile::ui::screens::{title, scene, standoff, combat, save_load};
 use saints_mile::ui::screens::save_load::{SaveLoadMode, SaveSlotInfo};
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 type Term = Terminal<CrosstermBackend<io::Stdout>>;
 
 fn main() -> Result<()> {
+    if let Some(arg) = std::env::args().nth(1) {
+        match arg.as_str() {
+            "--version" | "-V" => {
+                println!("saints-mile {}", VERSION);
+                return Ok(());
+            }
+            "--help" | "-h" => {
+                println!("saints-mile v{}\n", VERSION);
+                println!("A frontier JRPG for the adults who loved those games first.\n");
+                println!("USAGE:");
+                println!("  saints-mile              Start the game");
+                println!("  saints-mile --version    Print version and exit");
+                println!("  saints-mile --help       Show this help and exit");
+                return Ok(());
+            }
+            _ => {}
+        }
+    }
+
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen)?;
