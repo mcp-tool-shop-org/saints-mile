@@ -50,7 +50,7 @@ The western layer changes the mechanics, not just the flavor: ammo instead of MP
 
 ## Status
 
-**Phase 1 — Production Spine.** Full campaign designed (Prologue + 15 chapters). Build Constitution and Runtime Contracts locked. Opening arc implementation next.
+**v1.0.1 — Release Candidate.** Full campaign implemented (Prologue + 15 chapters across four life phases). Combat engine, standoff system, pressure encounters, state management, save/load, and TUI presentation layer all operational. 151 tests passing.
 
 ## Threat Model
 
@@ -62,10 +62,36 @@ Saint's Mile is a single-player offline game. It does not:
 
 Save files are stored in RON format in a user-accessible directory.
 
+## Install & Run
+
+```bash
+# Clone and build
+git clone https://github.com/mcp-tool-shop-org/saints-mile.git
+cd saints-mile
+cargo build --release
+
+# Run the game
+cargo run --release
+
+# Or run the binary directly
+./target/release/saints-mile
+```
+
 ## Requirements
 
-- Rust 1.75+ (2021 edition)
+- Rust 1.80+ (2021 edition)
 - Any terminal with 256-color support
+- No internet connection required — fully offline
+
+## Development
+
+```bash
+# Run tests
+cargo test
+
+# Run with debug logging
+RUST_LOG=debug cargo run
+```
 
 ## License
 

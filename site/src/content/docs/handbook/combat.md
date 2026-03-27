@@ -24,7 +24,7 @@ This is a frontier JRPG with a real 90s-style party combat spine. The standoff i
 | Opener | Random/surprise attack | Standoff phase — posture, focus, nerve |
 | Resources | MP/potions | Ammo (finite), nerve (composure), grit |
 | Roles | Mage/fighter/cleric | Gunslinger, sawbones, scout, preacher, dynamiter |
-| Positioning | Row-based | Cover, elevation, flanking |
+| Positioning | Row-based | Cover, elevation, front/back line |
 | Consequences | HP refills at inn | Wounds linger between fights |
 | Enemy read | Bestiary | Bandits have tells, lawmen have formations |
 

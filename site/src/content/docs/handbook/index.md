@@ -9,6 +9,9 @@ Saint's Mile is a frontier JRPG for the adults who loved those games first. This
 
 ## What This Handbook Contains
 
+### Getting Started
+- [Beginner's Guide](/saints-mile/handbook/beginners/) — install, first run, controls, and what to expect
+
 ### Design Foundation
 - [Product Thesis](/saints-mile/handbook/product-thesis/) — what the game is, who it's for, what it must never become
 - [Combat System](/saints-mile/handbook/combat/) — party-based JRPG spine with frontier expression
@@ -28,4 +31,4 @@ A weathered frontier road story with sharp banter, real consequences, and just e
 
 ## Status
 
-**Phase 1 — Production Spine.** Full campaign designed (Prologue + 15 chapters). Build Constitution and Runtime Contracts locked. Opening arc implementation next.
+**v1.0.1 — Release Candidate.** Full campaign implemented (Prologue + 15 chapters). Combat engine, standoff system, pressure encounters, state management, save/load, and TUI presentation layer all operational. 151 tests passing.

@@ -7,7 +7,7 @@ sidebar:
 
 ## Build Order
 
-The opening arc only. Not the full campaign.
+The opening arc was the first implementation target. All three milestones below are now complete, along with the full campaign (Chapters 3--15).
 
 ### Milestone A — Morrow Crossing Runtime
 
@@ -53,16 +53,14 @@ The opening arc only. Not the full campaign.
 
 **Success test:** Players argue about Eli after the relay. The triage choice is genuinely hard. Dead Drop feels like a scar. The poster's birth feels earned. Players want to keep going.
 
-## What Not to Build Yet
+## Deferred Systems
+
+The following systems remain out of scope or are schemaed but not fully wired:
 
 - Procgen
 - World map sprawl
 - Full inventory economy
-- Chapters 3–15 content
-- Polished UI chrome
-- Optional systems that don't improve the opening arc
-- Crowd battles, split-party operations, Public Reckoning Pressure (schema only)
-- Environmental destruction (schema only)
+- Polished UI chrome beyond the current spare typographic style
 
 ## Stack
 
@@ -70,7 +68,7 @@ The opening arc only. Not the full campaign.
 - **Data:** RON for content and saves, serde for serialization
 - **Error handling:** anyhow + thiserror
 - **Observability:** tracing + tracing-subscriber
-- **Architecture:** Core logic crate (later), TUI layer, data-driven scenes from RON files
+- **Architecture:** Library crate (`saints_mile`) + binary entry point, TUI layer, data-driven scenes from RON files
 
 ## The First Playable's Success Test
 
