@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/saints-mile/actions"><img src="https://github.com/mcp-tool-shop-org/saints-mile/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://crates.io/crates/saints-mile"><img src="https://img.shields.io/crates/v/saints-mile.svg" alt="crates.io"></a>
   <a href="https://github.com/mcp-tool-shop-org/saints-mile/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
   <a href="https://mcp-tool-shop-org.github.io/saints-mile/"><img src="https://img.shields.io/badge/Landing_Page-saints--mile-d97706" alt="Landing Page"></a>
 </p>
@@ -62,28 +63,36 @@ Saint's Mile is a single-player offline game. It does not:
 
 Save files are stored in RON format in a user-accessible directory.
 
-## Install & Run
+## Install & Play
+
+### From crates.io (recommended)
 
 ```bash
-# Clone and build
-git clone https://github.com/mcp-tool-shop-org/saints-mile.git
-cd saints-mile
-cargo build --release
-
-# Run the game
-cargo run --release
-
-# Or run the binary directly
-./target/release/saints-mile
+cargo install saints-mile
+saints-mile
 ```
 
-## Requirements
+### From source
 
-- Rust 1.80+ (2021 edition)
+```bash
+git clone https://github.com/mcp-tool-shop-org/saints-mile.git
+cd saints-mile
+cargo run --release
+```
+
+### Pre-built binaries
+
+Download from the [latest release](https://github.com/mcp-tool-shop-org/saints-mile/releases/latest). Binaries are available for Linux (x64), macOS (ARM64), and Windows (x64 + MSIX).
+
+### Requirements
+
 - Any terminal with 256-color support
 - No internet connection required — fully offline
+- Rust 1.80+ only needed if building from source
 
-## Development
+## For Contributors
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow and guidelines, and [ARCHITECTURE.md](ARCHITECTURE.md) for a full module map and runtime contracts.
 
 ```bash
 # Run tests

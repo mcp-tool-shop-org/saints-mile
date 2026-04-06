@@ -11,7 +11,7 @@ pub mod screens;
 
 /// Re-export the App types for input.rs to use.
 pub mod mod_types {
-    pub use super::{App, AppScreen, InputResult, QuitOption};
+    pub use super::{App, AppScreen, InputResult, QuitOption, PauseOption};
 }
 
 use crate::combat::engine::{EncounterState, EncounterPhase, CombatSide, ActionResult};
@@ -52,6 +52,10 @@ pub struct App {
     pub post_combat_scene: Option<String>,
     /// Cursor position on the quit confirmation screen.
     pub quit_cursor: usize,
+    /// Whether the save/load screen is showing a delete confirmation.
+    pub delete_confirming: Option<usize>,
+    /// Cursor position on the pause screen.
+    pub pause_cursor: usize,
 }
 
 /// Which screen the player is on.
@@ -71,6 +75,19 @@ pub enum AppScreen {
     /// Quit confirmation — shown when quitting from an active game screen.
     ConfirmQuit {
         /// The screen to return to if the player cancels.
+        return_screen: Box<AppScreen>,
+    },
+    /// Error display — shown on save/load failures.
+    Error {
+        message: String,
+        return_screen: Box<AppScreen>,
+    },
+    /// Pause overlay — accessible from Scene or Combat via Esc/Ctrl+P.
+    Pause {
+        return_screen: Box<AppScreen>,
+    },
+    /// Status screen — party state, skills, evidence, reputation.
+    Status {
         return_screen: Box<AppScreen>,
     },
 }
@@ -93,6 +110,28 @@ impl QuitOption {
             QuitOption::SaveAndQuit => "Save & Quit",
             QuitOption::QuitWithoutSaving => "Quit Without Saving",
             QuitOption::Cancel => "Cancel",
+        }
+    }
+}
+
+/// Options on the pause screen.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PauseOption {
+    Resume,
+    Save,
+    ReturnToTitle,
+}
+
+impl PauseOption {
+    pub fn all() -> &'static [PauseOption] {
+        &[PauseOption::Resume, PauseOption::Save, PauseOption::ReturnToTitle]
+    }
+
+    pub fn label(&self) -> &'static str {
+        match self {
+            PauseOption::Resume => "Resume",
+            PauseOption::Save => "Save Game",
+            PauseOption::ReturnToTitle => "Return to Title",
         }
     }
 }
@@ -124,6 +163,19 @@ pub enum InputResult {
     RequestQuit,
     ConfirmQuitOption(QuitOption),
     CancelQuit,
+    // Error screen
+    DismissError,
+    // Pause screen
+    OpenPause,
+    ConfirmPauseOption(PauseOption),
+    CancelPause,
+    // Status screen
+    OpenStatus,
+    CloseStatus,
+    // Save deletion
+    RequestDeleteSave(usize),
+    ConfirmDeleteSave(usize),
+    CancelDeleteSave,
 }
 
 impl App {
@@ -145,7 +197,18 @@ impl App {
             combat_actions: Vec::new(),
             post_combat_scene: None,
             quit_cursor: 0,
+            delete_confirming: None,
+            pause_cursor: 0,
         }
+    }
+
+    /// Show an error screen with a message.
+    pub fn show_error(&mut self, message: String) {
+        let current = std::mem::replace(&mut self.screen, AppScreen::Title);
+        self.screen = AppScreen::Error {
+            message,
+            return_screen: Box::new(current),
+        };
     }
 
     /// Start a new game — load the first scene.
@@ -216,7 +279,11 @@ impl App {
     // ─── Encounter Lifecycle ──────────────────────────────────────
 
     /// Enter an encounter by ID — set up standoff or combat.
+    /// Auto-saves before combat begins.
     pub fn enter_encounter(&mut self, encounter_id: &str) {
+        // Auto-save before combat
+        let save_dir = self.save_dir();
+        let _ = crate::state::store::auto_save(self.store.state(), &save_dir);
         let encounter = lookup_encounter(encounter_id);
         if encounter.is_none() {
             // Fallback: skip to next scene if encounter not found
@@ -509,6 +576,9 @@ impl App {
             let scene_id = scene.id.0.as_str();
             // Check if this is a chapter-end scene that chains to the next chapter
             if let Some(next) = next_chapter_scene(scene_id) {
+                // Auto-save at chapter transitions
+                let save_dir = self.save_dir();
+                let _ = crate::state::store::auto_save(self.store.state(), &save_dir);
                 // Update age phase at chapter boundaries
                 update_age_phase_for_chapter(next, &mut self.store);
                 self.load_scene(next);

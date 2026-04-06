@@ -20,6 +20,7 @@ pub fn render_save_load(
     mode: SaveLoadMode,
     slots: &[SaveSlotInfo],
     cursor: usize,
+    delete_confirming: Option<usize>,
 ) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
@@ -80,11 +81,19 @@ pub fn render_save_load(
     );
     frame.render_widget(list, chunks[1]);
 
-    // Hint
-    let hint = Paragraph::new(Line::from(Span::styled(
-        "  [Enter] Select   [Esc] Back",
-        theme::dim_style(),
-    )));
+    // Hint / delete confirmation
+    let hint_text = if let Some(idx) = delete_confirming {
+        let slot_name = slots.get(idx).map(|s| s.name.as_str()).unwrap_or("?");
+        format!("  Delete save [{}]? (Y/N)", slot_name)
+    } else {
+        "  [Enter] Select   [D] Delete   [Esc] Back".to_string()
+    };
+    let hint_style = if delete_confirming.is_some() {
+        Style::default().fg(Color::Yellow)
+    } else {
+        theme::dim_style()
+    };
+    let hint = Paragraph::new(Line::from(Span::styled(hint_text, hint_style)));
     frame.render_widget(hint, chunks[2]);
 }
 

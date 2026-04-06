@@ -13,7 +13,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Extract expected version from tag
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          echo "EXPECTED_VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "Expected version from tag: ${VERSION}"
+
+      - name: Validate Cargo.toml version matches tag
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          CARGO_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
+          echo "Cargo.toml version: ${CARGO_VERSION}"
+          echo "Tag version: ${EXPECTED_VERSION}"
+          if [ "$CARGO_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "::error::Version mismatch! Cargo.toml has ${CARGO_VERSION} but tag says ${EXPECTED_VERSION}"
+            exit 1
+          fi
+          echo "Version alignment confirmed: ${CARGO_VERSION}"
+
+      - name: Validate CHANGELOG.md has entry for this version
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          if ! grep -q "\[${EXPECTED_VERSION}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for version ${EXPECTED_VERSION}"
+            exit 1
+          fi
+          echo "CHANGELOG.md entry found for ${EXPECTED_VERSION}"
+
   build:
+    needs: [validate]
     strategy:
       matrix:
         include:
@@ -61,6 +99,7 @@ jobs:
           path: target/release/${{ env.ASSET_NAME }}
 
   msix:
+    needs: [validate]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -142,3 +181,18 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
+
+  publish-crate:
+    needs: [validate]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish to crates.io
+        run: cargo publish --allow-dirty
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

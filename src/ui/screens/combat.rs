@@ -131,6 +131,7 @@ pub fn render_combat(
             Constraint::Length(4),          // party strip
             Constraint::Length(1),          // separator
             Constraint::Min(5),            // action menu + objectives
+            Constraint::Length(1),          // resource footer HUD
         ])
         .split(area);
 
@@ -142,6 +143,7 @@ pub fn render_combat(
     render_party_strip(frame, chunks[5], encounter);
     render_separator(frame, chunks[6]);
     render_action_menu(frame, chunks[7], encounter, ui, age_phase, actions);
+    render_combat_footer(frame, chunks[8], encounter);
 }
 
 // ─── Turn Order Bar ───────────────────────────────────────────────
@@ -452,6 +454,38 @@ fn render_objectives(frame: &mut Frame, area: Rect, objectives: &[LiveObjective]
     }).collect();
 
     frame.render_widget(Paragraph::new(lines), inner);
+}
+
+/// Compact 1-line footer HUD showing total party ammo, nerve, and wound count.
+fn render_combat_footer(frame: &mut Frame, area: Rect, encounter: &EncounterState) {
+    let mut total_ammo: i32 = 0;
+    let mut total_nerve: i32 = 0;
+    let mut wound_count: usize = 0;
+
+    for slot in &encounter.party {
+        if let Some(member) = slot {
+            if !member.down {
+                total_ammo += member.ammo;
+                total_nerve += member.nerve;
+                wound_count += member.wounds.len();
+            }
+        }
+    }
+
+    let ammo_color = theme::ammo_color(total_ammo);
+    let nerve_color = if total_nerve > 10 { Color::White } else { Color::Red };
+    let wound_color = if wound_count == 0 { Color::DarkGray } else { Color::Yellow };
+
+    let line = Line::from(vec![
+        Span::styled(" Ammo: ", Style::default().fg(Color::DarkGray)),
+        Span::styled(format!("{}", total_ammo), Style::default().fg(ammo_color)),
+        Span::styled("   Nerve: ", Style::default().fg(Color::DarkGray)),
+        Span::styled(format!("{}", total_nerve), Style::default().fg(nerve_color)),
+        Span::styled("   Wounds: ", Style::default().fg(Color::DarkGray)),
+        Span::styled(format!("{}", wound_count), Style::default().fg(wound_color)),
+    ]);
+
+    frame.render_widget(Paragraph::new(line), area);
 }
 
 fn render_separator(frame: &mut Frame, area: Rect) {

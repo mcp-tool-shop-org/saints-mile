@@ -75,6 +75,9 @@ pub struct CombatantState {
     pub position: PositionState,
     pub available_skills: Vec<SkillId>,
     pub available_duo_techs: Vec<DuoTechId>,
+    /// Active status effects: (effect, remaining turns).
+    #[serde(default)]
+    pub active_effects: Vec<(StatusEffect, u8)>,
 }
 
 /// A skill definition.
@@ -337,4 +340,29 @@ pub struct DuoTechEffect {
 pub struct StatPenalty {
     pub stat: String,
     pub amount: i32,
+}
+
+/// Status effects that can be applied to combatants during combat.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum StatusEffect {
+    /// Damage per turn (bleed out).
+    Bleeding,
+    /// Skip turn entirely.
+    Stunned,
+    /// Damage boost (+25%).
+    Inspired,
+    /// Accuracy penalty (-20).
+    Suppressed,
+}
+
+impl StatusEffect {
+    /// Apply the effect's per-turn impact. Returns (hp_damage, nerve_damage, skip_turn).
+    pub fn per_turn_impact(&self) -> (i32, i32, bool) {
+        match self {
+            StatusEffect::Bleeding => (3, 0, false),
+            StatusEffect::Stunned => (0, 0, true),
+            StatusEffect::Inspired => (0, 0, false),
+            StatusEffect::Suppressed => (0, 0, false),
+        }
+    }
 }

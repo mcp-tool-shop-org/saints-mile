@@ -132,6 +132,35 @@ pub fn hearing() -> Scene {
                 vec![flag_eq("dw_sequence", "territorial_first")],
                 EmotionTag::Bitter,
             ),
+            // Relay branch determines which evidence categories are strongest
+            say_if_with("narrator",
+                "Tom Reed's freight knowledge anchors the logistics chain. \
+                 Wagon routes, load weights, delivery schedules — the supply \
+                 diversion is proven through physical movement, not just \
+                 paper. The opposition struggles to dismiss tonnage.",
+                vec![flag_eq("relay_branch", "tom")],
+                EmotionTag::Neutral,
+            ),
+            say_if_with("narrator",
+                "Nella's network of overheard conversations provides the \
+                 human chain. Names connect to names. The clerk at Black \
+                 Willow is linked to the depot manager who is linked to \
+                 the filing office that reported supplies 'lost.' The \
+                 opposition can challenge documents, but they cannot \
+                 un-hear what was said in kitchens.",
+                vec![flag_eq("relay_branch", "nella")],
+                EmotionTag::Neutral,
+            ),
+            say_if_with("narrator",
+                "The scorched routing fragment is the strongest single piece \
+                 of documentary evidence. It connects the relay fire to the \
+                 medical diversion through filing numbers that could not be \
+                 forged after the fact. But the opposition points to the \
+                 fire itself — how convenient that only one fragment survived. \
+                 The paper trail cuts both ways.",
+                vec![flag_eq("relay_branch", "papers")],
+                EmotionTag::Tense,
+            ),
         ],
         vec![
             choice("Continue the hearing", vec![], to_scene("dw_counterstrike")),
@@ -147,10 +176,69 @@ pub fn counterstrike() -> Scene {
         PacingTag::Crisis,
         vec![
             narrate_with(
-                "The enemy pushes back. Witness discredit attempts. Procedural \
-                 dismissal moves. Forged document challenges. Public agitation. \
-                 Armed pressure outside the room.",
+                "The enemy pushes back. The opposition's strategy depends on \
+                 what was presented first — they attack the foundation.",
                 EmotionTag::Tense,
+            ),
+            // Medical-first opposition: attack credentials and motive
+            say_if_with("narrator",
+                "The opposition counsel calls Ada's credentials into question. \
+                 An unlicensed practitioner with a personal vendetta — her \
+                 brother missing, her objectivity compromised. The medical \
+                 evidence is reframed as grief looking for a target. The \
+                 crowd shifts. Sympathy turns conditional.",
+                vec![flag_eq("dw_sequence", "medical_first")],
+                EmotionTag::Tense,
+            ),
+            say_if_with("narrator",
+                "The crowd murmurs. Several women who lost children to the \
+                 fever stand, but the clerk waves them down. Procedure. The \
+                 bodies are real, but the room treats them as exhibits, not \
+                 people. Ada's hands grip the bench rail until her knuckles \
+                 go white.",
+                vec![flag_eq("dw_sequence", "medical_first")],
+                EmotionTag::Bitter,
+            ),
+            // Documents-first opposition: challenge authenticity and chain of custody
+            say_if_with("narrator",
+                "The opposition attacks the documents themselves. Chain of \
+                 custody — who held these papers, where, for how long? A \
+                 fugitive, a known thief, and a woman with land claims. The \
+                 documents are reframed as fabrication by interested parties. \
+                 The crowd looks at the paper and sees either proof or \
+                 forgery, depending on which version of the territory they \
+                 already believe in.",
+                vec![flag_eq("dw_sequence", "documents_first")],
+                EmotionTag::Tense,
+            ),
+            say_if_with("narrator",
+                "A clerk in the third row shakes his head. He's seen these \
+                 filing stamps before — he knows they're real. But he stays \
+                 seated. The crowd is split between those who read and those \
+                 who trust. The readers are outnumbered.",
+                vec![flag_eq("dw_sequence", "documents_first")],
+                EmotionTag::Quiet,
+            ),
+            // Territorial-first opposition: dismiss as personal grievance
+            say_if_with("narrator",
+                "The opposition reframes Rosa's testimony as a property \
+                 dispute dressed up as justice. Land claims. Water rights. \
+                 A rancher who lost a fence line and wants someone to blame. \
+                 The systemic rot is reduced to a neighbor's grudge. The \
+                 crowd — half of whom have their own fence-line stories — \
+                 leans back. Some of them recognize the tactic. Some of \
+                 them fall for it.",
+                vec![flag_eq("dw_sequence", "territorial_first")],
+                EmotionTag::Tense,
+            ),
+            say_if_with("narrator",
+                "Rosa's jaw sets. She's heard this before — her cost reduced \
+                 to paperwork, her family's ground turned into a line item. \
+                 Three ranchers in the back of the room stand and leave. \
+                 Whether in solidarity or disgust, nobody can tell. The \
+                 crowd thins in the wrong direction.",
+                vec![flag_eq("dw_sequence", "territorial_first")],
+                EmotionTag::Bitter,
             ),
             narrate(
                 "The room is about to close around the wrong version.",
@@ -187,6 +275,36 @@ pub fn eli_act() -> Scene {
             say_with("eli",
                 "I could've lived crooked another ten years. Don't mistake this \
                  for virtue. I'm just done letting better men wear what was mine.",
+                EmotionTag::Quiet,
+            ),
+            // Eli's act lands differently depending on what the room just rejected
+            say_if_with("narrator",
+                "After the medical evidence was dismissed as grief, Eli's \
+                 confession reframes it. He is not grieving. He is not a \
+                 victim. He is a man who profited from the same system and \
+                 is now testifying against himself. The crowd hears a \
+                 co-conspirator, not an advocate. That is harder to dismiss.",
+                vec![flag_eq("dw_sequence", "medical_first")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "After the documents were challenged as forgeries, Eli's \
+                 testimony becomes the chain of custody the opposition \
+                 demanded. He held these papers. He can describe every \
+                 crease, every date, every signature he watched being \
+                 written. The crowd watches a man authenticate his own \
+                 damnation. That is harder to fabricate.",
+                vec![flag_eq("dw_sequence", "documents_first")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "After Rosa's cost was reduced to a property dispute, Eli \
+                 stands and names the property. Not fence lines — bodies. \
+                 Supply routes. Medicine that went somewhere else while \
+                 people died here. He turns the territorial argument from \
+                 land back to lives. The three ranchers who left stop in \
+                 the doorway. Two of them come back.",
+                vec![flag_eq("dw_sequence", "territorial_first")],
                 EmotionTag::Quiet,
             ),
             narrate_with(

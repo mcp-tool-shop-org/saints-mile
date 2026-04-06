@@ -9,3 +9,6 @@ pub mod crowd;
 pub mod reckoning;
 pub mod transmission;
 pub mod save_load;
+pub mod error;
+pub mod pause;
+pub mod status;

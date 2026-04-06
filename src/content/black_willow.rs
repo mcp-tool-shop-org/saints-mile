@@ -136,6 +136,32 @@ pub fn district_scene() -> Scene {
                  Somebody redirected medicine that was supposed to be here.",
                 EmotionTag::Bitter,
             ),
+            // Relay branch shapes how information is gathered in the district
+            say_if_with("eli",
+                "Tom's freight logic — I can read these crate stamps. The \
+                 wagon weights are wrong. Somebody loaded full crates onto \
+                 a different route and sent empties here. I know what to \
+                 look for at the pump house.",
+                vec![flag_eq("relay_branch", "tom")],
+                EmotionTag::Dry,
+            ),
+            say_if_with("narrator",
+                "Nella's overheard names are on this district's roster. Galen \
+                 spots a supply clerk Nella described — heavy coat, ink-stained \
+                 fingers, always counting twice. The clerk sees Galen watching \
+                 and finds a reason to leave. The human chain is alive here.",
+                vec![flag_eq("relay_branch", "nella")],
+                EmotionTag::Tense,
+            ),
+            say_if_with("ada",
+                "That routing fragment you saved — the consignment numbers \
+                 match the stamps on these empty crates. Whoever diverted \
+                 the medicine used the same filing system. They didn't even \
+                 bother creating new paperwork. They just changed the \
+                 destination.",
+                vec![flag_eq("relay_branch", "papers")],
+                EmotionTag::Bitter,
+            ),
         ],
         vec![
             choice(

@@ -70,6 +70,26 @@ The following systems remain out of scope or are schemaed but not fully wired:
 - **Observability:** tracing + tracing-subscriber
 - **Architecture:** Library crate (`saints_mile`) + binary entry point, TUI layer, data-driven scenes from RON files
 
+## Where to Start Reading the Code
+
+If you are new to the codebase and want to understand how the game works, this is the recommended reading order:
+
+1. **`src/main.rs`** — The entry point. Sets up the terminal, creates the `App`, and runs the 50ms event loop. Start here to see how input, tick, and render connect.
+
+2. **`src/ui/mod.rs`** — The `App` struct and `AppScreen` enum. This is the central state machine that decides what the player sees: title screen, scene, combat, save/load, etc. Understanding `AppScreen` is understanding the game's flow.
+
+3. **`src/scene/runner.rs`** — The `SceneRunner` executes authored scenes against live game state. This is where dialogue, choices, conditions, and state effects meet. Most of the game's narrative gameplay flows through here.
+
+4. **`src/combat/engine.rs`** — The `EncounterState` machine handles standoff and combat phases. Read this to understand how the battle system works: turn order, skills, duo techs, wounds, and ammo.
+
+5. **`src/state/types.rs`** — The `GameState` struct is the complete memory of a playthrough. Reputation, evidence, witnesses, party state, flags, and chapter progression all live here.
+
+6. **`src/content/prologue.rs`** — A concrete content file. After reading the runtime systems above, look at how authored content (scenes, encounters, choices) is structured. The prologue is the simplest chapter.
+
+7. **`ARCHITECTURE.md`** — The full module tree and runtime contracts. Use this as a reference once you have the mental model from the files above.
+
+The key insight: the game is **data-driven**. Content authors compose scenes and encounters from `Condition` and `StateEffect` enum variants. The runtime systems (`SceneRunner`, `EncounterState`, `StateStore`) interpret them. Understanding that split is understanding the architecture.
+
 ## The First Playable's Success Test
 
 The first real build is successful if players:

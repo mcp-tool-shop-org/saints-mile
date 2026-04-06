@@ -134,6 +134,32 @@ impl StateStore {
         Ok(path)
     }
 
+    /// Delete a save file from a slot.
+    pub fn delete_save(slot: &str, save_dir: &Path) -> Result<(), String> {
+        let path = save_dir.join(format!("{}.ron", slot));
+        if !path.exists() {
+            return Err(format!("Save slot '{}' is already empty.", slot));
+        }
+        // Validate resolved path is within save directory
+        if let (Ok(canonical_dir), Ok(canonical_path)) = (
+            std::fs::canonicalize(save_dir),
+            std::fs::canonicalize(&path),
+        ) {
+            if !canonical_path.starts_with(&canonical_dir) {
+                return Err("Invalid save path.".to_string());
+            }
+        }
+        std::fs::remove_file(&path)
+            .map_err(|e| format!("Failed to delete save: {}", e))?;
+        info!(slot = slot, "save deleted");
+        Ok(())
+    }
+
+    /// Save directory path.
+    pub fn save_dir(&self) -> &Path {
+        &self.save_dir
+    }
+
     // --- State access ---
 
     /// Get immutable reference to the live state.
@@ -170,6 +196,31 @@ impl StateStore {
     pub fn check_all(&self, conditions: &[crate::scene::types::Condition]) -> bool {
         self.state.check_all(conditions)
     }
+}
+
+/// Auto-save the current game state to a dedicated autosave slot.
+///
+/// Called at chapter transitions and before combat encounters.
+/// Uses the "autosave" slot name, separate from player save slots.
+pub fn auto_save(state: &GameState, save_dir: &Path) -> Result<PathBuf> {
+    std::fs::create_dir_all(save_dir)
+        .with_context(|| format!("failed to create save directory: {}", save_dir.display()))?;
+
+    let label = format!(
+        "Auto — {} — {} ({})",
+        state.chapter, state.beat, state.age_phase_label()
+    );
+
+    let envelope = SaveEnvelope::new(state.clone(), label);
+    let path = save_dir.join("autosave.ron");
+    let serialized = ron::ser::to_string_pretty(&envelope, ron::ser::PrettyConfig::default())
+        .context("failed to serialize game state for autosave")?;
+
+    std::fs::write(&path, &serialized)
+        .with_context(|| format!("failed to write autosave: {}", path.display()))?;
+
+    info!(path = %path.display(), "autosave written");
+    Ok(path)
 }
 
 impl GameState {
@@ -240,6 +291,39 @@ mod tests {
         assert!(result.is_err());
         let err = result.unwrap_err().to_string();
         assert!(err.contains("version mismatch"), "error was: {}", err);
+    }
+
+    /// Delete save removes the file.
+    #[test]
+    fn delete_save_removes_file() {
+        let dir = TempDir::new().unwrap();
+        let store = StateStore::new_game(dir.path());
+        let path = store.save("to_delete").unwrap();
+        assert!(path.exists());
+        StateStore::delete_save("to_delete", dir.path()).unwrap();
+        assert!(!path.exists());
+    }
+
+    /// Delete of empty slot returns error.
+    #[test]
+    fn delete_empty_slot_fails() {
+        let dir = TempDir::new().unwrap();
+        let result = StateStore::delete_save("nonexistent", dir.path());
+        assert!(result.is_err());
+    }
+
+    /// Auto-save writes to autosave.ron.
+    #[test]
+    fn auto_save_creates_file() {
+        let dir = TempDir::new().unwrap();
+        let state = GameState::new_game();
+        let path = super::auto_save(&state, dir.path()).unwrap();
+        assert!(path.exists());
+        assert!(path.file_name().unwrap().to_str().unwrap().contains("autosave"));
+
+        // Verify it loads correctly
+        let loaded = StateStore::load(&path).unwrap();
+        assert_eq!(loaded.state().chapter.0, "prologue");
     }
 
     /// Eli's Loyalty line: grayed out but known. Skills not present, line exists in schema.

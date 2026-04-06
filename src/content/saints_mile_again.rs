@@ -160,36 +160,162 @@ pub fn testament() -> Scene {
         "sm_testament", "saints_mile", "15_4",
         PacingTag::Intimate,
         vec![
-            // Justice ending
+            // ── Justice ending ──────────────────────────────────────
             say_if_with("narrator",
-                "Voss falls. The man who taught Galen to shoot is gone. The \
-                 territory records it as frontier violence. The deeper truth \
-                 gets narrower. The machine that formed Voss survives him.",
+                "Voss falls at the post where he taught Galen to shoot. The \
+                 same ground, the same angle of light. The man who decided \
+                 cleanly is decided upon. His hand reaches for nothing. \
+                 Galen's hand does not shake.",
                 vec![flag_eq("ending_axis", "justice")],
                 EmotionTag::Grief,
             ),
-            // Exposure ending
             say_if_with("narrator",
-                "The full truth enters the record. Mission fire. Re-grant fraud. \
-                 Payroll manipulation. Medical diversion. The territory carries \
-                 the uglier version. Nobody likes the new plaque better. But \
-                 nobody can pretend anymore.",
+                "The territory records it as frontier violence — an old feud \
+                 between a marshal and a fugitive, resolved the way such things \
+                 are resolved out here. The deeper truth gets narrower. The \
+                 names Voss protected never appear in the filing. The system \
+                 that shaped him, funded him, armed him with procedure and \
+                 silence — that system buries one man and promotes the next.",
+                vec![flag_eq("ending_axis", "justice")],
+                EmotionTag::Grief,
+            ),
+            say_if_with("narrator",
+                "Ada closes her brother's file. Rosa walks her fence line \
+                 without looking over her shoulder. Eli sleeps without the \
+                 ledger under his coat for the first time in twenty years. \
+                 Miriam keeps the rooms open one more season. They each carry \
+                 a private closure that the public record will never grant.",
+                vec![flag_eq("ending_axis", "justice")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The machine that formed Voss survives him. It always does. \
+                 But somewhere in a pump house or a courthouse or a fever \
+                 shed, a younger clerk will find a gap in the paperwork and \
+                 wonder who made it. That wondering is the only inheritance \
+                 Galen can leave.",
+                vec![flag_eq("ending_axis", "justice")],
+                EmotionTag::Quiet,
+            ),
+
+            // ── Exposure ending ───────────────────────────────────────
+            say_if_with("narrator",
+                "The full truth enters the record. Mission fire. Re-grant \
+                 fraud. Payroll manipulation. Medical diversion. Rail \
+                 consignment forgery. Names, dates, signatures. Every \
+                 document Eli carried, every wound Ada catalogued, every \
+                 fence line Rosa measured — all of it filed, stamped, and \
+                 made permanent in territorial archives.",
                 vec![flag_eq("ending_axis", "exposure")],
                 EmotionTag::Grief,
             ),
-            // Peace ending
             say_if_with("narrator",
-                "Voss retires. Some records are sealed. The worst is acknowledged \
-                 in rooms that never open to the public. The peace holds. The \
-                 silence costs. The livable version is not the true one.",
+                "Nobody likes the new plaque better. The territory rewrites \
+                 Saint's Mile as a site of institutional failure, which is \
+                 accurate and insufficient. The families who lost land get \
+                 procedural acknowledgment but not acreage. The families who \
+                 lost people get a line in an appendix. The clerk who filed \
+                 the original lies retires on schedule.",
+                vec![flag_eq("ending_axis", "exposure")],
+                EmotionTag::Bitter,
+            ),
+            say_if_with("narrator",
+                "Voss is stripped of rank and title. He lives another eight \
+                 years in a boarding house two counties over, reading the \
+                 territorial newspaper, watching his version lose ground \
+                 sentence by sentence. He does not recant. He does not \
+                 apologize. He simply becomes irrelevant, which is the one \
+                 thing he never prepared for.",
+                vec![flag_eq("ending_axis", "exposure")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The territory carries the uglier version now. Children learn \
+                 the corrected history in schools built on re-granted land. \
+                 Nobody can pretend anymore, and that turns out to be a heavier \
+                 gift than anyone expected. Truth does not console. It only \
+                 prevents the specific lie that was told before.",
+                vec![flag_eq("ending_axis", "exposure")],
+                EmotionTag::Grief,
+            ),
+
+            // ── Peace ending ──────────────────────────────────────────
+            say_if_with("narrator",
+                "The negotiation takes three days in a room with no windows. \
+                 Voss retires with a pension. Some records are sealed for \
+                 twenty years. The mission land grants are partially restored \
+                 — enough to matter, not enough to be whole. Rosa gets her \
+                 fence line back but not the years behind it.",
                 vec![flag_eq("ending_axis", "peace")],
                 EmotionTag::Quiet,
             ),
-            // Burden ending
             say_if_with("narrator",
-                "The plaque stands. The official version hardens. Galen carries \
-                 what was real alone — or with whoever stayed close enough to \
-                 hear it. The world gets stability. He gets the weight.",
+                "The worst of it is acknowledged in rooms that never open to \
+                 the public. Ada's medical evidence becomes a confidential \
+                 appendix. Eli's ledger is cited but not published. Miriam's \
+                 testimony is filed under a classification that means nobody \
+                 will read it until the people it describes are already dead.",
+                vec![flag_eq("ending_axis", "peace")],
+                EmotionTag::Bitter,
+            ),
+            say_if_with("narrator",
+                "The peace holds. The bleeding stops. Families go back to \
+                 living in a territory that wronged them and then agreed to \
+                 stop. The contamination remains in the soil, in the water \
+                 table, in the way officials pause before answering certain \
+                 questions. A livable compromise is not the same thing as \
+                 justice. Everyone at the table knows this. Everyone signs \
+                 anyway.",
+                vec![flag_eq("ending_axis", "peace")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Galen rides out with a settlement that tastes like ash and \
+                 functions like mercy. The livable version is not the true \
+                 one. But people live in it, and some of them live better \
+                 than they did before. That has to be enough. It is not \
+                 enough. It has to be.",
+                vec![flag_eq("ending_axis", "peace")],
+                EmotionTag::Grief,
+            ),
+
+            // ── Burden ending ─────────────────────────────────────────
+            say_if_with("narrator",
+                "The plaque stands. The official version hardens into the \
+                 kind of history that sounds true because nobody alive \
+                 contradicts it loudly enough. Galen watches it set like \
+                 concrete and says nothing. The real version stays in his \
+                 coat pocket, in Eli's ledger, in Ada's medical notes that \
+                 nobody requested.",
+                vec![flag_eq("ending_axis", "burden")],
+                EmotionTag::Grief,
+            ),
+            say_if_with("narrator",
+                "The world gets the comfortable version: a frontier incident, \
+                 regrettable but contained, resolved by the diligence of \
+                 territorial authorities. Voss ages into respectability. His \
+                 name appears on a school dedication. His grandson learns a \
+                 version of history that makes the old man heroic. The lie \
+                 becomes inherited.",
+                vec![flag_eq("ending_axis", "burden")],
+                EmotionTag::Bitter,
+            ),
+            say_if_with("narrator",
+                "Galen carries what was real alone — or with whoever stayed \
+                 close enough to hear it. Eli still has the ledger. Ada \
+                 still has the wound charts. Rosa still knows where the \
+                 fence was. Miriam still remembers every name that came \
+                 through her door. They carry the truth like a second \
+                 skeleton, private and load-bearing.",
+                vec![flag_eq("ending_axis", "burden")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The world gets stability. Galen gets the weight. In twenty \
+                 years, when the last witness dies, the real version will \
+                 exist only in objects: a ledger, a chart, a land survey, \
+                 a coat pocket full of paper that means everything to nobody. \
+                 Unless someone finds it. Unless someone asks.",
                 vec![flag_eq("ending_axis", "burden")],
                 EmotionTag::Grief,
             ),

@@ -1,7 +1,7 @@
 //! Input handling — crossterm event dispatch by screen.
 
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
-use crate::ui::mod_types::{App, AppScreen, InputResult, QuitOption};
+use crate::ui::mod_types::{App, AppScreen, InputResult, QuitOption, PauseOption};
 
 /// Number of save slots available. Centralizes the limit so it isn't scattered.
 const SAVE_SLOT_COUNT: usize = 3;
@@ -21,6 +21,21 @@ fn handle_key(app: &mut App, key: KeyEvent) -> InputResult {
         return handle_confirm_quit_key(app, key);
     }
 
+    // Error screen — dismiss with Enter or Esc
+    if matches!(app.screen, AppScreen::Error { .. }) {
+        return handle_error_key(key);
+    }
+
+    // Pause screen — its own handler
+    if matches!(app.screen, AppScreen::Pause { .. }) {
+        return handle_pause_key(app, key);
+    }
+
+    // Status screen — dismiss with Esc or Tab
+    if matches!(app.screen, AppScreen::Status { .. }) {
+        return handle_status_key(key);
+    }
+
     // Universal: Ctrl+Q — immediate quit on title, confirmation elsewhere
     if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('q') {
         return match &app.screen {
@@ -36,6 +51,13 @@ fn handle_key(app: &mut App, key: KeyEvent) -> InputResult {
         }
     }
 
+    // Universal: Ctrl+P opens pause from Scene or Combat
+    if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('p') {
+        if matches!(app.screen, AppScreen::Scene { .. } | AppScreen::Combat) {
+            return InputResult::OpenPause;
+        }
+    }
+
     match &app.screen {
         AppScreen::Title => handle_title_key(app, key),
         AppScreen::Scene { .. } => handle_scene_key(app, key),
@@ -45,6 +67,9 @@ fn handle_key(app: &mut App, key: KeyEvent) -> InputResult {
         AppScreen::CombatOutcome => handle_combat_outcome_key(key),
         AppScreen::SaveLoad { .. } => handle_save_load_key(app, key),
         AppScreen::ConfirmQuit { .. } => unreachable!(), // handled above
+        AppScreen::Error { .. } => unreachable!(),       // handled above
+        AppScreen::Pause { .. } => unreachable!(),       // handled above
+        AppScreen::Status { .. } => unreachable!(),      // handled above
     }
 }
 
@@ -85,7 +110,8 @@ fn handle_scene_key(app: &mut App, key: KeyEvent) -> InputResult {
                 InputResult::ConfirmChoice(app.choice_cursor)
             }
         }
-        KeyCode::Esc => InputResult::BackToTitle,
+        KeyCode::Tab => InputResult::OpenStatus,
+        KeyCode::Esc => InputResult::OpenPause,
         _ => InputResult::None,
     }
 }
@@ -109,14 +135,14 @@ fn handle_standoff_result_key(key: KeyEvent) -> InputResult {
     }
 }
 
-fn handle_combat_key(app: &mut App, key: KeyEvent) -> InputResult {
+fn handle_combat_key(_app: &mut App, key: KeyEvent) -> InputResult {
     match key.code {
         KeyCode::Up | KeyCode::Char('k') => InputResult::CombatCycleAction(-1),
         KeyCode::Down | KeyCode::Char('j') => InputResult::CombatCycleAction(1),
         KeyCode::Tab => InputResult::CombatCycleTarget(1),
         KeyCode::BackTab => InputResult::CombatCycleTarget(-1),
         KeyCode::Enter => InputResult::CombatConfirmAction,
-        KeyCode::Esc => InputResult::BackToTitle,
+        KeyCode::Esc => InputResult::OpenPause,
         _ => InputResult::None,
     }
 }
@@ -129,6 +155,21 @@ fn handle_combat_outcome_key(key: KeyEvent) -> InputResult {
 }
 
 fn handle_save_load_key(app: &mut App, key: KeyEvent) -> InputResult {
+    // Delete confirmation sub-mode
+    if let Some(slot_idx) = app.delete_confirming {
+        return match key.code {
+            KeyCode::Char('y') | KeyCode::Char('Y') => {
+                app.delete_confirming = None;
+                InputResult::ConfirmDeleteSave(slot_idx)
+            }
+            KeyCode::Char('n') | KeyCode::Char('N') | KeyCode::Esc => {
+                app.delete_confirming = None;
+                InputResult::CancelDeleteSave
+            }
+            _ => InputResult::None,
+        };
+    }
+
     match key.code {
         KeyCode::Up | KeyCode::Char('k') => {
             app.save_cursor = app.save_cursor.saturating_sub(1);
@@ -141,7 +182,45 @@ fn handle_save_load_key(app: &mut App, key: KeyEvent) -> InputResult {
             InputResult::None
         }
         KeyCode::Enter => InputResult::ConfirmSaveLoad(app.save_cursor),
+        KeyCode::Char('d') | KeyCode::Char('D') => InputResult::RequestDeleteSave(app.save_cursor),
         KeyCode::Esc => InputResult::BackToTitle,
+        _ => InputResult::None,
+    }
+}
+
+fn handle_error_key(key: KeyEvent) -> InputResult {
+    match key.code {
+        KeyCode::Enter | KeyCode::Esc => InputResult::DismissError,
+        _ => InputResult::None,
+    }
+}
+
+fn handle_pause_key(app: &mut App, key: KeyEvent) -> InputResult {
+    let options = PauseOption::all();
+    match key.code {
+        KeyCode::Up | KeyCode::Char('k') => {
+            app.pause_cursor = app.pause_cursor.saturating_sub(1);
+            InputResult::None
+        }
+        KeyCode::Down | KeyCode::Char('j') => {
+            if app.pause_cursor < options.len().saturating_sub(1) {
+                app.pause_cursor += 1;
+            }
+            InputResult::None
+        }
+        KeyCode::Enter => {
+            let selected = options.get(app.pause_cursor).copied()
+                .unwrap_or(PauseOption::Resume);
+            InputResult::ConfirmPauseOption(selected)
+        }
+        KeyCode::Esc => InputResult::CancelPause,
+        _ => InputResult::None,
+    }
+}
+
+fn handle_status_key(key: KeyEvent) -> InputResult {
+    match key.code {
+        KeyCode::Esc | KeyCode::Tab => InputResult::CloseStatus,
         _ => InputResult::None,
     }
 }

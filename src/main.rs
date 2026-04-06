@@ -13,9 +13,9 @@ use crossterm::{
 };
 use ratatui::prelude::*;
 
-use saints_mile::ui::{App, AppScreen, InputResult, QuitOption};
+use saints_mile::ui::{App, AppScreen, InputResult, QuitOption, PauseOption};
 use saints_mile::ui::input::handle_event;
-use saints_mile::ui::screens::{title, scene, standoff, combat, save_load};
+use saints_mile::ui::screens::{title, scene, standoff, combat, save_load, error, pause, status};
 use saints_mile::ui::screens::save_load::{SaveLoadMode, SaveSlotInfo};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -134,10 +134,19 @@ fn render(frame: &mut Frame, app: &App) {
         }
         AppScreen::SaveLoad { mode } => {
             let slots = discover_save_slots();
-            save_load::render_save_load(frame, area, *mode, &slots, app.save_cursor);
+            save_load::render_save_load(frame, area, *mode, &slots, app.save_cursor, app.delete_confirming);
         }
         AppScreen::ConfirmQuit { .. } => {
             render_confirm_quit(frame, area, app.quit_cursor);
+        }
+        AppScreen::Error { message, .. } => {
+            error::render_error(frame, area, message);
+        }
+        AppScreen::Pause { .. } => {
+            pause::render_pause(frame, area, app.pause_cursor);
+        }
+        AppScreen::Status { .. } => {
+            status::render_status(frame, area, app.store.state());
         }
     }
 }
@@ -342,6 +351,84 @@ fn process_result(app: &mut App, result: InputResult) {
                 app.screen = *return_screen;
             }
         }
+
+        // Error screen
+        InputResult::DismissError => {
+            let screen = std::mem::replace(&mut app.screen, AppScreen::Title);
+            if let AppScreen::Error { return_screen, .. } = screen {
+                app.screen = *return_screen;
+            }
+        }
+
+        // Pause screen
+        InputResult::OpenPause => {
+            let current = std::mem::replace(&mut app.screen, AppScreen::Title);
+            app.pause_cursor = 0;
+            app.screen = AppScreen::Pause {
+                return_screen: Box::new(current),
+            };
+        }
+        InputResult::ConfirmPauseOption(option) => {
+            match option {
+                PauseOption::Resume => {
+                    let screen = std::mem::replace(&mut app.screen, AppScreen::Title);
+                    if let AppScreen::Pause { return_screen } = screen {
+                        app.screen = *return_screen;
+                    }
+                }
+                PauseOption::Save => {
+                    // Save to quicksave then stay paused
+                    match app.store.save("quicksave") {
+                        Ok(_) => {} // silently succeed
+                        Err(e) => {
+                            app.show_error(format!("Save failed: {}", e));
+                        }
+                    }
+                }
+                PauseOption::ReturnToTitle => {
+                    app.screen = AppScreen::Title;
+                }
+            }
+        }
+        InputResult::CancelPause => {
+            let screen = std::mem::replace(&mut app.screen, AppScreen::Title);
+            if let AppScreen::Pause { return_screen } = screen {
+                app.screen = *return_screen;
+            }
+        }
+
+        // Status screen
+        InputResult::OpenStatus => {
+            let current = std::mem::replace(&mut app.screen, AppScreen::Title);
+            app.screen = AppScreen::Status {
+                return_screen: Box::new(current),
+            };
+        }
+        InputResult::CloseStatus => {
+            let screen = std::mem::replace(&mut app.screen, AppScreen::Title);
+            if let AppScreen::Status { return_screen } = screen {
+                app.screen = *return_screen;
+            }
+        }
+
+        // Save deletion
+        InputResult::RequestDeleteSave(idx) => {
+            app.delete_confirming = Some(idx);
+        }
+        InputResult::ConfirmDeleteSave(idx) => {
+            let slots = discover_save_slots();
+            if let Some(slot) = slots.get(idx) {
+                if slot.exists {
+                    let save_dir = app.save_dir();
+                    if let Err(e) = saints_mile::state::store::StateStore::delete_save(&slot.name, &save_dir) {
+                        app.show_error(e);
+                    }
+                }
+            }
+        }
+        InputResult::CancelDeleteSave => {
+            // delete_confirming already cleared by input handler
+        }
     }
 }
 
@@ -350,18 +437,29 @@ fn handle_save_load(app: &mut App, slot_index: usize) {
     if let Some(slot) = slots.get(slot_index) {
         match &app.screen {
             AppScreen::SaveLoad { mode: SaveLoadMode::Save } => {
-                let _ = app.store.save(&slot.name);
-                app.screen = AppScreen::Title;
+                match app.store.save(&slot.name) {
+                    Ok(_) => {
+                        app.screen = AppScreen::Title;
+                    }
+                    Err(e) => {
+                        app.show_error(format!("Save failed: {}", e));
+                    }
+                }
             }
             AppScreen::SaveLoad { mode: SaveLoadMode::Load } => {
                 let path = app.save_dir().join(format!("{}.ron", slot.name));
-                if path.exists() {
-                    if let Ok(loaded) = saints_mile::state::store::StateStore::load(&path) {
+                if !path.exists() {
+                    app.show_error("Save slot is empty.".to_string());
+                    return;
+                }
+                match saints_mile::state::store::StateStore::load(&path) {
+                    Ok(loaded) => {
                         app.store = loaded;
-                        // Clone required: load_scene() borrows &mut self,
-                        // so we can't hold a reference into app.store.
                         let beat = app.store.state().beat.0.clone();
                         app.load_scene(&beat);
+                    }
+                    Err(e) => {
+                        app.show_error(format!("Load failed: {}", e));
                     }
                 }
             }

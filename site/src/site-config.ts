@@ -13,8 +13,8 @@ export const config: SiteConfig = {
     headline: "Saint's Mile",
     headlineAccent: 'A frontier JRPG.',
     description: 'A weathered frontier road story with sharp banter, real consequences, and just enough mystery to make the horizon feel haunted. Built for the generation that grew up on 90s classics.',
-    primaryCta: { href: 'handbook/', label: 'Read the Handbook' },
-    secondaryCta: { href: 'https://github.com/mcp-tool-shop-org/saints-mile', label: 'View Source' },
+    primaryCta: { href: '#install', label: 'Get Started' },
+    secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
     previews: [
       { label: 'Install', code: 'cargo install saints-mile' },
       { label: 'Play', code: 'saints-mile' },
@@ -23,6 +23,17 @@ export const config: SiteConfig = {
   },
 
   sections: [
+    {
+      kind: 'code-cards',
+      id: 'install',
+      title: 'Install',
+      subtitle: 'Get playing in one command.',
+      cards: [
+        { title: 'From crates.io', code: 'cargo install saints-mile\nsaints-mile' },
+        { title: 'From source', code: 'git clone https://github.com/mcp-tool-shop-org/saints-mile\ncd saints-mile\ncargo run --release' },
+        { title: 'Pre-built binaries', code: '# Download from GitHub Releases:\n# github.com/mcp-tool-shop-org/saints-mile/releases\n# Linux x64, macOS ARM64, Windows x64 + MSIX' },
+      ],
+    },
     {
       kind: 'features',
       id: 'features',
