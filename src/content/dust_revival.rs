@@ -251,6 +251,29 @@ pub fn chapter_close() -> Scene {
                  there when the talking matters. That's what I'm for.",
                 EmotionTag::Neutral,
             ),
+            // Relay branch callback — what the relay truth means for this community
+            say_if_with("narrator",
+                "The relay's structural failure — Tom proved it was \
+                 engineered, not accidental. The same pattern: build \
+                 something for a community, then build it to break.",
+                vec![flag_eq("relay_branch", "tom")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Nella saw the relay burn. Now Miriam watches a revival \
+                 burn a family instead. Different fire, same silence \
+                 from the people who could have stopped it.",
+                vec![flag_eq("relay_branch", "nella")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The relay papers showed how a fire becomes paperwork. \
+                 Here at Silt Crossing, a drought is becoming paperwork \
+                 too — land options, transfer filings, the administrative \
+                 language of taking.",
+                vec![flag_eq("relay_branch", "papers")],
+                EmotionTag::Quiet,
+            ),
             narrate_with(
                 "Miriam joins the party. Not through recruitment. Through \
                  measured intervention.",

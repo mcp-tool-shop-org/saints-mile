@@ -133,6 +133,91 @@ pub struct EncounterState {
 
     /// Skill cooldowns — maps (combatant_id, skill_id) to remaining cooldown turns.
     pub cooldowns: HashMap<(String, SkillId), u8>,
+
+    /// Combo tracker — maps (actor_id, skill_line) to consecutive same-type action count.
+    /// Resets when a different actor or skill line is used.
+    pub combo_counter: HashMap<String, ComboState>,
+
+    /// Terrain modifiers applied during combat (craters, fire, flooding, cleared cover).
+    pub terrain_modifiers: Vec<TerrainModifier>,
+}
+
+/// Tracks the current combo state for a combatant.
+#[derive(Debug, Clone)]
+pub struct ComboState {
+    /// The skill line being chained.
+    pub skill_line: String,
+    /// How many consecutive same-type actions (1 = first use, 2 = combo, 3 = chain).
+    pub count: u8,
+}
+
+/// Terrain modifiers that reshape the battlefield during combat.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TerrainModifier {
+    /// Explosion crater — reduced movement options.
+    Cratered { source: String },
+    /// Active fire — damage to anyone in the area each turn.
+    Burning { damage_per_turn: i32 },
+    /// Flooding — nerve penalty to all combatants.
+    Flooded { nerve_penalty: i32 },
+    /// Cover blown away — no cover available in this zone.
+    Cleared { former_cover: String },
+}
+
+impl EncounterState {
+    /// Record an action for combo tracking. Returns the combo multiplier (1.0, 1.1, or 1.2).
+    pub fn record_combo(&mut self, actor_id: &str, skill_line: &str) -> f32 {
+        let entry = self.combo_counter.entry(actor_id.to_string()).or_insert(ComboState {
+            skill_line: String::new(),
+            count: 0,
+        });
+
+        if entry.skill_line == skill_line {
+            entry.count = entry.count.saturating_add(1);
+        } else {
+            entry.skill_line = skill_line.to_string();
+            entry.count = 1;
+        }
+
+        match entry.count {
+            2 => 1.10,
+            n if n >= 3 => 1.20,
+            _ => 1.0,
+        }
+    }
+
+    /// Reset combo state for an actor (called when a different actor takes a turn).
+    pub fn reset_combo(&mut self, actor_id: &str) {
+        self.combo_counter.remove(actor_id);
+    }
+
+    /// Apply a terrain modifier to the battlefield.
+    pub fn apply_terrain_modifier(&mut self, modifier: TerrainModifier) {
+        self.terrain_modifiers.push(modifier);
+    }
+
+    /// Check terrain effects and return accumulated impacts:
+    /// (total_hp_damage, total_nerve_penalty).
+    pub fn check_terrain_effects(&self) -> (i32, i32) {
+        let mut hp_damage = 0;
+        let mut nerve_penalty = 0;
+
+        for modifier in &self.terrain_modifiers {
+            match modifier {
+                TerrainModifier::Burning { damage_per_turn } => {
+                    hp_damage += damage_per_turn;
+                }
+                TerrainModifier::Flooded { nerve_penalty: penalty } => {
+                    nerve_penalty += penalty;
+                }
+                TerrainModifier::Cratered { .. } | TerrainModifier::Cleared { .. } => {
+                    // Schema-level — movement/cover effects wired later.
+                }
+            }
+        }
+
+        (hp_damage, nerve_penalty)
+    }
 }
 
 /// A combatant during live combat.
@@ -459,6 +544,8 @@ impl EncounterState {
             outcome: None,
             cover_assignments: HashMap::new(),
             cooldowns: HashMap::new(),
+            combo_counter: HashMap::new(),
+            terrain_modifiers: Vec::new(),
         }
     }
 
@@ -3205,5 +3292,102 @@ mod tests {
         let eli = state.party[1].as_ref().unwrap();
         assert!(eli.panicked, "Eli should panic from cascade (nerve 5 - 7 = 0)");
         assert_eq!(eli.nerve, 0);
+    }
+
+    // ─── Combo System Tests ───────────────────────────────────────
+
+    #[test]
+    fn combo_first_action_no_bonus() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        let mult = state.record_combo("galen", "deadeye");
+        assert!((mult - 1.0).abs() < f32::EPSILON);
+    }
+
+    #[test]
+    fn combo_second_same_action_ten_percent() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.record_combo("galen", "deadeye");
+        let mult = state.record_combo("galen", "deadeye");
+        assert!((mult - 1.10).abs() < f32::EPSILON);
+    }
+
+    #[test]
+    fn combo_third_same_action_twenty_percent() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.record_combo("galen", "deadeye");
+        state.record_combo("galen", "deadeye");
+        let mult = state.record_combo("galen", "deadeye");
+        assert!((mult - 1.20).abs() < f32::EPSILON);
+    }
+
+    #[test]
+    fn combo_resets_on_different_skill_line() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.record_combo("galen", "deadeye");
+        state.record_combo("galen", "deadeye");
+        // Switch to a different skill line
+        let mult = state.record_combo("galen", "command");
+        assert!((mult - 1.0).abs() < f32::EPSILON);
+    }
+
+    #[test]
+    fn combo_reset_clears_actor() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.record_combo("galen", "deadeye");
+        state.record_combo("galen", "deadeye");
+        state.reset_combo("galen");
+        // After reset, next action is first use again
+        let mult = state.record_combo("galen", "deadeye");
+        assert!((mult - 1.0).abs() < f32::EPSILON);
+    }
+
+    // ─── Terrain Modifier Tests ──────────────────────────────────
+
+    #[test]
+    fn terrain_burning_applies_damage() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.apply_terrain_modifier(TerrainModifier::Burning { damage_per_turn: 5 });
+        let (hp_dmg, nerve_pen) = state.check_terrain_effects();
+        assert_eq!(hp_dmg, 5);
+        assert_eq!(nerve_pen, 0);
+    }
+
+    #[test]
+    fn terrain_flooded_applies_nerve_penalty() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.apply_terrain_modifier(TerrainModifier::Flooded { nerve_penalty: 3 });
+        let (hp_dmg, nerve_pen) = state.check_terrain_effects();
+        assert_eq!(hp_dmg, 0);
+        assert_eq!(nerve_pen, 3);
+    }
+
+    #[test]
+    fn terrain_multiple_modifiers_stack() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.apply_terrain_modifier(TerrainModifier::Burning { damage_per_turn: 5 });
+        state.apply_terrain_modifier(TerrainModifier::Flooded { nerve_penalty: 2 });
+        state.apply_terrain_modifier(TerrainModifier::Cratered { source: "explosion".to_string() });
+        state.apply_terrain_modifier(TerrainModifier::Cleared { former_cover: "barrel".to_string() });
+        let (hp_dmg, nerve_pen) = state.check_terrain_effects();
+        assert_eq!(hp_dmg, 5);
+        assert_eq!(nerve_pen, 2);
+        assert_eq!(state.terrain_modifiers.len(), 4);
+    }
+
+    #[test]
+    fn terrain_no_modifiers_no_effects() {
+        let encounter = glass_arroyo_encounter();
+        let state = EncounterState::new(&encounter, prologue_party());
+        let (hp_dmg, nerve_pen) = state.check_terrain_effects();
+        assert_eq!(hp_dmg, 0);
+        assert_eq!(nerve_pen, 0);
     }
 }

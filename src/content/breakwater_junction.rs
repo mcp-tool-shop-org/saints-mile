@@ -60,6 +60,32 @@ pub fn preparation() -> Scene {
                 vec![flag_is("lucien_captured", true)],
                 EmotionTag::Neutral,
             ),
+            // Relay branch context — what's at stake shapes the defense
+            say_if_with("narrator",
+                "The relay's structural proof is in the evidence bundle. \
+                 Tom's engineering — the load calculations that proved \
+                 deliberate failure — gives the defense a foundation. \
+                 They're not just holding ground. They're holding proof \
+                 that ground was taken by design.",
+                vec![flag_eq("relay_branch", "tom")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Nella's testimony is in the evidence bundle. A living \
+                 witness who saw the relay fire and named the men who \
+                 lit it. If the junction falls, the machine buries one \
+                 more voice. The defense is personal.",
+                vec![flag_eq("relay_branch", "nella")],
+                EmotionTag::Tense,
+            ),
+            say_if_with("narrator",
+                "The relay papers are in the evidence bundle. Transfer \
+                 orders, payroll ghosts, the paper trail of arson. If \
+                 Breakwater falls, the papers burn again — the same \
+                 story, the same method, a generation later.",
+                vec![flag_eq("relay_branch", "papers")],
+                EmotionTag::Tense,
+            ),
         ],
         vec![
             choice("Hold Breakwater", vec![], to_combat("breakwater_battle")),

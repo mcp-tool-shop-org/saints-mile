@@ -25,6 +25,10 @@ Saint's Mile is a frontier JRPG for the adults who loved those games first. This
 - [Build Constitution](/saints-mile/handbook/build-constitution/) — anti-drift laws and runtime contracts
 - [Implementation Guide](/saints-mile/handbook/implementation/) — milestones, success tests, what to build first
 
+### Reference
+- [Troubleshooting](/saints-mile/handbook/troubleshooting/) — build errors, terminal setup, platform issues
+- [FAQ](/saints-mile/handbook/faq/) — common questions about gameplay, modding, and contributing
+
 ## The Core Promise
 
 A weathered frontier road story with sharp banter, real consequences, and just enough mystery to make the horizon feel haunted. Built for the generation that grew up on 90s classics.

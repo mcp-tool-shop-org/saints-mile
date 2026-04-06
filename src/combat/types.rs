@@ -144,6 +144,15 @@ pub struct DuoTech {
     pub effect: DuoTechEffect,
 }
 
+/// How severe a wound is — determines rest recovery eligibility.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum WoundSeverity {
+    /// Minor wounds heal with rest (exhaustion, bruises).
+    Minor,
+    /// Major wounds require the sawbones (gunshots, nerve shock).
+    Major,
+}
+
 /// A wound that persists between encounters.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Wound {
@@ -152,7 +161,13 @@ pub struct Wound {
     pub description: String,
     pub penalties: Vec<StatPenalty>,
     pub treatable: bool,
+    /// Severity determines whether rest alone can heal it.
+    /// Defaults to Major for backward compatibility with existing wounds.
+    #[serde(default = "default_severity")]
+    pub severity: WoundSeverity,
 }
+
+fn default_severity() -> WoundSeverity { WoundSeverity::Major }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PositionState {

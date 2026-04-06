@@ -13,6 +13,8 @@ use crossterm::{
 };
 use ratatui::prelude::*;
 
+use saints_mile::dev::quickstart::JumpPoint;
+use saints_mile::state::store::StateStore;
 use saints_mile::ui::{App, AppScreen, InputResult, QuitOption, PauseOption};
 use saints_mile::ui::input::handle_event;
 use saints_mile::ui::screens::{title, scene, standoff, combat, save_load, error, pause, status};
@@ -23,8 +25,12 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 type Term = Terminal<CrosstermBackend<io::Stdout>>;
 
 fn main() -> Result<()> {
-    if let Some(arg) = std::env::args().nth(1) {
-        match arg.as_str() {
+    let args: Vec<String> = std::env::args().collect();
+    let mut quickstart_point: Option<JumpPoint> = None;
+
+    let mut i = 1;
+    while i < args.len() {
+        match args[i].as_str() {
             "--version" | "-V" => {
                 println!("saints-mile {}", VERSION);
                 return Ok(());
@@ -33,13 +39,35 @@ fn main() -> Result<()> {
                 println!("saints-mile v{}\n", VERSION);
                 println!("A frontier JRPG for the adults who loved those games first.\n");
                 println!("USAGE:");
-                println!("  saints-mile              Start the game");
-                println!("  saints-mile --version    Print version and exit");
-                println!("  saints-mile --help       Show this help and exit");
+                println!("  saints-mile                          Start the game");
+                println!("  saints-mile --quickstart <point>     Jump to a named point");
+                println!("  saints-mile --version                Print version and exit");
+                println!("  saints-mile --help                   Show this help and exit");
+                println!();
+                println!("QUICKSTART POINTS:");
+                println!("  Prologue          Prologue start");
+                println!("  BitterCutFight    Ch1 Bitter Cut fight");
+                println!("  ConvoyStart       Ch2 convoy join");
+                println!("  RelayRescue       Ch2 relay triage");
                 return Ok(());
+            }
+            "--quickstart" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("error: --quickstart requires a jump point name");
+                    eprintln!("run saints-mile --help for available points");
+                    std::process::exit(1);
+                }
+                quickstart_point = parse_jump_point(&args[i]);
+                if quickstart_point.is_none() {
+                    eprintln!("error: unknown quickstart point '{}'", args[i]);
+                    eprintln!("run saints-mile --help for available points");
+                    std::process::exit(1);
+                }
             }
             _ => {}
         }
+        i += 1;
     }
 
     enable_raw_mode()?;
@@ -52,7 +80,16 @@ fn main() -> Result<()> {
         .unwrap_or_else(|_| std::path::PathBuf::from("."))
         .join("saves");
 
-    let mut app = App::new(save_dir);
+    let mut app = App::new(save_dir.clone());
+
+    // If quickstart requested, inject the jump point state
+    if let Some(jump) = quickstart_point {
+        let state = jump.create_state();
+        app.store = StateStore::from_state(state, &save_dir);
+        let beat = app.store.state().beat.0.clone();
+        app.load_scene(&beat);
+    }
+
     let tick_rate = Duration::from_millis(50);
     let result = run_loop(&mut terminal, &mut app, tick_rate);
 
@@ -61,6 +98,24 @@ fn main() -> Result<()> {
     terminal.show_cursor()?;
 
     result
+}
+
+/// Parse a quickstart jump point name (case-insensitive).
+fn parse_jump_point(name: &str) -> Option<JumpPoint> {
+    match name.to_lowercase().as_str() {
+        "prologue" | "prologuestart" => Some(JumpPoint::PrologueStart),
+        "prologuearroyo" => Some(JumpPoint::PrologueArroyo),
+        "prologuecampfire" => Some(JumpPoint::PrologueCampfire),
+        "cedarwakestart" => Some(JumpPoint::CedarWakeStart),
+        "bittercutfight" => Some(JumpPoint::BitterCutFight),
+        "bittercutdispatch" => Some(JumpPoint::BitterCutDispatch),
+        "convoystart" => Some(JumpPoint::ConvoyStart),
+        "redswitchwash" => Some(JumpPoint::RedSwitchWash),
+        "hollowpump" => Some(JumpPoint::HollowPump),
+        "relayrescue" | "relaytriage" => Some(JumpPoint::RelayTriage),
+        "relayarrival" => Some(JumpPoint::RelayArrival),
+        _ => None,
+    }
 }
 
 fn run_loop(terminal: &mut Term, app: &mut App, tick_rate: Duration) -> Result<()> {

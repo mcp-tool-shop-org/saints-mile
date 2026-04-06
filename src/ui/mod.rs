@@ -19,6 +19,7 @@ use crate::combat::types::{Encounter, StandoffPosture, SkillLine};
 use crate::scene::runner::{PreparedScene, SceneRunner};
 use crate::scene::types::{Scene, SceneTransition};
 use crate::state::store::StateStore;
+use crate::state::settings::GameSettings;
 use crate::state::types::MemoryObject;
 use crate::types::AgePhase;
 
@@ -56,6 +57,11 @@ pub struct App {
     pub delete_confirming: Option<usize>,
     /// Cursor position on the pause screen.
     pub pause_cursor: usize,
+    /// Screen transition dim counter. When > 0, render should overlay a dim effect.
+    /// Decremented each tick. Set to 3 on screen changes.
+    pub transition_frames: u8,
+    /// Player-configurable settings (text speed, etc).
+    pub settings: GameSettings,
 }
 
 /// Which screen the player is on.
@@ -181,6 +187,7 @@ pub enum InputResult {
 impl App {
     /// Create a new app at the title screen.
     pub fn new(save_dir: std::path::PathBuf) -> Self {
+        let settings = GameSettings::load(&save_dir);
         Self {
             screen: AppScreen::Title,
             store: StateStore::new_game(&save_dir),
@@ -199,6 +206,8 @@ impl App {
             quit_cursor: 0,
             delete_confirming: None,
             pause_cursor: 0,
+            transition_frames: 0,
+            settings,
         }
     }
 
@@ -235,6 +244,7 @@ impl App {
 
             self.current_prepared = Some(prepared);
             self.current_scene = Some(scene);
+            self.transition_frames = 3;
             self.screen = AppScreen::Scene {
                 chapter_label,
                 location_label,
@@ -315,12 +325,14 @@ impl App {
             let enemy_count = state.enemies.len();
             self.standoff_ui = Some(StandoffUi::new(postures, enemy_count));
             self.encounter_state = Some(state);
+            self.transition_frames = 3;
             self.screen = AppScreen::Standoff;
         } else {
             // Skip to combat
             state.build_turn_queue();
             self.encounter_state = Some(state);
             self.build_combat_actions_from_current();
+            self.transition_frames = 3;
             self.screen = AppScreen::Combat;
         }
     }
@@ -591,8 +603,13 @@ impl App {
         }
     }
 
-    /// Tick the text reveal forward.
+    /// Tick the text reveal forward and decrement transition counter.
     pub fn tick(&mut self) {
+        // Decrement screen transition dim counter
+        if self.transition_frames > 0 {
+            self.transition_frames -= 1;
+        }
+
         if let Some(prepared) = &self.current_prepared {
             let line_lengths: Vec<usize> = prepared.lines.iter()
                 .map(|l| l.text.len())
@@ -626,6 +643,16 @@ impl App {
 
     pub fn quick_save(&self) {
         let _ = self.store.save("quicksave");
+    }
+
+    /// Whether a screen transition dim overlay should be shown.
+    pub fn is_transitioning(&self) -> bool {
+        self.transition_frames > 0
+    }
+
+    /// Get immutable reference to game settings.
+    pub fn settings(&self) -> &GameSettings {
+        &self.settings
     }
 
     /// Get the number of living enemies for target cycling.

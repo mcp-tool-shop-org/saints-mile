@@ -112,6 +112,9 @@ impl StateStore {
     }
 
     /// Save current state to a file.
+    ///
+    /// Uses write-to-temp + rename for atomic writes. If a previous save exists,
+    /// it is backed up to `<slot>.ron.bak` (at most 1 backup per slot).
     pub fn save(&self, slot_name: &str) -> Result<PathBuf> {
         std::fs::create_dir_all(&self.save_dir)
             .with_context(|| format!("failed to create save directory: {}", self.save_dir.display()))?;
@@ -124,11 +127,25 @@ impl StateStore {
         let envelope = SaveEnvelope::new(self.state.clone(), label);
 
         let path = self.save_dir.join(format!("{}.ron", slot_name));
+        let tmp_path = self.save_dir.join(format!("{}.ron.tmp", slot_name));
+        let bak_path = self.save_dir.join(format!("{}.ron.bak", slot_name));
+
         let serialized = ron::ser::to_string_pretty(&envelope, ron::ser::PrettyConfig::default())
             .context("failed to serialize game state")?;
 
-        std::fs::write(&path, &serialized)
-            .with_context(|| format!("failed to write save file: {}", path.display()))?;
+        // Write to temp file first
+        std::fs::write(&tmp_path, &serialized)
+            .with_context(|| format!("failed to write temp save file: {}", tmp_path.display()))?;
+
+        // If existing save exists, back it up (overwrite previous backup)
+        if path.exists() {
+            // Best-effort backup — don't fail the save if backup fails
+            let _ = std::fs::rename(&path, &bak_path);
+        }
+
+        // Atomic rename: temp → final
+        std::fs::rename(&tmp_path, &path)
+            .with_context(|| format!("failed to rename temp save to final: {}", path.display()))?;
 
         info!(slot = slot_name, path = %path.display(), "game saved");
         Ok(path)
@@ -324,6 +341,41 @@ mod tests {
         // Verify it loads correctly
         let loaded = StateStore::load(&path).unwrap();
         assert_eq!(loaded.state().chapter.0, "prologue");
+    }
+
+    /// Save creates backup of existing file.
+    #[test]
+    fn save_creates_backup() {
+        let dir = TempDir::new().unwrap();
+        let store = StateStore::new_game(dir.path());
+
+        // First save — no backup expected
+        let path = store.save("backup_test").unwrap();
+        assert!(path.exists());
+        let bak_path = dir.path().join("backup_test.ron.bak");
+        assert!(!bak_path.exists(), "no backup on first save");
+
+        // Second save — backup should be created
+        let path2 = store.save("backup_test").unwrap();
+        assert!(path2.exists());
+        assert!(bak_path.exists(), "backup created on second save");
+
+        // Both load correctly
+        let loaded = StateStore::load(&path2).unwrap();
+        assert_eq!(loaded.state().chapter.0, "prologue");
+        let loaded_bak = StateStore::load(&bak_path).unwrap();
+        assert_eq!(loaded_bak.state().chapter.0, "prologue");
+    }
+
+    /// No temp files left after save.
+    #[test]
+    fn save_no_leftover_tmp() {
+        let dir = TempDir::new().unwrap();
+        let store = StateStore::new_game(dir.path());
+        store.save("tmp_test").unwrap();
+
+        let tmp_path = dir.path().join("tmp_test.ron.tmp");
+        assert!(!tmp_path.exists(), "temp file should be renamed away");
     }
 
     /// Eli's Loyalty line: grayed out but known. Skills not present, line exists in schema.

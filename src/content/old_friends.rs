@@ -32,6 +32,21 @@ pub fn eli_return() -> Scene {
                  years of trying not to.",
                 EmotionTag::Quiet,
             ),
+            // Relationship-aware reunion: warm if Galen reached for Eli in ch13
+            say_if_with("eli",
+                "I kept the flask. Figured you'd want it back. Or maybe I kept \
+                 it because it was the last honest thing between us.",
+                vec![flag_is("reaching_for_eli", true)],
+                EmotionTag::Warm,
+            ),
+            // Cooler if the ledger was used against Rosa's interests (iron_ledger choice)
+            say_if_with("eli",
+                "Fifteen years is a long time to wonder if someone's coming \
+                 back to settle a debt or share a road. I wasn't sure which \
+                 one you'd be.",
+                vec![flag_is("eli_pre_echo", true)],
+                EmotionTag::Quiet,
+            ),
             narrate(
                 "He still has the ledger. After everything. He still has it.",
             ),
@@ -79,6 +94,13 @@ pub fn ada_return() -> Scene {
                 "You came back. I was hoping you wouldn't have to.",
                 EmotionTag::Quiet,
             ),
+            // Warm reunion if Ada was prioritized during the black_willow investigation
+            say_if_with("ada",
+                "I kept your chart. Fifteen years of updates from a patient \
+                 I never expected to see again. Professional habit. Nothing more.",
+                vec![flag_is("ada_joined", true)],
+                EmotionTag::Warm,
+            ),
         ],
         vec![
             choice("We need what you know", vec![
@@ -115,6 +137,21 @@ pub fn rosa_return() -> Scene {
             say_with("rosa",
                 "You move when I say.",
                 EmotionTag::Neutral,
+            ),
+            // Warmer if Rosa's land was prioritized during ch4 ropehouse
+            say_if_with("rosa",
+                "You held the line for us once. I remember that. The fence \
+                 remembers that.",
+                vec![flag_is("rosa_joined", true)],
+                EmotionTag::Warm,
+            ),
+            // Tension if the force approach was taken at the revival (ch5)
+            say_if_with("rosa",
+                "Last time we shared a road, you chose the fist over the \
+                 voice. I haven't forgotten. But the country needs what \
+                 it needs.",
+                vec![flag_eq("ch5_stance", "force_hold")],
+                EmotionTag::Bitter,
             ),
             narrate_with(
                 "Fifteen years, and the first thing she does is set terms. \
@@ -154,6 +191,21 @@ pub fn miriam_return() -> Scene {
                  of them carried it. Some of them set it down. Some of them were \
                  never given the choice.",
                 EmotionTag::Quiet,
+            ),
+            // Warm if Miriam was trusted to speak at the revival (ch5)
+            say_if_with("miriam",
+                "You let me speak when the room was turning. I've carried \
+                 that trust into every room since. It mattered.",
+                vec![flag_eq("ch5_stance", "miriam_speaks")],
+                EmotionTag::Warm,
+            ),
+            // Cooler if Miriam's voice was overridden
+            say_if_with("miriam",
+                "We've disagreed about method before. I suspect we will \
+                 again. But the rooms are closing, and I'd rather disagree \
+                 inside than agree from the outside.",
+                vec![flag_eq("ch5_stance", "force_hold")],
+                EmotionTag::Neutral,
             ),
         ],
         vec![

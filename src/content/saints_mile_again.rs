@@ -197,6 +197,31 @@ pub fn testament() -> Scene {
                 vec![flag_eq("ending_axis", "justice")],
                 EmotionTag::Quiet,
             ),
+            // Justice + relay branch callbacks
+            say_if_with("narrator",
+                "Tom's structural proof — the engineering that proved the \
+                 relay was built to fail — sits in a file nobody requested. \
+                 The math survived. The man who did the math did not make \
+                 the front page.",
+                vec![flag_eq("ending_axis", "justice"), flag_eq("relay_branch", "tom")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Nella's testimony — the human witness who saw the relay \
+                 burn and named the men who lit it — becomes a footnote in \
+                 a violence report. She told the truth. The truth outlived \
+                 the man she told it about.",
+                vec![flag_eq("ending_axis", "justice"), flag_eq("relay_branch", "nella")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The relay papers — transfer orders, payroll ghosts, the \
+                 paper trail that proved the fire was policy — sit in \
+                 Galen's coat. They proved who gave the order. They did \
+                 not prove who would care.",
+                vec![flag_eq("ending_axis", "justice"), flag_eq("relay_branch", "papers")],
+                EmotionTag::Quiet,
+            ),
 
             // ── Exposure ending ───────────────────────────────────────
             say_if_with("narrator",
@@ -238,6 +263,32 @@ pub fn testament() -> Scene {
                 vec![flag_eq("ending_axis", "exposure")],
                 EmotionTag::Grief,
             ),
+            // Exposure + relay branch callbacks
+            say_if_with("narrator",
+                "Tom's engineering report becomes Exhibit 14 in the territorial \
+                 filing. The structural proof — load calculations, material \
+                 failures, the mathematics of deliberate sabotage — enters \
+                 the permanent record. The relay was built to burn. Now \
+                 everyone knows the formula.",
+                vec![flag_eq("ending_axis", "exposure"), flag_eq("relay_branch", "tom")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Nella testifies in open session. Her account of the relay \
+                 fire — the faces, the timing, the smell of kerosene on \
+                 uniforms — becomes the human center of an institutional \
+                 indictment. She named the men. The territory recorded the names.",
+                vec![flag_eq("ending_axis", "exposure"), flag_eq("relay_branch", "nella")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The relay papers are published in full. Transfer orders, \
+                 payroll manipulation, the administrative choreography of \
+                 arson — every page stamped and archived. The fire had a \
+                 filing system. Now everyone can read it.",
+                vec![flag_eq("ending_axis", "exposure"), flag_eq("relay_branch", "papers")],
+                EmotionTag::Quiet,
+            ),
 
             // ── Peace ending ──────────────────────────────────────────
             say_if_with("narrator",
@@ -277,6 +328,32 @@ pub fn testament() -> Scene {
                  enough. It has to be.",
                 vec![flag_eq("ending_axis", "peace")],
                 EmotionTag::Grief,
+            ),
+            // Peace + relay branch callbacks
+            say_if_with("narrator",
+                "Tom's structural proof is filed under a classification \
+                 that means 'true but inconvenient.' The engineering that \
+                 proved the relay was sabotage becomes a sealed appendix. \
+                 The math is correct. The math is confidential.",
+                vec![flag_eq("ending_axis", "peace"), flag_eq("relay_branch", "tom")],
+                EmotionTag::Bitter,
+            ),
+            say_if_with("narrator",
+                "Nella's testimony is taken in a closed room and never \
+                 repeated in an open one. She named the men who lit the \
+                 relay. Their names appear in a document nobody will read \
+                 until the men are already dead. She told the truth to a \
+                 room that agreed to forget it politely.",
+                vec![flag_eq("ending_axis", "peace"), flag_eq("relay_branch", "nella")],
+                EmotionTag::Bitter,
+            ),
+            say_if_with("narrator",
+                "The relay papers are cited in the settlement but not \
+                 published. The transfer orders, the payroll ghosts — \
+                 referenced by number, never by content. The fire had \
+                 a paper trail. The peace agreement has a longer one.",
+                vec![flag_eq("ending_axis", "peace"), flag_eq("relay_branch", "papers")],
+                EmotionTag::Bitter,
             ),
 
             // ── Burden ending ─────────────────────────────────────────
@@ -318,6 +395,34 @@ pub fn testament() -> Scene {
                  Unless someone finds it. Unless someone asks.",
                 vec![flag_eq("ending_axis", "burden")],
                 EmotionTag::Grief,
+            ),
+            // Burden + relay branch callbacks
+            say_if_with("narrator",
+                "Tom's structural calculations stay in Galen's coat beside \
+                 the land grants. The proof that the relay was engineered \
+                 to fail — load numbers, material specs, the geometry of \
+                 deliberate collapse — waits for someone who knows how to \
+                 read it. Mathematics is patient.",
+                vec![flag_eq("ending_axis", "burden"), flag_eq("relay_branch", "tom")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Nella is still alive. Still remembers the faces at the \
+                 relay. Still carries the names of men the official record \
+                 never asked about. Her testimony exists in a single \
+                 living memory. When she dies, it becomes silence — unless \
+                 someone asks her first.",
+                vec![flag_eq("ending_axis", "burden"), flag_eq("relay_branch", "nella")],
+                EmotionTag::Grief,
+            ),
+            say_if_with("narrator",
+                "The relay papers ride in a coat pocket that grows heavier \
+                 every year. Transfer orders, payroll ghosts, the \
+                 administrative fingerprints of arson. The fire is \
+                 documented. The documentation is private. The truth \
+                 survives as cargo, not as record.",
+                vec![flag_eq("ending_axis", "burden"), flag_eq("relay_branch", "papers")],
+                EmotionTag::Quiet,
             ),
 
             // The bell — unresolved to the end

@@ -297,6 +297,33 @@ pub fn chapter_close() -> Scene {
                  And the people who built the machine knew exactly what they \
                  were building on top of.",
             ),
+            // Relay branch callback — the evidence trail connects back
+            say_if_with("narrator",
+                "Tom's structural proof of the relay connects here. The \
+                 same engineering language — build to specification, then \
+                 specification becomes the weapon. The mission burned the \
+                 same way the relay did: precisely, deliberately, with \
+                 the records targeted first.",
+                vec![flag_eq("relay_branch", "tom")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Nella witnessed the relay fire. Cordelia witnessed the \
+                 mission fire. Two women, two generations, the same \
+                 story told to people who weren't ready to hear it. \
+                 The evidence trail is made of witnesses, not paper.",
+                vec![flag_eq("relay_branch", "nella")],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The relay papers and the mission papers tell the same \
+                 story in different handwriting. Transfer orders become \
+                 land grants become re-filings become ash. The \
+                 administrative tradition of erasure predates the \
+                 railroad by decades.",
+                vec![flag_eq("relay_branch", "papers")],
+                EmotionTag::Quiet,
+            ),
             narrate_with(
                 "The lie didn't start with the railroad. The railroad just \
                  learned the language of something older.",
