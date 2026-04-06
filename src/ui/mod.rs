@@ -432,8 +432,14 @@ impl App {
             let entry = state.current_turn_entry().cloned();
             match entry {
                 Some(entry) if entry.side != CombatSide::Party => {
-                    // Enemy/NPC action — simple AI
-                    let action = build_enemy_action(state, &entry);
+                    // FT-WIRE: Use appropriate AI based on combatant side
+                    let action = match entry.side {
+                        CombatSide::NpcAlly => {
+                            // Named NPCs get character-specific behavior, generic NPCs get role-based AI
+                            state.select_named_npc_action(&entry.combatant_id)
+                        }
+                        _ => build_enemy_action(state, &entry),
+                    };
                     let result = state.execute_action(&action);
                     self.combat_ui.push_result(&result);
                     state.evaluate_objectives();

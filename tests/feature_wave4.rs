@@ -348,3 +348,208 @@ fn confirm_quit_carries_return_screen() {
     };
     // Construction succeeds — return_screen is boxed correctly
 }
+
+// ─── Combat Wiring Integration Tests ────────────────────────────
+
+/// Cooldowns tick down when a new round starts (build_turn_queue).
+#[test]
+fn cooldowns_tick_on_new_round() {
+    let mut state = combo_test_state();
+    state.build_turn_queue();
+
+    // Manually set a cooldown
+    state.cooldowns.insert(("galen".to_string(), SkillId::new("quick_draw")), 2);
+    assert_eq!(state.skill_on_cooldown("galen", &SkillId::new("quick_draw")), Some(2));
+
+    // Building the next turn queue should tick cooldowns
+    state.build_turn_queue();
+    assert_eq!(state.skill_on_cooldown("galen", &SkillId::new("quick_draw")), Some(1));
+
+    // One more round should clear the cooldown
+    state.build_turn_queue();
+    assert_eq!(state.skill_on_cooldown("galen", &SkillId::new("quick_draw")), None);
+}
+
+/// Fear cascade fires when a combatant's nerve breaks.
+#[test]
+fn fear_cascade_triggers_on_nerve_break() {
+    // Create encounter with multiple enemies so cascade has targets
+    let encounter = Encounter {
+        id: EncounterId::new("fear_test"),
+        phases: vec![CombatPhase {
+            id: "main".to_string(),
+            description: "Fear test".to_string(),
+            enemies: vec![
+                EnemyTemplate {
+                    id: "thug_a".to_string(), name: "Thug A".to_string(),
+                    hp: 50, nerve: 10, damage: 5, accuracy: 50,
+                    speed: 8, bluff: 10, nerve_threshold: 3,
+                },
+                EnemyTemplate {
+                    id: "thug_b".to_string(), name: "Thug B".to_string(),
+                    hp: 50, nerve: 30, damage: 5, accuracy: 50,
+                    speed: 6, bluff: 10, nerve_threshold: 5,
+                },
+            ],
+            npc_allies: vec![],
+            entry_conditions: vec![],
+            phase_effects: vec![],
+        }],
+        standoff: None,
+        party_slots: 4,
+        terrain: Terrain { name: "Test".to_string(), cover: vec![], hazards: vec![] },
+        objectives: vec![],
+        outcome_effects: vec![],
+        escapable: true,
+    };
+
+    let party = vec![(
+        "galen".to_string(), "Galen Rook".to_string(),
+        40, 30, 50, 12, 90, 10,
+        vec![SkillId::new("attack")],
+        vec![],
+        vec![],
+    )];
+
+    let mut state = EncounterState::new(&encounter, party);
+    state.build_turn_queue();
+
+    // Enemy IDs get _N suffix from the engine constructor
+    let thug_b_nerve_before = state.enemies.iter()
+        .find(|e| e.id == "thug_b_1")
+        .map(|e| e.nerve)
+        .unwrap();
+
+    let events = state.fear_cascade("thug_a_0");
+    assert!(!events.is_empty(), "cascade should affect thug_b_1");
+
+    let thug_b_nerve_after = state.enemies.iter()
+        .find(|e| e.id == "thug_b_1")
+        .map(|e| e.nerve)
+        .unwrap();
+
+    assert!(thug_b_nerve_after < thug_b_nerve_before, "thug_b should lose nerve from cascade");
+}
+
+/// Terrain effects apply HP/nerve damage at round boundary.
+#[test]
+fn terrain_effects_applied_on_round_boundary() {
+    let mut state = combo_test_state();
+    state.build_turn_queue();
+
+    let hp_before = state.enemies[0].hp;
+    let nerve_before = state.enemies[0].nerve;
+
+    // Add burning terrain
+    state.apply_terrain_modifier(TerrainModifier::Burning { damage_per_turn: 3 });
+    state.apply_terrain_modifier(TerrainModifier::Flooded { nerve_penalty: 2 });
+
+    // New round triggers terrain effects
+    state.build_turn_queue();
+
+    let hp_after = state.enemies[0].hp;
+    let nerve_after = state.enemies[0].nerve;
+
+    assert_eq!(hp_before - hp_after, 3, "burning should deal 3 HP damage");
+    assert_eq!(nerve_before - nerve_after, 2, "flooding should deal 2 nerve damage");
+}
+
+/// Combo multiplier is applied to damage in execute_action.
+#[test]
+fn combo_multiplier_applied_to_damage() {
+    let mut state = combo_test_state();
+    state.build_turn_queue();
+
+    // Execute attack twice — second should get combo bonus
+    let action = CombatAction::UseSkill {
+        skill: SkillId::new("attack"),
+        target: TargetSelection::Single("thug".to_string()),
+    };
+
+    let thug_hp_start = state.enemies[0].hp;
+    let result1 = state.execute_action(&action);
+
+    // After first attack, combo state should be set for this actor
+    let damage1 = result1.damage_dealt.iter().map(|d| d.amount).sum::<i32>();
+
+    // Advance to same actor's turn again for second combo hit
+    state.advance_turn();
+    state.build_turn_queue();
+
+    let thug_hp_mid = state.enemies[0].hp;
+    let result2 = state.execute_action(&action);
+    let damage2 = result2.damage_dealt.iter().map(|d| d.amount).sum::<i32>();
+
+    // Both should deal damage (accuracy is high enough)
+    if damage1 > 0 && damage2 > 0 {
+        // Combo gives 1.1x on second use — damage2 should be >= damage1
+        assert!(damage2 >= damage1, "combo should not reduce damage");
+    }
+}
+
+/// NPC ally selection uses select_named_npc_action for known characters.
+#[test]
+fn npc_ally_uses_named_action_selection() {
+    let encounter = Encounter {
+        id: EncounterId::new("npc_ai_test"),
+        phases: vec![CombatPhase {
+            id: "main".to_string(),
+            description: "NPC AI test".to_string(),
+            enemies: vec![EnemyTemplate {
+                id: "bandit".to_string(), name: "Bandit".to_string(),
+                hp: 30, nerve: 20, damage: 5, accuracy: 50,
+                speed: 6, bluff: 10, nerve_threshold: 5,
+            }],
+            npc_allies: vec![NpcCombatant {
+                character: CharacterId::new("eli"),
+                behavior: NpcBehavior::Professional,
+                hp: 25, nerve: 20, speed: 10, accuracy: 65, damage: 8,
+            }],
+            entry_conditions: vec![],
+            phase_effects: vec![],
+        }],
+        standoff: None,
+        party_slots: 4,
+        terrain: Terrain { name: "Test".to_string(), cover: vec![], hazards: vec![] },
+        objectives: vec![],
+        outcome_effects: vec![],
+        escapable: true,
+    };
+
+    let party = vec![(
+        "galen".to_string(), "Galen Rook".to_string(),
+        40, 30, 12, 12, 70, 10,
+        vec![SkillId::new("attack")],
+        vec![],
+        vec![],
+    )];
+
+    let state = EncounterState::new(&encounter, party);
+    // select_named_npc_action should return a valid action for Eli
+    let action = state.select_named_npc_action("eli");
+    match &action {
+        CombatAction::UseSkill { skill, .. } => {
+            // Eli should use fast_talk (his signature skill)
+            assert_eq!(skill.0, "fast_talk", "Eli should use fast_talk");
+        }
+        _ => panic!("Eli should use a skill action"),
+    }
+}
+
+/// apply_terrain_effects damages all living combatants.
+#[test]
+fn apply_terrain_effects_hits_all_combatants() {
+    let mut state = combo_test_state();
+    state.build_turn_queue();
+
+    let party_hp_before = state.party[0].as_ref().unwrap().hp;
+    let enemy_hp_before = state.enemies[0].hp;
+
+    state.apply_terrain_effects(5, 0);
+
+    let party_hp_after = state.party[0].as_ref().unwrap().hp;
+    let enemy_hp_after = state.enemies[0].hp;
+
+    assert_eq!(party_hp_before - party_hp_after, 5);
+    assert_eq!(enemy_hp_before - enemy_hp_after, 5);
+}

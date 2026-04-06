@@ -218,6 +218,32 @@ impl EncounterState {
 
         (hp_damage, nerve_penalty)
     }
+
+    /// Apply terrain effects (HP damage and nerve penalty) to all living combatants.
+    pub fn apply_terrain_effects(&mut self, hp_damage: i32, nerve_penalty: i32) {
+        // Collect all living combatant IDs
+        let mut ids: Vec<String> = Vec::new();
+        for slot in &self.party {
+            if let Some(m) = slot {
+                if !m.down { ids.push(m.id.clone()); }
+            }
+        }
+        for e in &self.enemies {
+            if !e.down { ids.push(e.id.clone()); }
+        }
+        for n in &self.npc_allies {
+            if !n.combatant.down { ids.push(n.combatant.id.clone()); }
+        }
+
+        for id in ids {
+            if hp_damage > 0 {
+                self.apply_damage(&id, hp_damage);
+            }
+            if nerve_penalty > 0 {
+                self.apply_nerve_damage(&id, nerve_penalty);
+            }
+        }
+    }
 }
 
 /// A combatant during live combat.
@@ -651,6 +677,17 @@ impl EncounterState {
         self.current_turn = 0;
         self.round += 1;
 
+        // FT-WIRE: Tick cooldowns at the start of each new round
+        if self.round > 1 {
+            self.tick_cooldowns();
+        }
+
+        // FT-WIRE: Apply terrain effects (burning/flooding) at round boundary
+        let (terrain_hp, terrain_nerve) = self.check_terrain_effects();
+        if terrain_hp > 0 || terrain_nerve > 0 {
+            self.apply_terrain_effects(terrain_hp, terrain_nerve);
+        }
+
         let standoff_mods = self.standoff_result.as_ref();
 
         // Add party members
@@ -838,11 +875,18 @@ impl EncounterState {
                         let raw_damage = skill_variant.as_ref()
                             .map(|v| if v.damage > 0 { v.damage } else { actor_damage })
                             .unwrap_or(actor_damage);
-                        // Inspired boost: +25% damage
-                        let damage = if self.has_status_effect(&actor_id, StatusEffect::Inspired) {
-                            raw_damage + raw_damage / 4
+                        // FT-WIRE: Combo multiplier — consecutive same-skill uses boost damage
+                        let combo_mult = self.record_combo(&actor_id, &skill.0);
+                        let combo_damage = if combo_mult > 1.0 {
+                            (raw_damage as f32 * combo_mult) as i32
                         } else {
                             raw_damage
+                        };
+                        // Inspired boost: +25% damage
+                        let damage = if self.has_status_effect(&actor_id, StatusEffect::Inspired) {
+                            combo_damage + combo_damage / 4
+                        } else {
+                            combo_damage
                         };
                         let target_down = self.apply_damage(target_id, damage);
 
@@ -865,6 +909,12 @@ impl EncounterState {
                                 target_panicked: panicked,
                                 target_broke: broke,
                             });
+
+                            // FT-WIRE: Fear cascade — when nerve breaks, allies take nerve damage
+                            if broke {
+                                let cascade_events = self.fear_cascade(target_id);
+                                result.nerve_damage.extend(cascade_events);
+                            }
                         }
                     }
 
