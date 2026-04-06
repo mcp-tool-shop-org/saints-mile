@@ -206,3 +206,29 @@ fn chapter_13_full_path() {
     let loaded = StateStore::load(&path).unwrap();
     assert_eq!(loaded.state().flags.get("return_committed"), Some(&FlagValue::Bool(true)));
 }
+
+/// Older Galen with modified context flags still constructs a valid party.
+/// Guards against panics when flags are missing or age_phase is unexpected.
+#[test]
+fn older_galen_with_modified_context_does_not_panic() {
+    // Create an older Galen state but strip some expected flags
+    let dir = TempDir::new().unwrap();
+    let mut store = StateStore::new_game(dir.path());
+    store.state_mut().chapter = ChapterId::new("ch13");
+    store.state_mut().age_phase = AgePhase::Older;
+    // Deliberately omit adult_arc_complete, hand_wounded, party_dispersed
+    // to simulate a corrupted or partial save state
+    store.state_mut().flags.insert("voss_still_free".to_string(), FlagValue::Bool(true));
+    store.state_mut().party.members.retain(|m| m.id.0 == "galen");
+
+    // party_defs::galen should not panic with Older age phase
+    let older = party_defs::galen(AgePhase::Older);
+    assert!(!older.skills.is_empty(), "older Galen should have skills regardless of flags");
+    assert!(older.accuracy > 0, "older Galen should have positive accuracy");
+
+    // The scene system should handle missing flags gracefully
+    let scene = fifteen_years_gone::get_scene("fg_return").unwrap();
+    let prepared = SceneRunner::prepare_scene(&scene, &store);
+    // Scene should still be playable even without full adult arc flags
+    assert!(prepared.should_play, "fg_return should play even with partial flags");
+}

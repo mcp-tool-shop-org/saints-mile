@@ -35,6 +35,8 @@ fn run_combat(store: &mut StateStore, encounter_id: &str) {
         combat.phase = EncounterPhase::Combat;
     }
 
+    let mut resolved = false;
+
     for _ in 0..30 {
         combat.build_turn_queue();
         if combat.turn_queue.is_empty() { break; }
@@ -66,6 +68,7 @@ fn run_combat(store: &mut StateStore, encounter_id: &str) {
 
             if let Some(outcome) = combat.check_resolution() {
                 store.apply_effects(&outcome.effects);
+                resolved = true;
                 return;
             }
 
@@ -73,13 +76,7 @@ fn run_combat(store: &mut StateStore, encounter_id: &str) {
         }
     }
 
-    // For multi-phase encounters, simulate remaining phases
-    // The relay has 3 phases — after phase 1 resolves, apply effects and continue
-    // For now, mark as survived if we got through enough
-    store.apply_effects(&[saints_mile::scene::types::StateEffect::SetFlag {
-        id: FlagId::new("relay_survived"),
-        value: FlagValue::Bool(true),
-    }]);
+    assert!(resolved, "combat must resolve within 30 rounds");
 }
 
 // ─── Convoy Full Path ──────────────────────────────────────────────
@@ -292,8 +289,26 @@ fn convoy_memory_objects_persist() {
     assert!(memories.contains(&"nella_bath_bread_roof"), "future promise should persist");
     assert!(memories.contains(&"nella_biscuit_cloth"), "biscuit cloth should persist");
 
-    // Save round-trip
+    // Save round-trip — verify content, not just count
     let path = store.save("memory_test").unwrap();
     let loaded = StateStore::load(&path).unwrap();
     assert_eq!(loaded.state().memory_objects.len(), store.state().memory_objects.len());
+
+    // Verify actual memory object IDs survived the round trip
+    let loaded_ids: Vec<_> = loaded.state().memory_objects.iter()
+        .map(|o| o.id.0.as_str())
+        .collect();
+    assert!(loaded_ids.contains(&"nella_coffee"), "nella_coffee must survive round trip");
+    assert!(loaded_ids.contains(&"eli_flask"), "eli_flask must survive round trip");
+    assert!(loaded_ids.contains(&"nella_bath_bread_roof"), "nella_bath_bread_roof must survive round trip");
+    assert!(loaded_ids.contains(&"nella_biscuit_cloth"), "nella_biscuit_cloth must survive round trip");
+
+    // Verify memory object state fields survive
+    for orig in store.state().memory_objects.iter() {
+        let loaded_obj = loaded.state().memory_objects.iter()
+            .find(|o| o.id == orig.id);
+        assert!(loaded_obj.is_some(), "memory object {} missing after round trip", orig.id.0);
+        assert_eq!(loaded_obj.unwrap().state, orig.state,
+            "memory object {} state mismatch after round trip", orig.id.0);
+    }
 }

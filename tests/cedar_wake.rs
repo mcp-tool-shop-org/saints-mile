@@ -86,13 +86,35 @@ fn run_youth_combat(store: &mut StateStore, encounter_id: &str) {
         }
     }
 
-    panic!("combat did not resolve within 30 rounds");
+    assert!(false, "combat must resolve within 30 rounds");
 }
 
 // ─── Core Path Test ────────────────────────────────────────────────
 
 /// Full Chapter 1: arrival → Molly → Voss → courier → evening →
 /// shooting post → horse thief → bandit camp → Bitter Cut → return.
+///
+/// Choice indices: 0 = first/default option in each scene.
+/// This tests the "cooperative lawman" path through Cedar Wake:
+/// - cw_arrival(0): look around town (explore before reporting)
+/// - cw_mercantile(0): greet Molly warmly
+/// - cw_livery(0): introduce yourself to Declan
+/// - cw_voss_office(0): accept the job straightforwardly
+/// - cw_first_courier(0): take the direct route
+/// - cw_evening(0): talk with Molly at the evening scene
+/// - cw_shooting_post(0): accept Voss's teaching
+/// - cw_horse_thief_briefing(0): pursue immediately
+/// - cw_horse_thief_return(0): continue to bandit briefing
+/// - cw_bandit_briefing(0): flank approach
+/// - cw_bandit_camp_return(0): report clean
+/// - cw_bitter_cut_dispatch(0): accept the dispatch
+/// - cw_bitter_cut_arrival(0): arrive and assess
+/// - cw_bitter_cut_dispatch_delivery(0): hold on workers
+/// - cw_bitter_cut_aftermath(0): accept Voss's lesson
+///
+/// Untested alternate paths: choice 1 on key branch scenes
+/// (e.g., cw_bandit_briefing(1) = direct assault). See
+/// chapter_1_alternate_approach() below for one alternate.
 #[test]
 fn chapter_1_full_path() {
     let dir = TempDir::new().unwrap();
@@ -187,6 +209,41 @@ fn chapter_1_full_path() {
     assert!(store.state().flags.get("bitter_cut_done") == Some(&FlagValue::Bool(true)));
 }
 
+/// Alternate Chapter 1 path: direct assault on bandits instead of flanking.
+/// Tests choice index 1 on bandit briefing (cw_bandit_briefing(1) = "Main group
+/// — stay with Cal" instead of 0 = "Flank approach — come in from the side").
+#[test]
+fn chapter_1_alternate_approach() {
+    let dir = TempDir::new().unwrap();
+    let mut store = StateStore::new_game(dir.path());
+    store.state_mut().age_phase = AgePhase::Youth;
+    store.state_mut().chapter = ChapterId::new("ch1");
+
+    // Same setup through horse thief
+    run_cw_scene(&mut store, "cw_arrival", 0);
+    run_cw_scene(&mut store, "cw_mercantile", 0);
+    run_cw_scene(&mut store, "cw_livery", 0);
+    run_cw_scene(&mut store, "cw_voss_office", 0);
+    run_cw_scene(&mut store, "cw_first_courier", 0);
+    run_cw_scene(&mut store, "cw_evening", 0);
+    run_cw_scene(&mut store, "cw_shooting_post", 0);
+    run_cw_scene(&mut store, "cw_horse_thief_briefing", 0);
+    run_youth_combat(&mut store, "horse_thief");
+
+    // Diverge: visit boardwalk first (choice 1 instead of 0)
+    run_cw_scene(&mut store, "cw_horse_thief_return", 1);
+    run_cw_scene(&mut store, "cw_night_boardwalk", 0);
+
+    // Bandit briefing: main group approach (choice 1 = stay with Cal)
+    run_cw_scene(&mut store, "cw_bandit_briefing", 1);
+    run_youth_combat(&mut store, "bandit_camp");
+    assert!(store.state().flags.get("bandit_camp_cleared") == Some(&FlagValue::Bool(true)));
+
+    // The approach flag should differ from the golden path
+    assert!(store.state().flags.get("bandit_approach") == Some(&FlagValue::Bool(false)),
+        "main group approach should set bandit_approach = false");
+}
+
 // ─── Same Skill, Different Meaning ─────────────────────────────────
 
 /// The game's central moral mechanic in code:
@@ -225,11 +282,16 @@ fn same_skill_different_meaning() {
     let mut bitter_combat = EncounterState::new(&bitter_encounter, cedar_wake::youth_galen());
     bitter_combat.build_turn_queue();
 
-    // Enemies are NOT proper threats — low stats, desperate
+    // Enemies are NOT proper threats — low stats, desperate.
+    // Workers are civilians: HP must be low enough that pulled punches matter
+    // (bandits are >= 20 HP, so workers at <= 15 means a single Steady Aim
+    // can down them — making restraint a real mechanical choice).
     assert!(bitter_combat.enemies.iter().all(|e| e.hp <= 15),
         "workers should be weak — not real fighters");
     assert!(bitter_combat.enemies.iter().all(|e| e.nerve <= 8),
         "workers should have low nerve — already near breaking");
+    // Accuracy <= 35 means workers almost never land hits — they're untrained
+    // laborers, not combatants. This makes the player feel like the aggressor.
     assert!(bitter_combat.enemies.iter().all(|e| e.accuracy <= 35),
         "workers should have low accuracy — untrained");
 
@@ -293,6 +355,11 @@ fn bitter_cut_tracks_participation() {
 }
 
 /// Youth Galen feels different from adult Galen.
+///
+/// Identity tests are intentionally per-chapter (see also fifteen_years_gone,
+/// adult_act_end) to verify party composition at each narrative phase.
+/// Duplication is acceptable because each age phase has distinct stat/skill
+/// expectations that must be proven in the chapter where they matter.
 #[test]
 fn youth_galen_identity() {
     let youth_party = cedar_wake::youth_galen();

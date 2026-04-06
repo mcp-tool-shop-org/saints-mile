@@ -214,6 +214,33 @@ pub struct Objective {
     pub success_consequence: Vec<StateEffect>,
 }
 
+/// How a secondary objective determines success or failure.
+/// Used by the engine to decide outcome evaluation logic instead of
+/// fragile string-contains checks on objective IDs.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ObjectiveBehavior {
+    /// Succeeds if all enemies broke (panicked) without any being killed.
+    CivilianCasualties,
+    /// Succeeds if a specific asset survives. (Future: asset_id field.)
+    ProtectAsset,
+    /// Default: secondary objectives succeed when the primary succeeds.
+    General,
+}
+
+impl Objective {
+    /// Resolve the behavior for this objective. When objectives are migrated to
+    /// carry an explicit `ObjectiveBehavior` field, this method can be replaced
+    /// with a direct field read. For now, we derive behavior from the id as a
+    /// migration bridge — but using an enum makes the engine logic type-safe.
+    pub fn behavior(&self) -> ObjectiveBehavior {
+        if self.id.contains("casualties") || self.id.contains("civilian") {
+            ObjectiveBehavior::CivilianCasualties
+        } else {
+            ObjectiveBehavior::General
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ObjectiveType {
     Primary,

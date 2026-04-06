@@ -29,7 +29,18 @@ fn run_scene(store: &mut StateStore, scene_id: &str, choice_index: usize) -> Sce
 fn run_combat(store: &mut StateStore, encounter_id: &str) {
     let encounter = black_willow::get_encounter(encounter_id)
         .unwrap_or_else(|| panic!("encounter not found: {}", encounter_id));
-    let mut combat = EncounterState::new(&encounter, party_defs::ch3_party());
+    let party = party_defs::ch3_party();
+    // Validate party construction: 3 members (Galen, Eli, Ada) with required skills
+    assert_eq!(party.len(), 3, "ch3_party must have exactly 3 members (Galen, Eli, Ada)");
+    assert_eq!(party[0].0, "galen", "slot 0 must be Galen");
+    assert_eq!(party[1].0, "eli", "slot 1 must be Eli");
+    assert_eq!(party[2].0, "ada", "slot 2 must be Ada");
+    // Verify party members have required combat skills
+    assert!(party[0].8.iter().any(|s| s.0 == "quick_draw" || s.0 == "called_shot_precise"),
+        "Galen must have a primary attack skill");
+    assert!(party[2].8.iter().any(|s| s.0 == "treat_wounds"),
+        "Ada must have treat_wounds");
+    let mut combat = EncounterState::new(&encounter, party);
 
     if combat.phase == EncounterPhase::Standoff {
         combat.resolve_standoff(StandoffPosture::SteadyHand, None);
@@ -66,10 +77,7 @@ fn run_combat(store: &mut StateStore, encounter_id: &str) {
             if !combat.advance_turn() { break; }
         }
     }
-    store.apply_effects(&[saints_mile::scene::types::StateEffect::SetFlag {
-        id: FlagId::new("records_secured"),
-        value: FlagValue::Bool(true),
-    }]);
+    assert!(false, "combat must resolve within 30 rounds");
 }
 
 /// Set up a store at Ch3 start with a specific relay branch.

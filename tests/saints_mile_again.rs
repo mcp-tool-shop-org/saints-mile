@@ -51,6 +51,10 @@ fn voss_confrontation_is_about_authorship() {
     let scene = saints_mile_again::get_scene("sm_voss_confrontation").unwrap();
     let lines = SceneRunner::filter_lines(&scene, &store);
 
+    // Verify Voss is actually present as a speaker in the confrontation
+    assert!(lines.iter().any(|l| l.speaker.contains("voss")),
+        "Voss must have speaker lines in his own confrontation scene");
+
     // Voss should echo the shooting post lesson
     assert!(lines.iter().any(|l| l.text.contains("decide cleanly")),
         "Voss should echo his own teaching from Cedar Wake");

@@ -156,10 +156,14 @@ impl EnvironmentState {
             }
         }
 
-        // Chain reaction: if a charge detonates near another un-detonated charge
+        // Chain reaction: if a charge detonates near another un-detonated charge,
+        // accelerate it to detonate next turn. Charges already at turns_remaining == 1
+        // are excluded — they will detonate on their own this turn or next tick.
+        // This prevents double-detonation: a charge at 1 is already committed to fire,
+        // so we don't re-accelerate it.
         for other in &mut self.fuse_charges {
             if !other.disarmed && !other.detonated && other.turns_remaining > 1 {
-                other.turns_remaining = 1; // accelerate
+                other.turns_remaining = 1; // accelerate to detonate next turn
                 chain = true;
                 debug!(charge = %other.id, "chain reaction — fuse accelerated");
             }

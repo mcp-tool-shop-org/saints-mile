@@ -278,13 +278,12 @@ fn handle_save_load(app: &mut App, slot_index: usize) {
                 app.screen = AppScreen::Title;
             }
             AppScreen::SaveLoad { mode: SaveLoadMode::Load } => {
-                let save_dir = std::env::current_dir()
-                    .unwrap_or_else(|_| std::path::PathBuf::from("."))
-                    .join("saves");
-                let path = save_dir.join(format!("{}.ron", slot.name));
+                let path = app.save_dir().join(format!("{}.ron", slot.name));
                 if path.exists() {
                     if let Ok(loaded) = saints_mile::state::store::StateStore::load(&path) {
                         app.store = loaded;
+                        // Clone required: load_scene() borrows &mut self,
+                        // so we can't hold a reference into app.store.
                         let beat = app.store.state().beat.0.clone();
                         app.load_scene(&beat);
                     }
@@ -303,7 +302,20 @@ fn discover_save_slots() -> Vec<SaveSlotInfo> {
     (1..=3)
         .map(|i| {
             let name = format!("slot{}", i);
+            // Validate slot name contains only safe characters
+            if !name.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '-') {
+                return SaveSlotInfo { name, label: String::new(), exists: false };
+            }
             let path = save_dir.join(format!("{}.ron", name));
+            // Validate resolved path is within the save directory
+            if let (Ok(canonical_dir), Ok(canonical_path)) = (
+                std::fs::canonicalize(&save_dir),
+                std::fs::canonicalize(&path),
+            ) {
+                if !canonical_path.starts_with(&canonical_dir) {
+                    return SaveSlotInfo { name, label: String::new(), exists: false };
+                }
+            }
             let (exists, label) = if path.exists() {
                 match std::fs::read_to_string(&path) {
                     Ok(contents) => {

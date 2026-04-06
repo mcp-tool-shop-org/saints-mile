@@ -77,19 +77,18 @@ pub fn evaluate_synergy(members: &[CharacterId]) -> TeamSynergy {
 /// Generate a team result based on the team's composition and objective.
 pub fn resolve_team(team: &Team) -> TeamResult {
     let ids: Vec<&str> = team.members.iter().map(|m| m.0.as_str()).collect();
+    let members_str = ids.join(" and ");
 
     let (success, report, deltas) = match (team.id.as_str(), &team.synergy) {
         // Wire office teams
         ("wire_office", TeamSynergy::Strong) => (
             true,
-            format!("{} held the wire office. The dispatch got through.",
-                team.members.iter().map(|m| m.0.as_str()).collect::<Vec<_>>().join(" and ")),
+            format!("{members_str} held the wire office. The dispatch got through."),
             vec![],
         ),
         ("wire_office", _) => (
             true,
-            format!("{} held the wire office under pressure.",
-                team.members.iter().map(|m| m.0.as_str()).collect::<Vec<_>>().join(" and ")),
+            format!("{members_str} held the wire office under pressure."),
             vec![],
         ),
 
@@ -108,8 +107,7 @@ pub fn resolve_team(team: &Team) -> TeamResult {
         },
         ("signal_tower", _) => (
             true,
-            format!("{} secured the signal tower.",
-                team.members.iter().map(|m| m.0.as_str()).collect::<Vec<_>>().join(" and ")),
+            format!("{members_str} secured the signal tower."),
             vec![],
         ),
 
@@ -123,8 +121,7 @@ pub fn resolve_team(team: &Team) -> TeamResult {
         ),
         ("witness_route", _) => (
             true,
-            format!("{} secured the witness route.",
-                team.members.iter().map(|m| m.0.as_str()).collect::<Vec<_>>().join(" and ")),
+            format!("{members_str} secured the witness route."),
             vec![],
         ),
 

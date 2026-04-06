@@ -90,9 +90,12 @@ fn ch11_store() -> (TempDir, StateStore) {
 fn peak_synthesis_battle() {
     let encounter = breakwater_junction::breakwater_battle();
 
-    // Most enemies in any single encounter
+    // Most enemies in any single encounter — Breakwater is the climactic
+    // full-party battle. At least 5 enemies to require tactical positioning,
+    // but no more than 12 to keep turns manageable in a TUI.
     let enemy_count = encounter.phases[0].enemies.len();
     assert!(enemy_count >= 5, "Breakwater should have the most enemies ({})", enemy_count);
+    assert!(enemy_count <= 12, "Breakwater should not exceed 12 enemies ({})", enemy_count);
 
     // Full party slots
     assert_eq!(encounter.party_slots, 4);

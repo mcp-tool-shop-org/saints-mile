@@ -12,6 +12,8 @@ use crate::content::builders::*;
 // ─── Day 1 Scenes ──────────────────────────────────────────────────
 
 /// Join the convoy. Meet the cast. Choose formation.
+///
+/// Chapter 2 entry point. Referenced by the chapter routing system.
 pub fn convoy_join() -> Scene {
     scene(
         "convoy_join", "briar_line_road", "2d1",
@@ -660,8 +662,11 @@ pub fn young_man_galen() -> Vec<(String, String, i32, i32, i32, i32, i32, i32, V
 
 // ─── Scene Registry ────────────────────────────────────────────────
 
+/// Get a Saint's Mile Convoy scene by ID.
+/// Entry point: `convoy_join` (chapter 2 start).
 pub fn get_scene(id: &str) -> Option<Scene> {
     match id {
+        // Chapter entry point
         "convoy_join" => Some(convoy_join()),
         "convoy_day1_road" => Some(convoy_day1_road()),
         "night1_camp" => Some(night1_camp()),

@@ -23,3 +23,5 @@ Saint's Mile is a single-player terminal game with no network access. Primary ri
 - **Save file parsing:** RON deserialization of user-editable save files. Mitigated by typed deserialization (serde + RON) with no unsafe blocks.
 - **Terminal escape sequences:** Managed by crossterm/ratatui libraries with established security track records.
 - **No telemetry, no network, no secrets** — the game runs entirely offline.
+
+See the [Threat Model section in README.md](README.md#threat-model) for full details.

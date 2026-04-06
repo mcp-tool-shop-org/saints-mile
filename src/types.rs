@@ -3,6 +3,11 @@
 use serde::{Deserialize, Serialize};
 
 /// Generate a newtype wrapper around String for type-safe IDs.
+///
+/// IDs are unconstrained strings by design — validation happens at content
+/// definition time (scene/encounter/chapter authoring), not at the type level.
+/// This keeps the ID types lightweight and avoids runtime validation overhead
+/// during deserialization and construction.
 macro_rules! id_type {
     ($name:ident) => {
         #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]

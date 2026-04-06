@@ -3,26 +3,21 @@
 //! Proves: crowd pressure is a real combat language, Miriam changes
 //! the room, and the party's civic disagreements matter.
 
+mod common;
+
 use saints_mile::types::*;
-use saints_mile::scene::types::SceneTransition;
 use saints_mile::scene::runner::SceneRunner;
-use saints_mile::combat::types::StandoffPosture;
-use saints_mile::combat::engine::{EncounterState, EncounterPhase, CombatSide, CombatAction, TargetSelection};
+use saints_mile::combat::engine::EncounterState;
 use saints_mile::combat::crowd::{CrowdState, CrowdAction, CrowdActionType, CrowdPhase, Ringleader};
 use saints_mile::combat::party_defs;
 use saints_mile::state::store::StateStore;
 use saints_mile::content::dust_revival;
 use tempfile::TempDir;
 
-fn run_scene(store: &mut StateStore, scene_id: &str, choice_index: usize) -> SceneTransition {
-    let scene = dust_revival::get_scene(scene_id)
-        .unwrap_or_else(|| panic!("scene not found: {}", scene_id));
-    let prepared = SceneRunner::prepare_scene(&scene, store);
-    assert!(prepared.should_play, "scene {} should play", scene_id);
-    SceneRunner::apply_scene_effects(&scene, store);
-    let chosen = SceneRunner::execute_choice(&scene, choice_index, store)
-        .unwrap_or_else(|| panic!("choice {} not available in {}", choice_index, scene_id));
-    chosen.transition
+const CHAPTER: &str = "dust_revival";
+
+fn run_scene(store: &mut StateStore, scene_id: &str, choice_index: usize) -> saints_mile::scene::types::SceneTransition {
+    common::run_scene(store, CHAPTER, scene_id, choice_index)
 }
 
 fn run_combat(store: &mut StateStore, encounter_id: &str) {
@@ -31,40 +26,12 @@ fn run_combat(store: &mut StateStore, encounter_id: &str) {
     // Use first 4 from the roster for the active slots
     let party: Vec<_> = party_defs::ch5_roster().into_iter().take(4).collect();
     let mut combat = EncounterState::new(&encounter, party);
-    if combat.phase == EncounterPhase::Standoff {
-        combat.resolve_standoff(StandoffPosture::SteadyHand, None);
-    } else {
-        combat.phase = EncounterPhase::Combat;
+    let (resolved, _rounds) = common::run_combat(&mut combat, store);
+    if !resolved {
+        store.apply_effects(&[saints_mile::scene::types::StateEffect::SetFlag {
+            id: FlagId::new("aftermath_survived"), value: FlagValue::Bool(true),
+        }]);
     }
-    for _ in 0..30 {
-        combat.build_turn_queue();
-        if combat.turn_queue.is_empty() { break; }
-        loop {
-            let entry = combat.current_turn_entry().cloned();
-            if entry.is_none() { break; }
-            let entry = entry.unwrap();
-            let target_id = match entry.side {
-                CombatSide::Party | CombatSide::NpcAlly =>
-                    combat.enemies.iter().find(|e| !e.down && !e.panicked)
-                        .map(|e| e.id.clone()).unwrap_or_default(),
-                CombatSide::Enemy => "galen".to_string(),
-            };
-            if target_id.is_empty() { break; }
-            combat.execute_action(&CombatAction::UseSkill {
-                skill: SkillId::new("quick_draw"),
-                target: TargetSelection::Single(target_id),
-            });
-            combat.evaluate_objectives();
-            if let Some(outcome) = combat.check_resolution() {
-                store.apply_effects(&outcome.effects);
-                return;
-            }
-            if !combat.advance_turn() { break; }
-        }
-    }
-    store.apply_effects(&[saints_mile::scene::types::StateEffect::SetFlag {
-        id: FlagId::new("aftermath_survived"), value: FlagValue::Bool(true),
-    }]);
 }
 
 fn ch5_store() -> (TempDir, StateStore) {
@@ -222,34 +189,34 @@ fn miriam_is_distinct() {
 
 // ─── Chapter Path ──────────────────────────────────────────────────
 
-/// Full Chapter 5 path: arrival → read → Dunnicks → sermon →
-/// crowd breaks → crowd fight → aftermath guns → Miriam joins.
+/// Full Chapter 5 path: arrival -> read -> Dunnicks -> sermon ->
+/// crowd breaks -> crowd fight -> aftermath guns -> Miriam joins.
 #[test]
 fn chapter_5_full_path_miriam_speaks() {
     let (_dir, mut store) = ch5_store();
 
     // Arrival
-    run_scene(&mut store, "dr_arrival", 0);
+    run_scene(&mut store, "dr_arrival", 0);              // arrive in town
     assert_eq!(store.state().flags.get("ch5_started"), Some(&FlagValue::Bool(true)));
 
     // Read revival
-    run_scene(&mut store, "dr_read_revival", 0); // visit Dunnick camp
+    run_scene(&mut store, "dr_read_revival", 0);          // choice 0 = visit Dunnick camp
 
     // Dunnick camp
-    run_scene(&mut store, "dr_dunnick_camp", 0);
+    run_scene(&mut store, "dr_dunnick_camp", 0);          // explore camp
     assert_eq!(store.state().flags.get("visited_dunnicks"), Some(&FlagValue::Bool(true)));
 
     // Sermon
-    run_scene(&mut store, "dr_sermon", 0);
+    run_scene(&mut store, "dr_sermon", 0);                // attend sermon
 
-    // Crowd breaks — let Miriam speak (choice 0)
+    // Crowd breaks — choice 0 = let Miriam speak
     run_scene(&mut store, "dr_crowd_breaks", 0);
     assert_eq!(store.state().flags.get("ch5_stance"), Some(&FlagValue::Text("miriam_speaks".to_string())));
     let miriam_rel = store.state().party.relationships.get("galen:miriam").copied().unwrap_or(0);
     assert!(miriam_rel > 0, "trusting Miriam should build relationship");
 
     // Crowd fight setup — Miriam joins party here
-    run_scene(&mut store, "dr_crowd_fight_setup", 0);
+    run_scene(&mut store, "dr_crowd_fight_setup", 0);     // prepare for fight
 
     // Miriam should be in the party now
     assert!(store.state().party.has_member(&CharacterId::new("miriam")));
@@ -258,7 +225,7 @@ fn chapter_5_full_path_miriam_speaks() {
     run_combat(&mut store, "crowd_containment");
 
     // Aftermath intro
-    run_scene(&mut store, "dr_aftermath_intro", 0);
+    run_scene(&mut store, "dr_aftermath_intro", 0);       // aftermath begins
 
     // Aftermath guns
     run_combat(&mut store, "aftermath_guns");
@@ -279,11 +246,11 @@ fn chapter_5_full_path_miriam_speaks() {
 fn chapter_5_force_hold_stance() {
     let (_dir, mut store) = ch5_store();
 
-    run_scene(&mut store, "dr_arrival", 0);
-    run_scene(&mut store, "dr_read_revival", 1); // skip Dunnicks, go to sermon
-    run_scene(&mut store, "dr_sermon", 0);
+    run_scene(&mut store, "dr_arrival", 0);              // arrive in town
+    run_scene(&mut store, "dr_read_revival", 1);          // choice 1 = skip Dunnicks, go to sermon
+    run_scene(&mut store, "dr_sermon", 0);                // attend sermon
 
-    // Force hold (choice 1)
+    // choice 1 = force hold (override Miriam)
     run_scene(&mut store, "dr_crowd_breaks", 1);
     assert_eq!(store.state().flags.get("ch5_stance"), Some(&FlagValue::Text("force_hold".to_string())));
 
@@ -292,9 +259,9 @@ fn chapter_5_force_hold_stance() {
     assert!(miriam_rel < 0, "overriding Miriam should lower relationship");
 
     // Run through fights
-    run_scene(&mut store, "dr_crowd_fight_setup", 0);
+    run_scene(&mut store, "dr_crowd_fight_setup", 0);     // prepare for fight
     run_combat(&mut store, "crowd_containment");
-    run_scene(&mut store, "dr_aftermath_intro", 0);
+    run_scene(&mut store, "dr_aftermath_intro", 0);       // aftermath begins
     run_combat(&mut store, "aftermath_guns");
 
     // Chapter close — different Miriam line
@@ -306,6 +273,58 @@ fn chapter_5_force_hold_stance() {
 
     // She still joins — measured intervention, not petulance
     assert_eq!(store.state().flags.get("miriam_joined"), Some(&FlagValue::Bool(true)));
+}
+
+// ─── Crowd Mechanics Validation ───────────────────────────────────
+
+/// Crowd nerve state reflects actions taken.
+#[test]
+fn crowd_nerve_state_after_actions() {
+    let mut crowd = CrowdState::new(50, 6, vec![
+        Ringleader { id: "loud".to_string(), name: "Loud Man".to_string(), nerve: 12, influence: 8, broken: false },
+        Ringleader { id: "angry".to_string(), name: "Angry Woman".to_string(), nerve: 15, influence: 10, broken: false },
+    ]);
+
+    assert_eq!(crowd.phase, CrowdPhase::Tense, "crowd starts tense");
+    assert_eq!(crowd.active_ringleaders(), 2, "both ringleaders start active");
+
+    // Degrade nerve first so BroadCalm has room to restore
+    crowd.collective_nerve = 30;
+    let initial_nerve = crowd.collective_nerve;
+
+    // Broad calm raises nerve
+    crowd.execute_action(&CrowdAction {
+        actor: "miriam".to_string(),
+        action_type: CrowdActionType::BroadCalm,
+        target: None,
+    });
+    assert!(crowd.collective_nerve > initial_nerve, "BroadCalm should raise nerve");
+    assert!(crowd.momentum > 0, "BroadCalm should build positive momentum");
+}
+
+/// Ringleader presence and breaking affect crowd mood.
+#[test]
+fn ringleader_presence_affects_crowd_mood() {
+    let mut crowd = CrowdState::new(60, 6, vec![
+        Ringleader { id: "loud".to_string(), name: "Loud Man".to_string(), nerve: 10, influence: 15, broken: false },
+    ]);
+
+    // Degrade nerve so breaking the ringleader has room to calm
+    crowd.collective_nerve = 30;
+    let nerve_before = crowd.collective_nerve;
+
+    // Break the ringleader with Rebuke (hits for 15, nerve is 10)
+    let result = crowd.execute_action(&CrowdAction {
+        actor: "miriam".to_string(),
+        action_type: CrowdActionType::Rebuke,
+        target: Some("loud".to_string()),
+    });
+
+    assert!(result.ringleader_broken.is_some(), "ringleader should break");
+    assert_eq!(crowd.active_ringleaders(), 0, "no active ringleaders remain");
+    // Breaking a ringleader calms the crowd by their influence amount + bonus
+    assert!(crowd.collective_nerve > nerve_before,
+        "breaking ringleader should calm crowd: {} vs {}", crowd.collective_nerve, nerve_before);
 }
 
 /// Five roster members after Chapter 5.

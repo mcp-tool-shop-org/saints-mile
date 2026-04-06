@@ -50,7 +50,7 @@ La couche "western" modifie les mécaniques, pas seulement l'esthétique : munit
 
 ## Statut
 
-**Phase 1 — Noyau de production.** Campagne complète conçue (Prologue + 15 chapitres). Construction de la constitution et des contrats d'exécution verrouillés. Implémentation de l'arc d'ouverture suivante.
+**v1.0.1 — Release Candidate.** Campagne complète implémentée (Prologue + 15 chapitres sur quatre phases de vie). Moteur de combat, système de duel, rencontres sous pression, gestion d'état, sauvegarde/chargement et couche de présentation TUI opérationnels. 151 tests réussis.
 
 ## Modèle de menace
 
@@ -64,7 +64,7 @@ Les fichiers de sauvegarde sont stockés au format RON dans un répertoire acces
 
 ## Prérequis
 
-- Rust 1.75+ (édition 2021)
+- Rust 1.80+ (édition 2021)
 - Tout terminal prenant en charge les couleurs 256
 
 ## Licence
@@ -73,4 +73,4 @@ MIT
 
 ---
 
-Développé par <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a
+Développé par <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>

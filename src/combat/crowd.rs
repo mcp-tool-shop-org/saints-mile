@@ -11,6 +11,22 @@ use tracing::{debug, info};
 
 use crate::types::*;
 
+// ─── Crowd Action Nerve Restoration Constants ─────────────────────
+// Each value represents how much collective nerve a specific action
+// type restores. These are narratively motivated:
+
+/// Miriam's Hymn/Sermon — the most effective broad calming action.
+/// Faith-based authority carries weight in a frontier crowd.
+const BROAD_CALM_RESTORE: i32 = 8;
+
+/// Ada's medical evidence — defuses supernatural panic with facts.
+/// Less effective than faith but builds lasting trust.
+const MEDICAL_AUTHORITY_RESTORE: i32 = 6;
+
+/// Eli's misdirection — redirects crowd anger to a different target.
+/// Effective but morally ugly; doesn't improve momentum.
+const REDIRECT_RESTORE: i32 = 7;
+
 /// Live state of a crowd pressure encounter.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CrowdState {
@@ -106,7 +122,7 @@ impl CrowdState {
     pub fn new(collective_nerve: i32, surge_countdown: u32, ringleaders: Vec<Ringleader>) -> Self {
         Self {
             collective_nerve,
-            max_nerve: collective_nerve,
+            max_nerve: collective_nerve.max(1),
             momentum: 0,
             phase: CrowdPhase::Tense,
             ringleaders,
@@ -131,7 +147,7 @@ impl CrowdState {
         match action.action_type {
             CrowdActionType::BroadCalm => {
                 // Miriam's Hymn/Sermon — affects the whole crowd
-                let calm = 8;
+                let calm = BROAD_CALM_RESTORE;
                 self.collective_nerve = (self.collective_nerve + calm).min(self.max_nerve);
                 self.momentum += 2;
                 result.nerve_change = calm;
@@ -187,7 +203,7 @@ impl CrowdState {
 
             CrowdActionType::MedicalAuthority => {
                 // Ada's evidence — defuses the supernatural panic
-                let calm = 6;
+                let calm = MEDICAL_AUTHORITY_RESTORE;
                 self.collective_nerve = (self.collective_nerve + calm).min(self.max_nerve);
                 self.momentum += 1;
                 result.nerve_change = calm;
@@ -199,7 +215,7 @@ impl CrowdState {
 
             CrowdActionType::Redirect => {
                 // Eli's misdirection — give the crowd a different target
-                let redirect = 7;
+                let redirect = REDIRECT_RESTORE;
                 self.collective_nerve = (self.collective_nerve + redirect).min(self.max_nerve);
                 // But momentum doesn't improve — this is manipulation, not calm
                 result.nerve_change = redirect;
@@ -255,8 +271,21 @@ impl CrowdState {
             self.surge_countdown -= 1;
         }
 
+        // Belt-and-suspenders: guard against division by zero even though the
+        // constructor clamps max_nerve to at least 1. If something upstream
+        // mutates max_nerve to 0, this prevents a crash.
+        if self.max_nerve == 0 {
+            self.phase = CrowdPhase::Broken;
+            self.target_safe = false;
+            eprintln!(
+                "[crowd] max_nerve is 0 — this should never happen. \
+                 Treating crowd as broken to avoid division by zero."
+            );
+            return self.phase;
+        }
+
         // Update phase
-        let nerve_pct = (self.collective_nerve as f32 / self.max_nerve as f32 * 100.0) as i32;
+        let nerve_pct = (self.collective_nerve as f32 / self.max_nerve as f32 * 100.0).round() as i32;
 
         self.phase = if self.collective_nerve <= 0 || self.surge_countdown == 0 {
             CrowdPhase::Broken
@@ -334,7 +363,7 @@ mod tests {
         });
 
         // Should be broken (nerve was 12, hit for 10)
-        let rl = crowd.ringleaders.iter().find(|r| r.id == "loud_man").unwrap();
+        let rl = crowd.ringleaders.iter().find(|r| r.id == "loud_man").expect("test ringleader must exist in crowd setup");
         assert!(rl.nerve <= 2);
 
         // Hit again to break

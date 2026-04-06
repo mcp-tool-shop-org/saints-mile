@@ -50,7 +50,7 @@ A temática do western muda as mecânicas, não apenas a aparência: munição e
 
 ## Status
 
-**Fase 1 — Núcleo da Produção.** Campanha completa projetada (Prólogo + 15 capítulos). Construção da base e contratos de tempo de execução bloqueados. Implementação do arco inicial em andamento.
+**v1.0.1 — Release Candidate.** Campanha completa implementada (Prólogo + 15 capítulos ao longo de quatro fases da vida). Motor de combate, sistema de duelo, encontros de pressão, gerenciamento de estado, salvar/carregar e camada de apresentação TUI operacionais. 151 testes passando.
 
 ## Modelo de Ameaça
 
@@ -64,7 +64,7 @@ Os arquivos de salvamento são armazenados em formato RON em um diretório acess
 
 ## Requisitos
 
-- Rust 1.75+ (edição 2021)
+- Rust 1.80+ (edição 2021)
 - Qualquer terminal com suporte a 256 cores
 
 ## Licença
@@ -73,4 +73,4 @@ MIT
 
 ---
 
-Desenvolvido por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a
+Desenvolvido por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>

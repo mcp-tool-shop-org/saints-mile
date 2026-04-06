@@ -158,6 +158,11 @@ impl ReckoningState {
 
     /// Calculate the overall reckoning score (0-100).
     pub fn overall_score(&self) -> i32 {
+        debug_assert!((0..=100).contains(&self.room_credibility), "room_credibility out of 0..=100: {}", self.room_credibility);
+        debug_assert!((0..=100).contains(&self.crowd_nerve), "crowd_nerve out of 0..=100: {}", self.crowd_nerve);
+        debug_assert!((0..=100).contains(&self.witness_integrity), "witness_integrity out of 0..=100: {}", self.witness_integrity);
+        debug_assert!((0..=100).contains(&self.evidence_continuity), "evidence_continuity out of 0..=100: {}", self.evidence_continuity);
+        debug_assert!((0..=100).contains(&self.procedural_control), "procedural_control out of 0..=100: {}", self.procedural_control);
         (self.room_credibility + self.crowd_nerve + self.witness_integrity +
          self.evidence_continuity + self.procedural_control) / 5
     }

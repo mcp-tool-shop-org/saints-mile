@@ -50,7 +50,7 @@ La capa del western cambia las mecánicas, no solo la estética: munición en lu
 
 ## Estado
 
-**Fase 1: Núcleo de producción.** Campaña completa diseñada (Prólogo + 15 capítulos). Construcción de la base y contratos de ejecución bloqueados. Implementación del arco inicial en curso.
+**v1.0.1 — Candidata a lanzamiento.** Campaña completa implementada (Prólogo + 15 capítulos a lo largo de cuatro fases de vida). Motor de combate, sistema de duelo, encuentros de presión, gestión de estado, guardado/carga y capa de presentación TUI operativos. 151 pruebas pasando.
 
 ## Modelo de amenazas
 
@@ -64,7 +64,7 @@ Los archivos de guardado se almacenan en formato RON en un directorio accesible 
 
 ## Requisitos
 
-- Rust 1.75+ (edición 2021)
+- Rust 1.80+ (edición 2021)
 - Cualquier terminal con soporte para 256 colores.
 
 ## Licencia
@@ -73,4 +73,4 @@ MIT
 
 ---
 
-Desarrollado por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a
+Desarrollado por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>

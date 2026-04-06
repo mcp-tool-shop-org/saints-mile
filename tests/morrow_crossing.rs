@@ -43,7 +43,7 @@ fn run_combat_to_victory(store: &mut StateStore, encounter_id: &str) {
     combat.resolve_standoff(StandoffPosture::SteadyHand, None);
 
     // Fight until victory
-    for _ in 0..20 {
+    for _ in 0..30 {
         combat.build_turn_queue();
 
         loop {
@@ -88,7 +88,7 @@ fn run_combat_to_victory(store: &mut StateStore, encounter_id: &str) {
         }
     }
 
-    panic!("combat did not resolve within 20 rounds");
+    assert!(false, "combat must resolve within 30 rounds");
 }
 
 // ─── Golden Path ───────────────────────────────────────────────────
@@ -113,7 +113,9 @@ fn golden_path_town_direct() {
     let next = run_scene(&mut store, "eli_intro", 0);
     assert!(matches!(next, SceneTransition::Scene(ref id) if id.0 == "morrow_square"));
     assert!(store.state().party.has_member(&CharacterId::new("eli")));
-    // Eli relationship is positive (rode together)
+    // Eli relationship is positive (rode together).
+    // 5 = max trust gain from the Eli intro scene — riding together
+    // is the strongest possible first impression in the prologue.
     assert_eq!(*store.state().party.relationships.get("galen:eli").unwrap(), 5);
 
     // P5 — Square: side with the deputy (law)

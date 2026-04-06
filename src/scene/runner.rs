@@ -82,6 +82,7 @@ impl SceneRunner {
             );
 
             displayed.push(DisplayedLine {
+                // Clone needed: DisplayedLine owns its speaker String, scene is borrowed.
                 speaker: line.speaker.0.clone(),
                 text: line.text.clone(),
                 emotion: line.emotion,
@@ -242,7 +243,8 @@ impl SceneRunner {
                         let dir = match op {
                             CompareOp::Gt | CompareOp::Gte => "higher",
                             CompareOp::Lt | CompareOp::Lte => "lower",
-                            _ => "different",
+                            CompareOp::Eq => "equal to",
+                            CompareOp::Neq => "not equal to",
                         };
                         format!("[Needs {} {}]", dir, axis_name)
                     }
@@ -643,9 +645,41 @@ mod tests {
         assert_eq!(store.state().reputation.get(ReputationAxis::TownLaw), -2);
 
         // Transition leads to Eli intro
+        assert!(
+            matches!(&chosen.transition, SceneTransition::Scene(_)),
+            "expected scene transition, got: {:?}", chosen.transition
+        );
         match &chosen.transition {
             SceneTransition::Scene(id) => assert_eq!(id.0, "eli_intro"),
-            _ => panic!("expected scene transition"),
+            _ => unreachable!(),
         }
+    }
+
+    #[test]
+    fn describe_lock_reputation_eq() {
+        let dir = TempDir::new().unwrap();
+        let store = StateStore::new_game(dir.path());
+        let conditions = vec![Condition::Reputation {
+            axis: ReputationAxis::TownLaw,
+            op: CompareOp::Eq,
+            threshold: 5,
+        }];
+        let reason = SceneRunner::describe_lock(&conditions, &store);
+        assert!(reason.contains("equal to"), "reason was: {}", reason);
+        assert!(reason.contains("law standing"), "reason was: {}", reason);
+    }
+
+    #[test]
+    fn describe_lock_reputation_neq() {
+        let dir = TempDir::new().unwrap();
+        let store = StateStore::new_game(dir.path());
+        let conditions = vec![Condition::Reputation {
+            axis: ReputationAxis::Railroad,
+            op: CompareOp::Neq,
+            threshold: 0,
+        }];
+        let reason = SceneRunner::describe_lock(&conditions, &store);
+        assert!(reason.contains("not equal to"), "reason was: {}", reason);
+        assert!(reason.contains("railroad trust"), "reason was: {}", reason);
     }
 }

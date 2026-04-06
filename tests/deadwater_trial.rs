@@ -60,10 +60,18 @@ fn reckoning_is_combat() {
     assert!(state.overall_score() < score_before, "opposition hurts");
 
     // Eli's act is the hinge
+    let credibility_before_eli = state.room_credibility;
+    let witness_before_eli = state.witness_integrity;
     state.execute_action(reckoning::eli_defining_act());
     assert!(state.eli_acted, "Eli should have acted");
     assert!(state.room_credibility > 60, "Eli's truth should boost credibility");
     assert_eq!(state.phase, ReckoningPhase::EliAct);
+    // Verify Eli's act actually changed state — not just a phase label
+    assert!(state.room_credibility > credibility_before_eli,
+        "Eli's act must raise room credibility (was {}, now {})",
+        credibility_before_eli, state.room_credibility);
+    assert!(state.witness_integrity != witness_before_eli || state.evidence_continuity > 75,
+        "Eli's act must produce observable state change beyond phase transition");
 }
 
 /// Ch9 transmission results change the opening position.
@@ -212,4 +220,25 @@ fn three_sequences_three_textures() {
         let lines = SceneRunner::filter_lines(&hearing, &store);
         assert!(!lines.is_empty());
     }
+
+    // Verify the three sequences produce materially different hearing content.
+    // Re-run all three and collect their line sets for comparison.
+    let mut all_line_texts: Vec<Vec<String>> = Vec::new();
+    for choice in 0..3 {
+        let (_dir, mut store) = ch10_store("rosa_lucien_signal");
+        run_scene(&mut store, "dw_arrival", 0);
+        run_scene(&mut store, "dw_assembly", choice);
+
+        let hearing = deadwater_trial::get_scene("dw_hearing").unwrap();
+        let lines = SceneRunner::filter_lines(&hearing, &store);
+        let texts: Vec<String> = lines.iter().map(|l| l.text.clone()).collect();
+        all_line_texts.push(texts);
+    }
+
+    // At least two of the three sequences must differ in content
+    let all_same = all_line_texts[0] == all_line_texts[1]
+        && all_line_texts[1] == all_line_texts[2];
+    assert!(!all_same,
+        "three hearing sequences must not all produce identical lines — \
+         the assembly order should change the hearing texture");
 }

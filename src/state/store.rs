@@ -34,7 +34,10 @@ impl SaveEnvelope {
     pub fn new(state: GameState, label: impl Into<String>) -> Self {
         let timestamp = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
-            .unwrap_or_default()
+            .unwrap_or_else(|_| {
+                eprintln!("warning: system clock unavailable, save timestamp set to 0");
+                std::time::Duration::ZERO
+            })
             .as_secs();
 
         Self {
@@ -91,7 +94,8 @@ impl StateStore {
             );
         }
 
-        let save_dir = path.parent().unwrap_or(Path::new(".")).to_path_buf();
+        // Fallback to "." if path has no parent (e.g. bare filename with no directory).
+        let save_dir = path.parent().unwrap_or_else(|| Path::new(".")).to_path_buf();
 
         info!(
             version = envelope.version,
@@ -188,6 +192,11 @@ mod tests {
     use crate::state::types::*;
     use tempfile::TempDir;
 
+    /// Find a party member by string ID — avoids repeated `.find(|m| m.id.0 == ...)` in tests.
+    fn find_member<'a>(state: &'a GameState, id: &str) -> Option<&'a PartyMemberState> {
+        state.party.members.iter().find(|m| m.id.0 == id)
+    }
+
     /// Round-trip: new game → save → load → verify identical.
     #[test]
     fn round_trip_new_game() {
@@ -240,8 +249,7 @@ mod tests {
         let store = StateStore::new_game(dir.path());
 
         // Eli has no Loyalty skills unlocked
-        let eli = store.state().party.members.iter()
-            .find(|m| m.id.0 == "eli").unwrap();
+        let eli = find_member(store.state(), "eli").unwrap();
         assert!(eli.unlocked_skills.is_empty());
 
         // But the SkillLine::Loyalty variant exists in the type system
@@ -340,7 +348,7 @@ mod tests {
 
         // Damage Galen's hand
         if let Some(galen) = store.state_mut().party.members.iter_mut()
-            .find(|m| m.id.0 == "galen")
+            .find(|m| m.id.0 == "galen")  // mutable access — can't use find_member helper
         {
             galen.hand_state = HandState::Damaged;
         }
@@ -348,8 +356,7 @@ mod tests {
         let path = store.save("hand_test").unwrap();
         let loaded = StateStore::load(&path).unwrap();
 
-        let galen = loaded.state().party.members.iter()
-            .find(|m| m.id.0 == "galen").unwrap();
+        let galen = find_member(loaded.state(), "galen").unwrap();
         assert_eq!(galen.hand_state, HandState::Damaged);
     }
 

@@ -243,9 +243,19 @@ impl ConvoyState {
     }
 
     /// Mark a member as spoken to at camp.
-    pub fn speak_to(&mut self, id: &str) {
+    /// Returns true if the member was found, false if no such member exists.
+    pub fn speak_to(&mut self, id: &str) -> bool {
         if let Some(m) = self.member_mut(id) {
             m.spoken_to = true;
+            true
+        } else {
+            eprintln!(
+                "[convoy] Attempted to speak to missing convoy member: '{}'. \
+                 Known members: {:?}",
+                id,
+                self.members.iter().map(|m| &m.id).collect::<Vec<_>>()
+            );
+            false
         }
     }
 

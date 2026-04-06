@@ -62,6 +62,16 @@ fn jump_points_survive_save_round_trip() {
         let loaded = StateStore::load(&path).unwrap();
         assert_eq!(loaded.state().chapter, store.state().chapter,
             "{:?} chapter mismatch after round-trip", jp);
+        assert_eq!(loaded.state().beat, store.state().beat,
+            "{:?} beat mismatch after round-trip", jp);
+        assert_eq!(loaded.state().flags.len(), store.state().flags.len(),
+            "{:?} flags count mismatch after round-trip", jp);
+        assert_eq!(loaded.state().party.members.len(), store.state().party.members.len(),
+            "{:?} party member count mismatch after round-trip", jp);
+        assert_eq!(loaded.state().memory_objects.len(), store.state().memory_objects.len(),
+            "{:?} memory_objects count mismatch after round-trip", jp);
+        assert_eq!(loaded.state().age_phase, store.state().age_phase,
+            "{:?} age_phase mismatch after round-trip", jp);
     }
 }
 
@@ -71,8 +81,13 @@ fn generate_all_fixtures() {
     let dir = TempDir::new().unwrap();
     let paths = fixtures::generate_fixtures(dir.path()).unwrap();
 
-    // 14 jump points + 3 relay branches + 2 prologue branches = 19
-    assert!(paths.len() >= 19, "expected at least 19 fixtures, got {}", paths.len());
+    // JumpPoint::all() has 14 variants + 3 relay branches (tom/nella/papers)
+    // + 2 prologue branches (town_direct/homestead_first) = 19 minimum.
+    let jump_point_count = JumpPoint::all().len(); // 14
+    let expected_minimum = jump_point_count + 3 + 2; // 14 + 3 relay + 2 prologue = 19
+    assert!(paths.len() >= expected_minimum,
+        "expected at least {} fixtures ({}jp + 3 relay + 2 prologue), got {}",
+        expected_minimum, jump_point_count, paths.len());
 
     // All files exist
     for path in &paths {
@@ -123,6 +138,17 @@ fn event_log_capture_and_export() {
     log.set_context("ch2", "relay");
     log.relay_branch("tom");
 
+    // 8 minimum events from the prologue fixture above:
+    // 1. scene_entered (prologue_poster)
+    // 2. choice_made (prologue_poster / "Tear it down")
+    // 3. flag_set (tore_poster)
+    // 4. scene_entered (morrow_square)
+    // 5. choice_made (morrow_square / "Side with the deputy")
+    // 6. CombatStarted (glass_arroyo)
+    // 7. StandoffChosen (SteadyHand)
+    // 8. CombatEnded (Victory, 3 rounds)
+    // Plus relay_branch("tom") = 9, but >= 8 is the stable lower bound
+    // because relay_branch is appended after the context switch.
     assert!(log.entries().len() >= 8, "expected at least 8 entries, got {}", log.entries().len());
 
     // Export text

@@ -68,7 +68,10 @@ fn each_return_carries_distinct_truth() {
         }
     }
 
-    // Specific truths are character-appropriate
+    // Specific truths are character-appropriate.
+    // Substring matching is correct here because truth_carried is a free-text
+    // narrative description, not a structured enum — we check for thematic
+    // keywords that anchor each character's role in the story.
     let eli = returns.iter().find(|r| r.character.0 == "eli").unwrap();
     assert!(eli.truth_carried.contains("System") || eli.truth_carried.contains("ledger"),
         "Eli should carry system intelligence");

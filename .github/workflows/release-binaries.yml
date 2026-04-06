@@ -39,10 +39,17 @@ jobs:
       - name: Rename binary
         shell: bash
         run: |
+          set -e
           VERSION=${GITHUB_REF_NAME#v}
           if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF_NAME" ]; then
+            echo "Tag-based version not available, falling back to cargo metadata..."
             VERSION=$(cargo metadata --no-deps --format-version 1 | python3 -c "import sys,json; print(json.load(sys.stdin)['packages'][0]['version'])")
           fi
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Failed to extract version"
+            exit 1
+          fi
+          echo "Extracted version: ${VERSION}"
           OUTNAME="${{ env.TOOL_NAME }}-${VERSION}-${{ matrix.target }}${{ matrix.ext }}"
           mv "target/release/${{ env.TOOL_NAME }}${{ matrix.ext }}" "target/release/${OUTNAME}"
           echo "ASSET_NAME=${OUTNAME}" >> "$GITHUB_ENV"
@@ -105,8 +112,14 @@ jobs:
       - name: Generate checksums
         shell: bash
         run: |
+          set -e
           cd artifacts
           VERSION=$(ls | head -1 | sed "s/${TOOL_NAME}-//;s/-.*//" )
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Failed to extract version from artifact names"
+            exit 1
+          fi
+          echo "Extracted version for checksums: ${VERSION}"
           sha256sum * > "checksums-${VERSION}.txt"
           cat "checksums-${VERSION}.txt"
         env:

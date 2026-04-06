@@ -43,6 +43,11 @@ pub enum JumpPoint {
 
 impl JumpPoint {
     /// Create a GameState configured for this jump point.
+    ///
+    /// Each jump point builds on the previous one's state via cascading calls
+    /// (e.g. `BitterCutFight` calls `BitterCutDispatch.create_state()`). This is
+    /// intentional — it ensures state consistency across the narrative timeline
+    /// so later jump points carry all the flags, skills, and effects of earlier ones.
     pub fn create_state(&self) -> GameState {
         match self {
             JumpPoint::PrologueStart => GameState::new_game(),
@@ -142,12 +147,14 @@ impl JumpPoint {
             }
 
             JumpPoint::ConvoyStart => {
-                let mut state = GameState::new_game();
+                // Cascade from BitterCutFight — carries all Ch1 flags, skills, and effects
+                let mut state = Self::BitterCutFight.create_state();
                 state.chapter = ChapterId::new("ch2");
                 state.beat = BeatId::new("2d1");
                 state.age_phase = AgePhase::YoungMan;
-                // Solo Galen with young-man kit
+                // Solo Galen for convoy — Eli is separated between chapters
                 state.party.members.retain(|m| m.id.0 == "galen");
+                // Upgrade to young-man skill kit (Ch1 skills + new unlocks)
                 if let Some(galen) = state.party.members.iter_mut().find(|m| m.id.0 == "galen") {
                     galen.unlocked_skills = vec![
                         SkillId::new("quick_draw"),
@@ -160,7 +167,7 @@ impl JumpPoint {
                         SkillId::new("grit"),
                     ];
                 }
-                // Carry Chapter 1 flags
+                // Mark chapter transition
                 state.flags.insert("chapter1_complete".to_string(), FlagValue::Bool(true));
                 state.flags.insert("bitter_cut_done".to_string(), FlagValue::Bool(true));
                 state

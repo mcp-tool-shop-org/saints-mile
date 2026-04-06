@@ -3,6 +3,9 @@
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
 use crate::ui::mod_types::{App, AppScreen, InputResult};
 
+/// Number of save slots available. Centralizes the limit so it isn't scattered.
+const SAVE_SLOT_COUNT: usize = 3;
+
 /// Handle a crossterm event. Returns what happened.
 pub fn handle_event(app: &mut App, event: Event) -> InputResult {
     match event {
@@ -123,7 +126,7 @@ fn handle_save_load_key(app: &mut App, key: KeyEvent) -> InputResult {
             InputResult::None
         }
         KeyCode::Down | KeyCode::Char('j') => {
-            if app.save_cursor < 2 {
+            if app.save_cursor < SAVE_SLOT_COUNT.saturating_sub(1) {
                 app.save_cursor += 1;
             }
             InputResult::None

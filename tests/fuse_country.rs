@@ -4,26 +4,21 @@
 //! Lucien arrives as damage before face, the trestle fight
 //! uses every party member's specialty in non-standard ways.
 
+mod common;
+
 use saints_mile::types::*;
-use saints_mile::scene::types::SceneTransition;
 use saints_mile::scene::runner::SceneRunner;
-use saints_mile::combat::types::StandoffPosture;
-use saints_mile::combat::engine::{EncounterState, EncounterPhase, CombatSide, CombatAction, TargetSelection};
-use saints_mile::combat::environment::{self, EnvironmentState, EnvironmentAction, EnvironmentActionResult};
+use saints_mile::combat::engine::EncounterState;
+use saints_mile::combat::environment::{self, EnvironmentAction, EnvironmentActionResult};
 use saints_mile::combat::party_defs;
 use saints_mile::state::store::StateStore;
 use saints_mile::content::fuse_country;
 use tempfile::TempDir;
 
-fn run_scene(store: &mut StateStore, scene_id: &str, choice_index: usize) -> SceneTransition {
-    let scene = fuse_country::get_scene(scene_id)
-        .unwrap_or_else(|| panic!("scene not found: {}", scene_id));
-    let prepared = SceneRunner::prepare_scene(&scene, store);
-    assert!(prepared.should_play, "scene {} should play", scene_id);
-    SceneRunner::apply_scene_effects(&scene, store);
-    let chosen = SceneRunner::execute_choice(&scene, choice_index, store)
-        .unwrap_or_else(|| panic!("choice {} not available in {}", choice_index, scene_id));
-    chosen.transition
+const CHAPTER: &str = "fuse_country";
+
+fn run_scene(store: &mut StateStore, scene_id: &str, choice_index: usize) -> saints_mile::scene::types::SceneTransition {
+    common::run_scene(store, CHAPTER, scene_id, choice_index)
 }
 
 fn run_combat(store: &mut StateStore, encounter_id: &str) {
@@ -31,40 +26,12 @@ fn run_combat(store: &mut StateStore, encounter_id: &str) {
         .unwrap_or_else(|| panic!("encounter not found: {}", encounter_id));
     let party: Vec<_> = party_defs::ch5_roster().into_iter().take(4).collect();
     let mut combat = EncounterState::new(&encounter, party);
-    if combat.phase == EncounterPhase::Standoff {
-        combat.resolve_standoff(StandoffPosture::SteadyHand, None);
-    } else {
-        combat.phase = EncounterPhase::Combat;
+    let (resolved, _rounds) = common::run_combat(&mut combat, store);
+    if !resolved {
+        store.apply_effects(&[saints_mile::scene::types::StateEffect::SetFlag {
+            id: FlagId::new("trestle_saved"), value: FlagValue::Bool(true),
+        }]);
     }
-    for _ in 0..30 {
-        combat.build_turn_queue();
-        if combat.turn_queue.is_empty() { break; }
-        loop {
-            let entry = combat.current_turn_entry().cloned();
-            if entry.is_none() { break; }
-            let entry = entry.unwrap();
-            let target_id = match entry.side {
-                CombatSide::Party | CombatSide::NpcAlly =>
-                    combat.enemies.iter().find(|e| !e.down && !e.panicked)
-                        .map(|e| e.id.clone()).unwrap_or_default(),
-                CombatSide::Enemy => "galen".to_string(),
-            };
-            if target_id.is_empty() { break; }
-            combat.execute_action(&CombatAction::UseSkill {
-                skill: SkillId::new("quick_draw"),
-                target: TargetSelection::Single(target_id),
-            });
-            combat.evaluate_objectives();
-            if let Some(outcome) = combat.check_resolution() {
-                store.apply_effects(&outcome.effects);
-                return;
-            }
-            if !combat.advance_turn() { break; }
-        }
-    }
-    store.apply_effects(&[saints_mile::scene::types::StateEffect::SetFlag {
-        id: FlagId::new("trestle_saved"), value: FlagValue::Bool(true),
-    }]);
 }
 
 fn ch6_store() -> (TempDir, StateStore) {
@@ -157,21 +124,21 @@ fn structural_collapse_changes_battlefield() {
 // ─── Lucien Introduction Law ───────────────────────────────────────
 
 /// Player sees Lucien's cost before meeting him.
-/// Damage → testimony → consequence → encounter → confrontation.
+/// Damage -> testimony -> consequence -> encounter -> confrontation.
 #[test]
 fn lucien_damage_before_face() {
     let (_dir, mut store) = ch6_store();
 
     // Step 1: Evidence — burned depot
-    run_scene(&mut store, "fc_corridor_entry", 0);
-    run_scene(&mut store, "fc_burned_depot", 0);
+    run_scene(&mut store, "fc_corridor_entry", 0);   // enter the corridor
+    run_scene(&mut store, "fc_burned_depot", 0);      // investigate the depot
     assert_eq!(store.state().flags.get("depot_investigated"), Some(&FlagValue::Bool(true)));
 
     // Step 2: Testimony — Maeve Strand describes him
     // (in the burned_depot scene — "Big hands. Loud mouth.")
 
     // Step 3: Consequence — displaced family at Colter Station
-    run_scene(&mut store, "fc_corridor_locals", 0);
+    run_scene(&mut store, "fc_corridor_locals", 0);   // talk to locals
 
     // Step 4: Encounter — meet Lucien at the trestle
     // By now the player has seen: blast evidence, medical chain connection,
@@ -189,13 +156,13 @@ fn lucien_damage_before_face() {
 fn lucien_not_recruited_in_ch6() {
     let (_dir, mut store) = ch6_store();
 
-    run_scene(&mut store, "fc_corridor_entry", 0);
-    run_scene(&mut store, "fc_burned_depot", 0);
-    run_scene(&mut store, "fc_corridor_locals", 0);
-    run_scene(&mut store, "fc_meet_lucien", 0);
-    run_scene(&mut store, "fc_trestle_approach", 0);
+    run_scene(&mut store, "fc_corridor_entry", 0);       // enter the corridor
+    run_scene(&mut store, "fc_burned_depot", 0);          // investigate the depot
+    run_scene(&mut store, "fc_corridor_locals", 0);       // talk to locals
+    run_scene(&mut store, "fc_meet_lucien", 0);           // meet Lucien
+    run_scene(&mut store, "fc_trestle_approach", 0);      // approach the trestle
     run_combat(&mut store, "millburn_trestle");
-    run_scene(&mut store, "fc_lucien_decision", 0); // prisoner
+    run_scene(&mut store, "fc_lucien_decision", 0);       // choice 0 = take prisoner
 
     let close = fuse_country::get_scene("fc_chapter_close").unwrap();
     SceneRunner::apply_scene_effects(&close, &mut store);
@@ -216,14 +183,14 @@ fn chapter_6_lucien_decision_variants() {
     for (choice_idx, expected_status) in [(0, "prisoner"), (1, "forced_guide"), (2, "judged")] {
         let (_dir, mut store) = ch6_store();
 
-        run_scene(&mut store, "fc_corridor_entry", 0);
-        run_scene(&mut store, "fc_burned_depot", 0);
-        run_scene(&mut store, "fc_corridor_locals", 0);
-        run_scene(&mut store, "fc_meet_lucien", 0);
-        run_scene(&mut store, "fc_trestle_approach", 0);
+        run_scene(&mut store, "fc_corridor_entry", 0);       // enter the corridor
+        run_scene(&mut store, "fc_burned_depot", 0);          // investigate the depot
+        run_scene(&mut store, "fc_corridor_locals", 0);       // talk to locals
+        run_scene(&mut store, "fc_meet_lucien", 0);           // meet Lucien
+        run_scene(&mut store, "fc_trestle_approach", 0);      // approach the trestle
         run_combat(&mut store, "millburn_trestle");
 
-        // Lucien decision
+        // Lucien decision: 0 = prisoner, 1 = forced guide, 2 = judged
         run_scene(&mut store, "fc_lucien_decision", choice_idx);
         assert_eq!(
             store.state().flags.get("lucien_status"),
@@ -247,6 +214,47 @@ fn chapter_6_lucien_decision_variants() {
         SceneRunner::apply_scene_effects(&close, &mut store);
         assert_eq!(store.state().flags.get("ch6_complete"), Some(&FlagValue::Bool(true)));
     }
+}
+
+// ─── Environmental Combat State Validation ────────────────────────
+
+/// Trestle environment has fuse charges and cover positions.
+#[test]
+fn trestle_has_fuse_state_and_cover() {
+    let env = environment::trestle_environment();
+
+    // Fuse charges exist and tick
+    assert_eq!(env.active_charges(), 3, "trestle should have 3 fuse charges");
+    assert!(env.fuse_charges.iter().any(|c| c.is_structural),
+        "at least one charge should be structural");
+
+    // Cover positions exist
+    assert_eq!(env.intact_cover(), 3);
+    let cover_names: Vec<&str> = env.cover.iter().map(|c| c.name.as_str()).collect();
+    assert!(cover_names.contains(&"Pylon crossbeam"));
+    assert!(cover_names.contains(&"Supply crate"));
+    assert!(cover_names.contains(&"Rail car"));
+}
+
+/// Fuse charges have different timing and blast properties.
+#[test]
+fn fuse_charges_have_varied_timing() {
+    let env = environment::trestle_environment();
+
+    let turns: Vec<u8> = env.fuse_charges.iter().map(|c| c.turns_remaining).collect();
+    // Not all fuses at the same timing
+    assert!(turns.windows(2).any(|w| w[0] != w[1]),
+        "fuse charges should have varied timing: {:?}", turns);
+
+    // Structural charge has the highest damage
+    let structural = env.fuse_charges.iter().find(|c| c.is_structural).unwrap();
+    let max_non_structural = env.fuse_charges.iter()
+        .filter(|c| !c.is_structural)
+        .map(|c| c.blast_damage)
+        .max()
+        .unwrap();
+    assert!(structural.blast_damage > max_non_structural,
+        "structural charge should hit hardest");
 }
 
 /// Lucien's party definition exists but reflects he's NOT an ally yet.

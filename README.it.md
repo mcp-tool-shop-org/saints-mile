@@ -50,7 +50,7 @@ L'elemento western modifica le meccaniche, non solo l'estetica: munizioni al pos
 
 ## Stato di avanzamento
 
-**Fase 1 — Struttura di base.** Campagna completa progettata (prologo + 15 capitoli). Sviluppo del motore e dei contratti di runtime in corso. Implementazione dell'arco iniziale in arrivo.
+**v1.0.1 — Release Candidate.** Campagna completa implementata (prologo + 15 capitoli attraverso quattro fasi della vita). Motore di combattimento, sistema di stallo, incontri di pressione, gestione dello stato, salvataggio/caricamento e livello di presentazione TUI tutti operativi. 151 test superati.
 
 ## Modello di minaccia
 
@@ -64,7 +64,7 @@ I file di salvataggio sono memorizzati in formato RON in una directory accessibi
 
 ## Requisiti
 
-- Rust 1.75+ (edizione 2021)
+- Rust 1.80+ (edizione 2021)
 - Qualsiasi terminale con supporto per colori a 256
 
 ## Licenza
@@ -73,4 +73,4 @@ MIT
 
 ---
 
-Sviluppato da <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a
+Sviluppato da <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>

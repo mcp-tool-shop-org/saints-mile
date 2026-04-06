@@ -186,8 +186,12 @@ impl App {
         let encounter = lookup_encounter(encounter_id);
         if encounter.is_none() {
             // Fallback: skip to next scene if encounter not found
+            eprintln!("[warn] encounter '{}' not found, falling back to post-combat scene", encounter_id);
             if let Some(next) = post_combat_scene(encounter_id) {
                 self.load_scene(next);
+            } else {
+                eprintln!("[warn] no post-combat scene for '{}' either, returning to title", encounter_id);
+                self.screen = AppScreen::Title;
             }
             return;
         }
@@ -200,30 +204,38 @@ impl App {
         let party_data = build_party_data(&self.store);
         let mut state = EncounterState::new(&encounter, party_data);
 
+        // Assign state early so build_combat_actions_from_current can access it
+        self.encounter_def = Some(encounter.clone());
+        self.combat_ui = CombatUi::new();
+
         if encounter.standoff.is_some() {
             // Enter standoff phase
             let postures = encounter.standoff.as_ref().unwrap().postures.clone();
             let enemy_count = state.enemies.len();
             self.standoff_ui = Some(StandoffUi::new(postures, enemy_count));
+            self.encounter_state = Some(state);
             self.screen = AppScreen::Standoff;
         } else {
             // Skip to combat
             state.build_turn_queue();
-            self.build_combat_actions(&state);
+            self.encounter_state = Some(state);
+            self.build_combat_actions_from_current();
             self.screen = AppScreen::Combat;
         }
-
-        self.encounter_state = Some(state);
-        self.encounter_def = Some(encounter);
-        self.combat_ui = CombatUi::new();
     }
 
     /// Resolve the standoff with the player's chosen posture.
     pub fn resolve_standoff(&mut self) {
-        let sui = self.standoff_ui.as_ref().unwrap();
+        let sui = match self.standoff_ui.as_ref() {
+            Some(s) => s,
+            None => return,
+        };
         let posture = sui.selected_posture();
         let focus = if posture == StandoffPosture::Bait {
-            let enemies = &self.encounter_state.as_ref().unwrap().enemies;
+            let enemies = match self.encounter_state.as_ref() {
+                Some(s) => &s.enemies,
+                None => return,
+            };
             let active: Vec<&str> = enemies.iter()
                 .filter(|e| !e.down)
                 .map(|e| e.id.as_str())
@@ -233,7 +245,10 @@ impl App {
             None
         };
 
-        let state = self.encounter_state.as_mut().unwrap();
+        let state = match self.encounter_state.as_mut() {
+            Some(s) => s,
+            None => return,
+        };
         let _result = state.resolve_standoff(posture, focus.as_deref());
 
         // Store posture for result display
@@ -244,7 +259,10 @@ impl App {
 
     /// Transition from standoff result to combat.
     pub fn begin_combat(&mut self) {
-        let state = self.encounter_state.as_mut().unwrap();
+        let state = match self.encounter_state.as_mut() {
+            Some(s) => s,
+            None => return,
+        };
         state.build_turn_queue();
         self.combat_ui.showing_standoff_result = false;
         self.build_combat_actions_from_current();
@@ -254,11 +272,15 @@ impl App {
     /// Execute the selected combat action.
     pub fn execute_combat_action(&mut self) {
         // Build the action from menu before borrowing encounter_state mutably
-        let action = self.build_action_from_menu();
-        if action.is_none() { return; }
-        let action = action.unwrap();
+        let action = match self.build_action_from_menu() {
+            Some(a) => a,
+            None => return,
+        };
 
-        let state = self.encounter_state.as_mut().unwrap();
+        let state = match self.encounter_state.as_mut() {
+            Some(s) => s,
+            None => return,
+        };
         let entry = state.current_turn_entry().cloned();
 
         if let Some(entry) = entry {
@@ -266,7 +288,7 @@ impl App {
                 let result = state.execute_action(&action);
                 self.combat_ui.push_result(&result);
 
-                let state = self.encounter_state.as_mut().unwrap();
+                let Some(state) = self.encounter_state.as_mut() else { return; };
                 state.evaluate_objectives();
 
                 if let Some(outcome) = state.check_resolution() {
@@ -288,7 +310,10 @@ impl App {
 
     /// Auto-execute enemy and NPC turns until it's the player's turn again.
     fn auto_execute_enemy_turns(&mut self) {
-        let state = self.encounter_state.as_mut().unwrap();
+        let state = match self.encounter_state.as_mut() {
+            Some(s) => s,
+            None => return,
+        };
 
         loop {
             let entry = state.current_turn_entry().cloned();
@@ -385,68 +410,6 @@ impl App {
         }
     }
 
-    #[allow(dead_code)]
-    fn build_combat_actions(&mut self, state: &EncounterState) {
-        self.combat_actions.clear();
-        self.combat_ui.action_cursor = 0;
-        self.combat_ui.target_cursor = 0;
-
-        let entry = state.current_turn_entry();
-        if entry.is_none() || entry.unwrap().side != CombatSide::Party {
-            return;
-        }
-
-        let actor_id = &entry.unwrap().combatant_id;
-        let member = state.party.iter().flatten().find(|m| m.id == *actor_id);
-        if member.is_none() { return; }
-        let member = member.unwrap();
-
-        // Add skill-based actions
-        for skill_id in &member.skills {
-            let name = humanize_skill(&skill_id.0);
-            let cost = skill_cost_text(&skill_id.0);
-            let line = skill_line_label(&skill_id.0);
-            let can_afford = member.ammo > 0 || !cost.contains("ammo");
-
-            self.combat_actions.push(CombatMenuItem {
-                label: name,
-                cost_text: cost,
-                line_label: line,
-                available: can_afford,
-                lock_reason: if can_afford { None } else { Some("[No ammo]".to_string()) },
-            });
-        }
-
-        // Add duo techs (visible even if not all members present)
-        for duo_id in &member.duo_techs {
-            let name = humanize_skill(&duo_id.0);
-            let partner_present = is_duo_partner_active(state, actor_id, &duo_id.0);
-            self.combat_actions.push(CombatMenuItem {
-                label: name,
-                cost_text: "duo".to_string(),
-                line_label: "Duo Tech".to_string(),
-                available: partner_present,
-                lock_reason: if partner_present { None } else { Some("[Partner absent]".to_string()) },
-            });
-        }
-
-        // Standard actions
-        self.combat_actions.push(CombatMenuItem {
-            label: "Take Cover".to_string(),
-            cost_text: "\u{2014}".to_string(),
-            line_label: String::new(),
-            available: true,
-            lock_reason: None,
-        });
-        self.combat_actions.push(CombatMenuItem {
-            label: "Defend".to_string(),
-            cost_text: "\u{2014}".to_string(),
-            line_label: String::new(),
-            available: true,
-            lock_reason: None,
-        });
-    }
-
     /// Build a CombatAction from the current menu selection.
     fn build_action_from_menu(&self) -> Option<crate::combat::engine::CombatAction> {
         use crate::combat::engine::{CombatAction, TargetSelection};
@@ -458,12 +421,11 @@ impl App {
 
         let state = self.encounter_state.as_ref()?;
 
-        // Find first living enemy for targeting
-        let target_id = state.enemies.iter()
-            .filter(|e| !e.down)
-            .nth(self.combat_ui.target_cursor)
-            .map(|e| e.id.clone())
-            .or_else(|| state.enemies.iter().find(|e| !e.down).map(|e| e.id.clone()));
+        // Find living enemy for targeting — bounds-safe via nth() returning None
+        let living: Vec<_> = state.enemies.iter().filter(|e| !e.down).collect();
+        let target_id = living.get(self.combat_ui.target_cursor)
+            .or_else(|| living.first())
+            .map(|e| e.id.clone());
 
         if action.label == "Take Cover" {
             return Some(CombatAction::TakeCover);
@@ -553,7 +515,8 @@ impl App {
         &self.store.state().memory_objects
     }
 
-    fn save_dir(&self) -> std::path::PathBuf {
+    /// Computed save directory — single source of truth for where saves live.
+    pub fn save_dir(&self) -> std::path::PathBuf {
         dirs_next_or_default()
     }
 
@@ -606,9 +569,74 @@ fn lookup_encounter(id: &str) -> Option<Encounter> {
 }
 
 /// Build party combat data from the current game state.
+///
+/// Derives combat tuples from the live PartyState, using PartyTemplate base stats
+/// for the current age phase and overlaying state-tracked skills and injuries.
+/// Falls back to prologue_party() only if the state party is empty (new game).
 fn build_party_data(store: &StateStore) -> Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<crate::types::SkillId>, Vec<crate::types::DuoTechId>, Vec<crate::combat::types::Wound>)> {
-    // Use prologue party data for now — later: derive from PartyState
-    crate::content::prologue::prologue_party()
+    use crate::combat::party_defs;
+    use crate::combat::wounds;
+
+    let game = store.state();
+    if game.party.members.is_empty() {
+        return crate::content::prologue::prologue_party();
+    }
+
+    let phase = game.age_phase;
+
+    game.party.members.iter().map(|member| {
+        // Look up the base template for this character + age phase
+        let template = match member.id.0.as_str() {
+            "galen" => Some(party_defs::galen(phase)),
+            "eli" => Some(party_defs::eli_adult()),
+            "ada" => Some(party_defs::ada()),
+            "rosa" => Some(party_defs::rosa()),
+            "miriam" => Some(party_defs::miriam()),
+            "lucien" => Some(party_defs::lucien()),
+            _ => None,
+        };
+
+        // Convert state-tracked injuries to combat Wound structs
+        let combat_wounds: Vec<crate::combat::types::Wound> = member.injuries.iter()
+            .filter_map(|inj| match inj.0.as_str() {
+                "gunshot" => Some(wounds::gunshot_wound()),
+                "blunt_trauma" => Some(wounds::blunt_trauma()),
+                "exhaustion" => Some(wounds::exhaustion()),
+                "nerve_shock" => Some(wounds::nerve_shock()),
+                _ => None,
+            })
+            .collect();
+
+        if let Some(tmpl) = template {
+            // Use state-tracked skills if any have been unlocked, otherwise template defaults
+            let skills = if member.unlocked_skills.is_empty() {
+                tmpl.skills.clone()
+            } else {
+                member.unlocked_skills.clone()
+            };
+
+            (
+                tmpl.id.to_string(),
+                tmpl.name.to_string(),
+                tmpl.hp, tmpl.nerve, tmpl.ammo,
+                tmpl.speed, tmpl.accuracy, tmpl.damage,
+                skills,
+                tmpl.duo_techs.clone(),
+                combat_wounds,
+            )
+        } else {
+            // Unknown character — use member state with minimal defaults
+            (
+                member.id.0.clone(),
+                member.name.clone(),
+                20, 15, 6,   // fallback stats
+                8, 40, 5,
+                member.unlocked_skills.clone(),
+                vec![],
+                combat_wounds,
+            )
+        }
+    }).collect()
 }
 
 /// Simple enemy AI: attack the first living party member.

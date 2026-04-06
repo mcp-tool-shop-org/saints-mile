@@ -135,6 +135,8 @@ pub struct LiveObjective {
     pub id: String,
     pub label: String,
     pub objective_type: ObjectiveType,
+    /// Resolved behavior — determines how this objective evaluates success/failure.
+    pub behavior: ObjectiveBehavior,
     pub status: ObjectiveStatus,
     pub fail_consequence: Vec<StateEffect>,
     pub success_consequence: Vec<StateEffect>,
@@ -238,6 +240,14 @@ impl EncounterState {
     ) -> Self {
         // Build party slots — always 4, empty slots are None
         let mut party: [Option<LiveCombatant>; 4] = [None, None, None, None];
+        let party_count = party_members.len();
+        if party_count > 4 {
+            eprintln!(
+                "[combat] Party has {} members but only 4 slots — extras will be dropped. \
+                 This is likely a content bug upstream.",
+                party_count
+            );
+        }
         for (i, (id, name, hp, nerve, ammo, speed, accuracy, damage, skills, duo_techs, wounds)) in
             party_members.into_iter().enumerate()
         {
@@ -259,6 +269,15 @@ impl EncounterState {
                 bluff: 0,
                 nerve_threshold: 0,
             });
+        }
+
+        // Validate phases — empty phases vector makes the encounter unresolvable
+        if encounter.phases.is_empty() {
+            eprintln!(
+                "[combat] Encounter '{}' has no phases — adding a default empty phase so \
+                 the encounter can still be exited. This is a content authoring bug.",
+                encounter.id
+            );
         }
 
         // Build enemies from the first phase
@@ -302,11 +321,13 @@ impl EncounterState {
             }).collect())
             .unwrap_or_default();
 
-        // Build objectives
+        // Build objectives — resolve behavior at construction time so the engine
+        // can match on enums instead of doing string-contains checks every evaluation.
         let objectives: Vec<LiveObjective> = encounter.objectives.iter().map(|o| LiveObjective {
             id: o.id.clone(),
             label: o.label.clone(),
             objective_type: o.objective_type,
+            behavior: o.behavior(),
             status: ObjectiveStatus::Active,
             fail_consequence: o.fail_consequence.clone(),
             success_consequence: o.success_consequence.clone(),
@@ -381,14 +402,23 @@ impl EncounterState {
                 result.first_shot_accuracy = 10;
                 // Focused target takes extra nerve damage and may break
                 if let Some(focus) = focus_target {
+                    if !self.enemies.iter().any(|e| e.id == focus) {
+                        eprintln!(
+                            "[standoff] focus_target '{}' does not match any enemy ID. \
+                             Available enemies: {:?}. Skipping focus bonus.",
+                            focus,
+                            self.enemies.iter().map(|e| &e.id).collect::<Vec<_>>()
+                        );
+                    }
                     if let Some(enemy) = self.enemies.iter().find(|e| e.id == focus) {
                         let nerve_hit = 12;
                         result.nerve_damage.push((focus.to_string(), nerve_hit));
-                        // Check if this breaks the target
-                        if enemy.nerve - nerve_hit <= enemy.nerve_threshold {
-                            result.broken_enemies.push(
-                                self.enemies.iter().position(|e| e.id == focus).unwrap_or(0)
-                            );
+                        // Check if this breaks the target (using post-damage value)
+                        let post_nerve = (enemy.nerve - nerve_hit).max(0);
+                        if post_nerve <= enemy.nerve_threshold {
+                            if let Some(idx) = self.enemies.iter().position(|e| e.id == focus) {
+                                result.broken_enemies.push(idx);
+                            }
                         }
                     }
                 }
@@ -516,8 +546,18 @@ impl EncounterState {
 
         match action {
             CombatAction::UseSkill { skill, target } => {
-                // Find the actor
-                let (actor_damage, actor_accuracy, actor_ammo) = self.get_actor_stats(&actor_id);
+                // Find the actor — if not found, something upstream is broken
+                let actor_stats = self.get_actor_stats(&actor_id);
+                if actor_stats.is_none() {
+                    eprintln!(
+                        "[combat] Actor '{}' not found in party, enemies, or NPC allies. \
+                         Skipping action. This likely means the turn queue contains a stale ID.",
+                        actor_id
+                    );
+                    result.action_description = format!("{} — actor not found, action skipped", actor_id);
+                    return result;
+                }
+                let (actor_damage, actor_accuracy, actor_ammo) = actor_stats.unwrap();
 
                 // Check ammo
                 if actor_ammo <= 0 {
@@ -534,7 +574,12 @@ impl EncounterState {
                     .unwrap_or(0);
 
                 let final_accuracy = actor_accuracy + accuracy_mod;
-                let hits = final_accuracy >= 50; // simplified for skeleton
+                // Fallback accuracy threshold: 50. Skill definitions carry per-skill
+                // accuracy via AgeVariant, but the engine doesn't yet resolve skill
+                // lookups at runtime. When skill resolution is wired, read the
+                // threshold from the skill's AgeVariant.accuracy instead.
+                let accuracy_threshold = 50;
+                let hits = final_accuracy >= accuracy_threshold;
 
                 if hits {
                     if let TargetSelection::Single(target_id) = target {
@@ -549,14 +594,16 @@ impl EncounterState {
                         });
 
                         // Nerve damage on hit
+                        // Nerve damage on hit — damage < 3 intentionally gives 0 nerve damage
+                        // (small hits don't rattle nerve)
                         let nerve_dmg = damage / 3;
                         if nerve_dmg > 0 {
-                            let panicked = self.apply_nerve_damage(target_id, nerve_dmg);
+                            let (broke, panicked) = self.apply_nerve_damage(target_id, nerve_dmg);
                             result.nerve_damage.push(NerveDamageEvent {
                                 target: target_id.clone(),
                                 amount: nerve_dmg,
                                 target_panicked: panicked,
-                                target_broke: panicked,
+                                target_broke: broke,
                             });
                         }
                     }
@@ -583,12 +630,15 @@ impl EncounterState {
                 result.action_description = format!("{} triggers {}!", actor_id, duo_tech);
 
                 if let TargetSelection::Single(target_id) = target {
-                    // Duo techs deal increased damage and nerve damage
-                    let damage = 15; // placeholder — will be data-driven
-                    let nerve_dmg = 8;
+                    // DuoTechEffect carries damage and nerve_damage fields.
+                    // When the engine gains a skill/duo-tech registry lookup, read
+                    // these from the DuoTech.effect definition. Until then, fall
+                    // back to baseline values: 15 damage, 8 nerve damage.
+                    let damage = 15; // fallback — see DuoTechEffect.damage
+                    let nerve_dmg = 8; // fallback — see DuoTechEffect.nerve_damage
 
                     let target_down = self.apply_damage(target_id, damage);
-                    let panicked = self.apply_nerve_damage(target_id, nerve_dmg);
+                    let (broke, panicked) = self.apply_nerve_damage(target_id, nerve_dmg);
 
                     result.damage_dealt.push(DamageEvent {
                         target: target_id.clone(),
@@ -600,7 +650,7 @@ impl EncounterState {
                         target: target_id.clone(),
                         amount: nerve_dmg,
                         target_panicked: panicked,
-                        target_broke: panicked,
+                        target_broke: broke,
                     });
                 }
 
@@ -648,17 +698,23 @@ impl EncounterState {
 
             for obj in &mut self.objectives {
                 if obj.objective_type == ObjectiveType::Secondary && obj.status == ObjectiveStatus::Active {
-                    // "Minimize civilian casualties" succeeds if casualties are low
-                    // (more panicked than killed), fails if casualties are high
-                    if obj.id.contains("casualties") || obj.id.contains("civilian") {
-                        if all_broke {
-                            obj.status = ObjectiveStatus::Succeeded;
-                        } else {
-                            obj.status = ObjectiveStatus::Failed;
+                    match obj.behavior {
+                        ObjectiveBehavior::CivilianCasualties => {
+                            // Succeeds only if all enemies broke without any being killed
+                            if all_broke {
+                                obj.status = ObjectiveStatus::Succeeded;
+                            } else {
+                                obj.status = ObjectiveStatus::Failed;
+                            }
                         }
-                    } else {
-                        // Default: secondary objectives succeed with primary
-                        obj.status = ObjectiveStatus::Succeeded;
+                        ObjectiveBehavior::ProtectAsset => {
+                            // Future: check specific asset survival
+                            obj.status = ObjectiveStatus::Succeeded;
+                        }
+                        ObjectiveBehavior::General => {
+                            // Default: secondary objectives succeed with primary
+                            obj.status = ObjectiveStatus::Succeeded;
+                        }
                     }
                 }
             }
@@ -708,28 +764,28 @@ impl EncounterState {
 
     // ─── Internal Helpers ──────────────────────────────────────────
 
-    fn get_actor_stats(&self, id: &str) -> (i32, i32, i32) {
+    fn get_actor_stats(&self, id: &str) -> Option<(i32, i32, i32)> {
         // Check party
         for slot in &self.party {
             if let Some(m) = slot {
                 if m.id == id {
-                    return (m.damage, m.accuracy, m.ammo);
+                    return Some((m.damage, m.accuracy, m.ammo));
                 }
             }
         }
         // Check enemies
         for e in &self.enemies {
             if e.id == id {
-                return (e.damage, e.accuracy, e.ammo);
+                return Some((e.damage, e.accuracy, e.ammo));
             }
         }
         // Check NPCs
         for n in &self.npc_allies {
             if n.combatant.id == id {
-                return (n.combatant.damage, n.combatant.accuracy, n.combatant.ammo);
+                return Some((n.combatant.damage, n.combatant.accuracy, n.combatant.ammo));
             }
         }
-        (0, 0, 0)
+        None
     }
 
     fn modify_ammo(&mut self, id: &str, delta: i32) {
@@ -744,7 +800,8 @@ impl EncounterState {
     }
 
     fn apply_damage(&mut self, target_id: &str, damage: i32) -> bool {
-        // Check cover reduction
+        // Cover absorbs half damage (rounded down — intentional: cover is partial
+        // protection, not full). Integer division floors by default in Rust.
         let in_cover = self.get_position(target_id) == Some(PositionState::InCover);
         let actual_damage = if in_cover { damage / 2 } else { damage };
 
@@ -774,31 +831,36 @@ impl EncounterState {
         false
     }
 
-    fn apply_nerve_damage(&mut self, target_id: &str, amount: i32) -> bool {
+    /// Apply nerve damage and return (broke, panicked).
+    /// - broke: nerve crossed the nerve_threshold (enemies only)
+    /// - panicked: nerve reached zero
+    fn apply_nerve_damage(&mut self, target_id: &str, amount: i32) -> (bool, bool) {
         for enemy in &mut self.enemies {
             if enemy.id == target_id {
                 enemy.nerve = (enemy.nerve - amount).max(0);
-                if enemy.nerve <= enemy.nerve_threshold && !enemy.panicked {
+                let broke = enemy.nerve <= enemy.nerve_threshold && !enemy.panicked;
+                let panicked = enemy.nerve == 0;
+                if broke {
                     enemy.panicked = true;
                     debug!(target = target_id, "enemy panicked — nerve broken");
-                    return true;
                 }
-                return false;
+                return (broke, panicked);
             }
         }
         for slot in &mut self.party {
             if let Some(m) = slot {
                 if m.id == target_id {
                     m.nerve = (m.nerve - amount).max(0);
-                    if m.nerve == 0 && !m.panicked {
+                    let panicked = m.nerve == 0;
+                    if panicked && !m.panicked {
                         m.panicked = true;
-                        return true;
                     }
-                    return false;
+                    // Party members don't have a nerve_threshold, so broke is always false
+                    return (false, panicked);
                 }
             }
         }
-        false
+        (false, false)
     }
 
     fn get_position(&self, id: &str) -> Option<PositionState> {

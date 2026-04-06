@@ -91,12 +91,14 @@ impl GameState {
     pub fn apply_effect(&mut self, effect: &StateEffect) {
         match effect {
             StateEffect::SetFlag { id, value } => {
+                // Clone needed: key/value are moved into HashMap
                 self.flags.insert(id.0.clone(), value.clone());
             }
             StateEffect::AdjustReputation { axis, delta } => {
                 self.reputation.adjust(*axis, *delta);
             }
             StateEffect::AddPartyMember(char_id) => {
+                // Clone needed: id is moved into PartyMemberState
                 self.party.add_member(char_id.clone());
             }
             StateEffect::RemovePartyMember(char_id) => {
@@ -107,6 +109,7 @@ impl GameState {
             }
             StateEffect::AddEvidence(id) => {
                 if !self.evidence.iter().any(|e| e.id == *id) {
+                    // Clones needed: id and chapter are moved into the new EvidenceItem
                     self.evidence.push(EvidenceItem {
                         id: id.clone(),
                         evidence_type: EvidenceType::Documentary,
@@ -117,6 +120,7 @@ impl GameState {
                 }
             }
             StateEffect::SetWitnessState { id, alive, integrity } => {
+                // Clone needed: key is moved into HashMap
                 self.witness_states.insert(id.0.clone(), WitnessState {
                     alive: *alive,
                     integrity: *integrity,
@@ -127,6 +131,7 @@ impl GameState {
             }
             StateEffect::AddMemoryObject(id) => {
                 if !self.memory_objects.iter().any(|o| o.id == *id) {
+                    // Clone needed: id is moved into the new MemoryObject
                     self.memory_objects.push(MemoryObject {
                         id: id.clone(),
                         state: "active".to_string(),
@@ -135,6 +140,7 @@ impl GameState {
             }
             StateEffect::TransformMemoryObject { id, new_state } => {
                 if let Some(obj) = self.memory_objects.iter_mut().find(|o| o.id == *id) {
+                    // Clone needed: new_state is moved into the object's field
                     obj.state = new_state.clone();
                 }
             }
@@ -145,6 +151,7 @@ impl GameState {
                 self.party.set_relationship(a, b, *value);
             }
             StateEffect::ApplyInjury { character, injury } => {
+                // Clone needed: injury is moved into the injuries Vec
                 self.party.apply_injury(character, injury.clone());
             }
         }

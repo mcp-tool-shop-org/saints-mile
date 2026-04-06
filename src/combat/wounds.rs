@@ -89,7 +89,7 @@ pub fn triage(wounds: &[Wound], thorough: bool) -> TriageResult {
             // Calculate what treating this wound restores
             for penalty in &wound.penalties {
                 match penalty.stat.as_str() {
-                    "nerve" => nerve_restored += penalty.amount.unsigned_abs() as i32,
+                    "nerve" => nerve_restored += penalty.amount.abs(),
                     _ => hp_restored += 5, // base HP restoration per wound treated
                 }
             }

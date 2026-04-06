@@ -260,6 +260,9 @@ pub fn horse_thief_briefing() -> Scene {
 }
 
 /// Post horse-thief return.
+///
+/// Reached via the combat resolution system after `horse_thief` encounter,
+/// not through normal scene graph transitions. This is intentional.
 pub fn horse_thief_return() -> Scene {
     scene(
         "cw_horse_thief_return", "cedar_wake", "1b2",
@@ -359,6 +362,9 @@ pub fn bandit_briefing() -> Scene {
 }
 
 /// Post bandit-camp return — "Clean work."
+///
+/// Reached via the combat resolution system after `bandit_camp` encounter,
+/// not through normal scene graph transitions. This is intentional.
 pub fn bandit_camp_return() -> Scene {
     scene(
         "cw_bandit_camp_return", "cedar_wake", "1b8",

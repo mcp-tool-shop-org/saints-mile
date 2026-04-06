@@ -1,6 +1,6 @@
 # Saint's Mile — Playtest Protocol
 
-**Build:** v1.0.0-rc2 (TUI presentation layer complete)
+**Build:** v1.0.1
 **Date:** 2026-03-22
 **Status:** Content frozen. Only bug fixes, readability fixes, balance tuning, and canon-protection fixes allowed.
 
