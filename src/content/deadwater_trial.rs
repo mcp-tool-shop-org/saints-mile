@@ -67,6 +67,21 @@ pub fn assembly() -> Scene {
                  the procedure follows.",
                 EmotionTag::Tense,
             ),
+            // Memory ref: ropehouse_damage echo from ch4
+            say_if_with("rosa",
+                "The Ropehouse. I still hear the benches splintering. We won \
+                 the fight and lost the room. This time, the room has to hold.",
+                vec![Condition::HasMemoryObject(MemoryObjectId::new("ropehouse_damage"))],
+                EmotionTag::Bitter,
+            ),
+            // Memory ref: revival_memory echo from ch5
+            say_if_with("miriam",
+                "Silt Crossing taught me what a room looks like before it \
+                 breaks. This one is close. But the crowd here came to listen, \
+                 not to burn.",
+                vec![Condition::HasMemoryObject(MemoryObjectId::new("revival_memory"))],
+                EmotionTag::Quiet,
+            ),
         ],
         vec![
             choice("Lead with medical evidence — Ada's way", vec![

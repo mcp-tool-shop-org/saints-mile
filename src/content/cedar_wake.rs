@@ -505,6 +505,19 @@ pub fn bitter_cut_aftermath() -> Scene {
                  surrendered, but because he finally understood this was never a \
                  fight he was allowed to win.",
             ),
+            // Combat outcome: minimize_casualties objective result
+            say_if_with("narrator",
+                "The workers are down but breathing. Eben's people are alive. \
+                 That cost Galen time he didn't know he had.",
+                vec![flag_is("bitter_cut_casualties_low", true)],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Two workers are dead. The shotgun boy's hand is ruined. The \
+                 cost of maintaining order is written in the dirt.",
+                vec![flag_is("bitter_cut_casualties_high", true)],
+                EmotionTag::Grief,
+            ),
             say("voss", "You froze once."),
             say("galen", "They weren't bandits."),
             say("voss", "No."),

@@ -202,6 +202,19 @@ pub fn ropehouse_aftermath() -> Scene {
             narrate(
                 "We won the fight and lost the room.",
             ),
+            // Combat outcome: witness protection objective result
+            say_if_with("narrator",
+                "The surveyor-witness is safe. His testimony survived the \
+                 Ropehouse. Whether anyone will hear it is another question.",
+                vec![flag_is("witness_secured", true)],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The surveyor was extracted during the fight. Whatever he \
+                 knew is now property of the men who took him.",
+                vec![flag_is("witness_extracted", true)],
+                EmotionTag::Bitter,
+            ),
             // Stance-dependent reactions
             say_if_with("rosa",
                 "You stood with us. That's more than talk.",

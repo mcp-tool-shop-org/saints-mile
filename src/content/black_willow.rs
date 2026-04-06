@@ -52,6 +52,14 @@ pub fn morrow_aftermath() -> Scene {
                  chasing records tied to the same chain you keep pulling at.",
                 EmotionTag::Tense,
             ),
+            // Memory ref: wanted_poster echo from prologue
+            say_if_with("narrator",
+                "The wanted poster. Galen sees a copy nailed to the Black \
+                 Willow supply shed — same face, same language, same lie \
+                 growing legs. The poster has traveled faster than he has.",
+                vec![Condition::HasMemoryObject(MemoryObjectId::new("wanted_poster"))],
+                EmotionTag::Tense,
+            ),
         ],
         vec![
             choice("Ride to Black Willow", vec![], to_scene("bw_road")),

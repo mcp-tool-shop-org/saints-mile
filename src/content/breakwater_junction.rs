@@ -183,6 +183,11 @@ pub fn victory() -> Scene {
 // ─── Encounters ────────────────────────────────────────────────────
 
 /// The Battle of Breakwater Junction — peak party synthesis.
+///
+/// NOTE: This is the last battle before the hand injury. From Ch12 onward,
+/// combat encounters should check `hand_wounded` / `hand_injury_permanent`
+/// and apply accuracy/speed penalties to Galen via the injury system in
+/// `combat/injuries.rs`. The stat penalty lives in combat/, not content/.
 pub fn breakwater_battle() -> Encounter {
     Encounter {
         id: EncounterId::new("breakwater_battle"),

@@ -61,6 +61,15 @@ pub fn ruins_scene() -> Scene {
                  by whoever does.",
                 EmotionTag::Dry,
             ),
+            // Memory ref: trestle_blast_scar echo from ch6
+            say_if_with("narrator",
+                "The blast scars on the mission walls look familiar. Same \
+                 directed ignition pattern as the Millburn Trestle — charges \
+                 placed to destroy specific rooms while leaving the structure \
+                 standing. A tradition of precision demolition.",
+                vec![Condition::HasMemoryObject(MemoryObjectId::new("trestle_blast_scar"))],
+                EmotionTag::Tense,
+            ),
         ],
         vec![
             choice("Enter the basement", vec![], to_scene("bm_basement")),
@@ -231,12 +240,53 @@ pub fn bell_moment() -> Scene {
     )
 }
 
+/// Post-mission defense — the fight is over, the records survive or don't.
+///
+/// Reached via the combat resolution system after `mission_defense` encounter.
+pub fn mission_defense_aftermath() -> Scene {
+    scene(
+        "bm_defense_aftermath", "burned_mission", "8_5",
+        PacingTag::Pressure,
+        vec![
+            narrate_with(
+                "The enforcement team withdraws. Cordelia watches them go from \
+                 behind the well housing, hands steady, face unreadable.",
+                EmotionTag::Quiet,
+            ),
+            say_with("cordelia",
+                "They'll come back. Men like that always come back. But now \
+                 you know what's in the ground.",
+                EmotionTag::Quiet,
+            ),
+        ],
+        vec![
+            choice("Leave the mission", vec![], to_scene("bm_chapter_close")),
+        ],
+        vec![],
+    )
+}
+
 /// Chapter close — the ground has memory.
 pub fn chapter_close() -> Scene {
     scene_with_memory(
         "bm_chapter_close", "mission_valley", "8_6",
         PacingTag::Intimate,
         vec![
+            // Combat outcome: defend_records objective result
+            say_if_with("narrator",
+                "The mission records survived the fight. Every page intact — \
+                 land grants, water certificates, the death register. The \
+                 evidence leaves with the party.",
+                vec![flag_is("mission_records_defended", true)],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "Some records burned in the fight. Not all. Enough survived \
+                 to prove the pattern — but the gaps will haunt every filing \
+                 and every testimony.",
+                vec![flag_is("mission_records_destroyed", true)],
+                EmotionTag::Grief,
+            ),
             narrate_with(
                 "The party leaves the mission with the evidence. Behind them, \
                  the ruins remain. The bell may or may not ring as they go.",
@@ -330,6 +380,7 @@ pub fn get_scene(id: &str) -> Option<Scene> {
         "bm_basement" => Some(basement_scene()),
         "bm_party_reads" => Some(party_reads_scene()),
         "bm_bell_moment" => Some(bell_moment()),
+        "bm_defense_aftermath" => Some(mission_defense_aftermath()),
         "bm_chapter_close" => Some(chapter_close()),
         _ => None,
     }

@@ -25,6 +25,14 @@ pub fn aftermath() -> Scene {
                 "The truth is out. The enemy is wounded. The road ahead is no \
                  longer clear.",
             ),
+            // Hand injury awareness — Galen's new reality
+            say_if_with("narrator",
+                "Galen loads his revolver left-handed now. The right hand closes \
+                 around the grip well enough, but the cylinder work — the fine \
+                 motor — goes to the hand that learned it second.",
+                vec![flag_is("hand_wounded", true)],
+                EmotionTag::Quiet,
+            ),
         ],
         vec![
             choice("Face what comes next", vec![], to_scene("nd_separations")),
@@ -107,6 +115,13 @@ pub fn last_campfire() -> Scene {
             say_with("eli",
                 "Funny thing about roads. They all go somewhere until you stop. \
                  Then they just go.",
+                EmotionTag::Quiet,
+            ),
+            // Hand injury — the campfire detail
+            say_if_with("narrator",
+                "Galen reaches for the flask and his fingers stall halfway. Ada \
+                 passes it without comment. That's how they do it now.",
+                vec![flag_is("hand_wounded", true)],
                 EmotionTag::Quiet,
             ),
         ],

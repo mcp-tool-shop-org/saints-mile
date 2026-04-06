@@ -73,6 +73,14 @@ pub fn voss_confrontation() -> Scene {
                  He still believes it.",
                 EmotionTag::Quiet,
             ),
+            // Hand injury — the shooting post callback
+            say_if_with("narrator",
+                "Galen's right hand rests on the holster. The grip is different \
+                 now — the hand that Voss trained at that post works through a \
+                 different nerve path. Still accurate. Never fast.",
+                vec![flag_is("hand_wounded", true)],
+                EmotionTag::Quiet,
+            ),
             say_with("voss",
                 "You have your truth. Your witnesses. Your paper. What do you \
                  think happens when you hand that to the territory? Do you think \

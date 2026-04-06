@@ -126,6 +126,10 @@ pub struct EncounterState {
 
     /// Current age phase — used to select the correct skill variant.
     pub age_phase: AgePhase,
+
+    /// FT-007: Cover assignments — maps combatant ID to terrain cover element index.
+    /// When cover is destroyed, the combatant is forced to Open position.
+    pub cover_assignments: HashMap<String, usize>,
 }
 
 /// A combatant during live combat.
@@ -247,6 +251,8 @@ pub enum CombatAction {
     Defend,
     /// Attempt to flee.
     Flee,
+    /// FT-007: Force a target out of cover (suppressive fire, explosions, etc.)
+    ForceOutOfCover { target: String },
 }
 
 /// Target selection for an action.
@@ -440,6 +446,7 @@ impl EncounterState {
             terrain: encounter.terrain.clone(),
             pending_effects: Vec::new(),
             outcome: None,
+            cover_assignments: HashMap::new(),
         }
     }
 
@@ -538,6 +545,8 @@ impl EncounterState {
     // ─── Turn Queue ────────────────────────────────────────────────
 
     /// Build the turn queue for a new round, ordered by effective speed.
+    /// FT-006: Party members' speed is modified by the best speed_priority
+    /// among their age-variant skills for the current age phase.
     pub fn build_turn_queue(&mut self) {
         self.turn_queue.clear();
         self.current_turn = 0;
@@ -555,10 +564,19 @@ impl EncounterState {
                         .map(|(_, m)| *m))
                     .unwrap_or(0);
 
+                // FT-006: Apply best speed_priority bonus from age-variant skills.
+                // Each character's effective speed is their base + the highest
+                // speed_priority among their available skills for the current age phase.
+                let speed_bonus: i32 = member.skills.iter()
+                    .filter_map(|sid| self.skill_registry.get_variant(sid, self.age_phase))
+                    .map(|v| v.speed_priority)
+                    .max()
+                    .unwrap_or(0);
+
                 self.turn_queue.push(TurnEntry {
                     combatant_id: member.id.clone(),
                     side: CombatSide::Party,
-                    speed: member.speed,
+                    speed: member.speed + speed_bonus,
                     initiative_mod: init_mod,
                 });
             }
@@ -828,12 +846,32 @@ impl EncounterState {
             }
 
             CombatAction::TakeCover => {
-                self.set_position(&actor_id, PositionState::InCover);
-                result.action_description = format!("{} takes cover.", actor_id);
-                result.status_changes.push(StatusChange {
-                    target: actor_id.clone(),
-                    change: "moved to cover".to_string(),
-                });
+                // FT-007: Find available cover element. Full cover if durability > 0,
+                // otherwise partial cover if element is damaged.
+                let cover_idx = self.terrain.cover.iter().enumerate()
+                    .find(|(i, c)| {
+                        c.durability > 0 && !self.cover_assignments.values().any(|a| a == i)
+                    })
+                    .map(|(i, _)| i);
+
+                if let Some(idx) = cover_idx {
+                    let cover_name = self.terrain.cover[idx].name.clone();
+                    self.cover_assignments.insert(actor_id.clone(), idx);
+                    self.set_position(&actor_id, PositionState::InCover);
+                    result.action_description = format!("{} takes cover behind {}.", actor_id, cover_name);
+                    result.status_changes.push(StatusChange {
+                        target: actor_id.clone(),
+                        change: format!("moved to cover ({})", cover_name),
+                    });
+                } else {
+                    // No cover available — partial cover from terrain features
+                    self.set_position(&actor_id, PositionState::PartialCover);
+                    result.action_description = format!("{} hunkers down (partial cover).", actor_id);
+                    result.status_changes.push(StatusChange {
+                        target: actor_id.clone(),
+                        change: "partial cover".to_string(),
+                    });
+                }
             }
 
             CombatAction::Defend => {
@@ -889,6 +927,22 @@ impl EncounterState {
                         actor_id, flee_chance
                     );
                     info!(actor = %actor_id, chance = flee_chance, "flee failed");
+                }
+            }
+
+            CombatAction::ForceOutOfCover { target } => {
+                // FT-007: Force target out of cover — used by suppressive fire, explosions, etc.
+                let target_pos = self.get_position(target);
+                if matches!(target_pos, Some(PositionState::InCover) | Some(PositionState::PartialCover)) {
+                    self.force_out_of_cover(target);
+                    result.action_description = format!("{} forces {} out of cover!", actor_id, target);
+                    result.status_changes.push(StatusChange {
+                        target: target.clone(),
+                        change: "forced out of cover".to_string(),
+                    });
+                    info!(actor = %actor_id, target = %target, "forced out of cover");
+                } else {
+                    result.action_description = format!("{} tries to flush {} — but they're not in cover.", actor_id, target);
                 }
             }
         }
@@ -1085,10 +1139,21 @@ impl EncounterState {
     }
 
     fn apply_damage(&mut self, target_id: &str, damage: i32) -> bool {
-        // Cover absorbs half damage (rounded down — intentional: cover is partial
-        // protection, not full). Integer division floors by default in Rust.
-        let in_cover = self.get_position(target_id) == Some(PositionState::InCover);
-        let actual_damage = if in_cover { damage / 2 } else { damage };
+        // FT-007: Cover reduces damage — full cover 50%, partial cover 25%.
+        let position = self.get_position(target_id);
+        let actual_damage = match position {
+            Some(PositionState::InCover) => damage / 2,      // 50% reduction
+            Some(PositionState::PartialCover) => damage * 3 / 4, // 25% reduction
+            _ => damage,
+        };
+
+        // FT-007: Destructible cover takes damage too — degrade and destroy.
+        if matches!(position, Some(PositionState::InCover) | Some(PositionState::PartialCover)) {
+            let absorbed = damage - actual_damage;
+            if absorbed > 0 {
+                self.damage_cover(target_id, absorbed);
+            }
+        }
 
         // Apply to enemies
         for enemy in &mut self.enemies {
@@ -1187,6 +1252,38 @@ impl EncounterState {
         }
     }
 
+    /// FT-007: Apply damage to a cover element. If durability drops to 0 and
+    /// the cover is destructible, destroy it and force the combatant out.
+    fn damage_cover(&mut self, combatant_id: &str, damage: i32) {
+        let cover_idx = match self.cover_assignments.get(combatant_id) {
+            Some(&idx) => idx,
+            None => return,
+        };
+
+        if cover_idx >= self.terrain.cover.len() { return; }
+
+        let cover = &mut self.terrain.cover[cover_idx];
+        if !cover.destructible { return; }
+
+        cover.durability = (cover.durability - damage).max(0);
+        if cover.durability == 0 {
+            debug!(
+                cover = %cover.name,
+                combatant = combatant_id,
+                "cover destroyed"
+            );
+            // Force combatant out of cover
+            self.cover_assignments.remove(combatant_id);
+            self.set_position(combatant_id, PositionState::Open);
+        }
+    }
+
+    /// FT-007: Force a combatant out of cover — removes assignment and sets Open position.
+    fn force_out_of_cover(&mut self, combatant_id: &str) {
+        self.cover_assignments.remove(combatant_id);
+        self.set_position(combatant_id, PositionState::Open);
+    }
+
     /// Count active (non-down, non-panicked) party members.
     pub fn active_party_count(&self) -> usize {
         self.party.iter().flatten().filter(|m| !m.down && !m.panicked).count()
@@ -1195,6 +1292,199 @@ impl EncounterState {
     /// Count active enemies.
     pub fn active_enemy_count(&self) -> usize {
         self.enemies.iter().filter(|e| !e.down && !e.panicked).count()
+    }
+
+    // ─── FT-005: NPC Ally Behavior ────────────────────────────────
+
+    /// Select an action for an NPC ally based on their behavior and battlefield state.
+    /// NPCs pick actions with priority-based AI:
+    /// - Heal if any ally HP is critically low (Protective/Professional with healing)
+    /// - Attack highest-threat enemy
+    /// - Take cover if nervous and in danger
+    pub fn select_npc_action(&self, npc_id: &str) -> CombatAction {
+        let npc = match self.npc_allies.iter().find(|n| n.combatant.id == npc_id) {
+            Some(n) => n,
+            None => return CombatAction::Defend,
+        };
+
+        let behavior = npc.behavior;
+        let npc_hp_pct = if npc.combatant.max_hp > 0 {
+            npc.combatant.hp * 100 / npc.combatant.max_hp
+        } else { 100 };
+
+        // Check if any ally needs healing (for Protective behavior or characters like Ada)
+        let ally_needs_heal = self.party.iter().flatten()
+            .filter(|m| !m.down)
+            .any(|m| m.max_hp > 0 && m.hp * 100 / m.max_hp < 40);
+
+        // Find the highest-threat active enemy (highest damage * not panicked)
+        let target_enemy = self.enemies.iter()
+            .filter(|e| !e.down && !e.panicked)
+            .max_by_key(|e| e.damage);
+
+        match behavior {
+            NpcBehavior::Professional => {
+                // Reliable: attack the most dangerous enemy
+                if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            NpcBehavior::Protective => {
+                // Heal allies first if anyone is hurt, otherwise attack
+                if ally_needs_heal {
+                    // Find the most injured ally
+                    let heal_target = self.party.iter().flatten()
+                        .filter(|m| !m.down && m.max_hp > 0)
+                        .min_by_key(|m| m.hp * 100 / m.max_hp)
+                        .map(|m| m.id.clone());
+
+                    if let Some(target) = heal_target {
+                        CombatAction::UseSkill {
+                            skill: SkillId::new("heal"),
+                            target: TargetSelection::Single(target),
+                        }
+                    } else {
+                        CombatAction::Defend
+                    }
+                } else if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            NpcBehavior::Nervous => {
+                // Prioritize self-preservation: take cover if exposed, attack only if safe
+                if npc_hp_pct < 50 && npc.combatant.position == PositionState::Open {
+                    CombatAction::TakeCover
+                } else if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            NpcBehavior::Unreliable => {
+                // Unpredictable: sometimes attacks, sometimes defends, sometimes runs for cover
+                // Deterministic fallback: attack if enemies exist, otherwise defend
+                if let Some(enemy) = target_enemy {
+                    // Unreliable NPCs attack the weakest enemy (easiest kill)
+                    let weak_enemy = self.enemies.iter()
+                        .filter(|e| !e.down && !e.panicked)
+                        .min_by_key(|e| e.hp)
+                        .unwrap_or(enemy);
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(weak_enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+        }
+    }
+
+    /// FT-005: Select an action for a named NPC character based on their role.
+    /// Named characters override generic behavior with character-specific AI.
+    pub fn select_named_npc_action(&self, npc_id: &str) -> CombatAction {
+        if !self.npc_allies.iter().any(|n| n.combatant.id == npc_id) {
+            return CombatAction::Defend;
+        }
+
+        // Check if any ally needs healing
+        let most_injured_ally = self.party.iter().flatten()
+            .filter(|m| !m.down && m.max_hp > 0)
+            .min_by_key(|m| m.hp * 100 / m.max_hp);
+
+        let ally_critical = most_injured_ally
+            .map(|m| m.hp * 100 / m.max_hp < 40)
+            .unwrap_or(false);
+
+        // Find target enemy
+        let target_enemy = self.enemies.iter()
+            .filter(|e| !e.down && !e.panicked)
+            .max_by_key(|e| e.damage);
+
+        // Character-specific behavior
+        match npc_id {
+            // Deputies: Professional attack, focus on highest-threat
+            "cal" | "deputy_harris" => {
+                if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            // Eli as NPC: nerve damage specialist
+            "eli" => {
+                if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("fast_talk"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            // Ada as NPC: healer first, derringer backup
+            "ada" => {
+                if ally_critical {
+                    if let Some(target) = most_injured_ally {
+                        return CombatAction::UseSkill {
+                            skill: SkillId::new("treat_wounds"),
+                            target: TargetSelection::Single(target.id.clone()),
+                        };
+                    }
+                }
+                if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("derringer"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            // Bale: heavy hitter, slow, reliable
+            "bale" => {
+                if let Some(enemy) = target_enemy {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            // Renata: sharper, precise shots
+            "renata" => {
+                if let Some(enemy) = self.enemies.iter()
+                    .filter(|e| !e.down && !e.panicked)
+                    .min_by_key(|e| e.hp) // snipe weakest
+                {
+                    CombatAction::UseSkill {
+                        skill: SkillId::new("attack"),
+                        target: TargetSelection::Single(enemy.id.clone()),
+                    }
+                } else {
+                    CombatAction::Defend
+                }
+            }
+            // Fallback to generic behavior
+            _ => self.select_npc_action(npc_id),
+        }
     }
 
     /// Mark this encounter as non-escapable (boss fight).
@@ -1866,5 +2156,396 @@ mod tests {
             .unwrap();
         assert_eq!(primary.status, ObjectiveStatus::Failed,
             "primary objective should fail when party flees");
+    }
+
+    // ─── FT-005: NPC ally behavior system ─────────────────────────
+
+    fn encounter_with_npcs() -> Encounter {
+        let mut enc = glass_arroyo_encounter();
+        enc.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("deputy_harris"),
+            behavior: NpcBehavior::Professional,
+            hp: 35, nerve: 28, speed: 11, accuracy: 65, damage: 9,
+        });
+        enc.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("bale"),
+            behavior: NpcBehavior::Protective,
+            hp: 35, nerve: 30, speed: 7, accuracy: 55, damage: 12,
+        });
+        enc
+    }
+
+    #[test]
+    fn npc_professional_attacks_highest_threat() {
+        let encounter = encounter_with_npcs();
+        let state = EncounterState::new(&encounter, prologue_party());
+
+        let action = state.select_npc_action("deputy_harris");
+        match action {
+            CombatAction::UseSkill { target: TargetSelection::Single(target_id), .. } => {
+                // Should target the highest-damage enemy (gunman: damage=10)
+                assert_eq!(target_id, "gunman_1", "professional should target highest threat");
+            }
+            _ => panic!("professional NPC should attack"),
+        }
+    }
+
+    #[test]
+    fn npc_protective_heals_injured_ally() {
+        let encounter = encounter_with_npcs();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+
+        // Injure Galen below 40% HP
+        state.party[0].as_mut().unwrap().hp = 10; // 10/40 = 25%
+
+        let action = state.select_npc_action("bale");
+        match action {
+            CombatAction::UseSkill { skill, target: TargetSelection::Single(target_id), .. } => {
+                assert_eq!(skill.0, "heal", "protective NPC should heal");
+                assert_eq!(target_id, "galen", "should heal most injured ally");
+            }
+            _ => panic!("protective NPC should heal when ally is injured"),
+        }
+    }
+
+    #[test]
+    fn npc_nervous_takes_cover_when_hurt() {
+        let mut encounter = glass_arroyo_encounter();
+        encounter.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("scared_guard"),
+            behavior: NpcBehavior::Nervous,
+            hp: 20, nerve: 15, speed: 9, accuracy: 50, damage: 6,
+        });
+
+        let mut state = EncounterState::new(&encounter, prologue_party());
+
+        // Hurt the nervous NPC below 50%
+        state.npc_allies[0].combatant.hp = 8;
+
+        let action = state.select_npc_action("scared_guard");
+        assert!(matches!(action, CombatAction::TakeCover),
+            "nervous NPC should take cover when hurt");
+    }
+
+    #[test]
+    fn named_npc_eli_uses_fast_talk() {
+        let mut encounter = glass_arroyo_encounter();
+        encounter.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("eli"),
+            behavior: NpcBehavior::Professional,
+            hp: 30, nerve: 25, speed: 10, accuracy: 50, damage: 6,
+        });
+
+        let state = EncounterState::new(&encounter, prologue_party());
+        let action = state.select_named_npc_action("eli");
+        match action {
+            CombatAction::UseSkill { skill, .. } => {
+                assert_eq!(skill.0, "fast_talk", "Eli should use fast_talk for nerve damage");
+            }
+            _ => panic!("Eli should use a skill"),
+        }
+    }
+
+    #[test]
+    fn named_npc_ada_heals_critical_ally() {
+        let mut encounter = glass_arroyo_encounter();
+        encounter.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("ada"),
+            behavior: NpcBehavior::Protective,
+            hp: 25, nerve: 30, speed: 8, accuracy: 40, damage: 4,
+        });
+
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.party[0].as_mut().unwrap().hp = 8; // Galen critical
+
+        let action = state.select_named_npc_action("ada");
+        match action {
+            CombatAction::UseSkill { skill, target: TargetSelection::Single(target), .. } => {
+                assert_eq!(skill.0, "treat_wounds", "Ada should heal");
+                assert_eq!(target, "galen", "should heal Galen");
+            }
+            _ => panic!("Ada should heal when ally is critical"),
+        }
+    }
+
+    // ─── FT-006: Age-variant skill effects ────────────────────────
+
+    #[test]
+    fn age_variant_youth_faster_less_accurate() {
+        let encounter = glass_arroyo_encounter();
+        let mut registry = SkillRegistry::new();
+        registry.register(Skill {
+            id: SkillId::new("quick_draw"),
+            name: "Quick Draw".to_string(),
+            description: "Fast shot".to_string(),
+            line: SkillLine::Deadeye,
+            unlock: UnlockCondition::StartOfPhase(AgePhase::Youth),
+            age_variants: vec![
+                AgeVariant {
+                    phase: AgePhase::Youth,
+                    accuracy: -5,     // less accurate
+                    damage: 6,
+                    speed_priority: 3, // faster
+                    nerve_damage: 2,
+                    description_override: None,
+                },
+                AgeVariant {
+                    phase: AgePhase::Older,
+                    accuracy: 15,     // more accurate
+                    damage: 14,
+                    speed_priority: -2, // slower
+                    nerve_damage: 8,
+                    description_override: Some("One shot. Certain.".to_string()),
+                },
+            ],
+            cost: SkillCost { ammo: 1, nerve: 0, cooldown_turns: 0 },
+        });
+
+        // Youth phase — should get speed bonus
+        let mut state_youth = EncounterState::with_registries(
+            &encounter, prologue_party(), registry.clone(), DuoTechRegistry::new(), AgePhase::Youth,
+        );
+        state_youth.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state_youth.build_turn_queue();
+
+        let galen_youth = state_youth.turn_queue.iter()
+            .find(|t| t.combatant_id == "galen").unwrap();
+        // Base speed 12 + speed_priority 3 = 15
+        assert_eq!(galen_youth.speed, 15, "youth Galen should be faster from speed_priority");
+
+        // Older phase — should get speed penalty
+        let mut state_older = EncounterState::with_registries(
+            &encounter, prologue_party(), registry, DuoTechRegistry::new(), AgePhase::Older,
+        );
+        state_older.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state_older.build_turn_queue();
+
+        let galen_older = state_older.turn_queue.iter()
+            .find(|t| t.combatant_id == "galen").unwrap();
+        // Base speed 12 + speed_priority -2 = 10
+        assert_eq!(galen_older.speed, 10, "older Galen should be slower from speed_priority");
+    }
+
+    #[test]
+    fn age_variant_affects_damage_in_combat() {
+        let encounter = glass_arroyo_encounter();
+        let mut registry = SkillRegistry::new();
+        registry.register(Skill {
+            id: SkillId::new("quick_draw"),
+            name: "Quick Draw".to_string(),
+            description: "Fast shot".to_string(),
+            line: SkillLine::Deadeye,
+            unlock: UnlockCondition::StartOfPhase(AgePhase::Youth),
+            age_variants: vec![
+                AgeVariant {
+                    phase: AgePhase::Youth,
+                    accuracy: 10,
+                    damage: 5,     // youth: less damage
+                    speed_priority: 0,
+                    nerve_damage: 1,
+                    description_override: None,
+                },
+                AgeVariant {
+                    phase: AgePhase::Adult,
+                    accuracy: 10,
+                    damage: 15,    // adult: more damage
+                    speed_priority: 0,
+                    nerve_damage: 5,
+                    description_override: None,
+                },
+            ],
+            cost: SkillCost { ammo: 1, nerve: 0, cooldown_turns: 0 },
+        });
+
+        // Youth — should deal 5 damage
+        let mut state = EncounterState::with_registries(
+            &encounter, prologue_party(), registry.clone(), DuoTechRegistry::new(), AgePhase::Youth,
+        );
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen").unwrap();
+        state.current_turn = galen_turn;
+
+        let hp_before = state.enemies[0].hp;
+        let result = state.execute_action(&CombatAction::UseSkill {
+            skill: SkillId::new("quick_draw"),
+            target: TargetSelection::Single("raider_0".to_string()),
+        });
+
+        if !result.damage_dealt.is_empty() {
+            assert_eq!(result.damage_dealt[0].amount, 5, "youth variant should deal 5 damage");
+        }
+
+        // Adult — should deal 15 damage
+        let mut state2 = EncounterState::with_registries(
+            &encounter, prologue_party(), registry, DuoTechRegistry::new(), AgePhase::Adult,
+        );
+        state2.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state2.build_turn_queue();
+
+        let galen_turn2 = state2.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen").unwrap();
+        state2.current_turn = galen_turn2;
+
+        let result2 = state2.execute_action(&CombatAction::UseSkill {
+            skill: SkillId::new("quick_draw"),
+            target: TargetSelection::Single("raider_0".to_string()),
+        });
+
+        if !result2.damage_dealt.is_empty() {
+            assert_eq!(result2.damage_dealt[0].amount, 15, "adult variant should deal 15 damage");
+        }
+    }
+
+    // ─── FT-007: Cover mechanics ──────────────────────────────────
+
+    #[test]
+    fn partial_cover_reduces_damage_25_percent() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+
+        // Put raider in partial cover
+        state.set_position("raider_0", PositionState::PartialCover);
+        let hp_before = state.enemies[0].hp;
+
+        // Apply 20 damage — partial cover = 25% reduction = 15 actual
+        state.apply_damage("raider_0", 20);
+        let hp_after = state.enemies[0].hp;
+
+        assert_eq!(hp_before - hp_after, 15, "partial cover should reduce damage by 25%");
+    }
+
+    #[test]
+    fn take_cover_assigns_terrain_element() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen").unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::TakeCover);
+
+        // Should assign to first available cover element ("Wagon wreck")
+        assert!(result.action_description.contains("Wagon wreck"),
+            "should mention the cover element name");
+        assert_eq!(state.party[0].as_ref().unwrap().position, PositionState::InCover);
+        assert!(state.cover_assignments.contains_key("galen"));
+    }
+
+    #[test]
+    fn destructible_cover_breaks_under_damage() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+
+        // Put enemy in cover (wagon wreck, durability 50, destructible)
+        state.set_position("raider_0", PositionState::InCover);
+        state.cover_assignments.insert("raider_0".to_string(), 0);
+
+        // Blast with repeated heavy damage to destroy cover
+        // Each hit: damage / 2 absorbed by cover = deducted from durability
+        for _ in 0..10 {
+            state.apply_damage("raider_0", 20); // 10 absorbed each time
+        }
+
+        // After 50 durability worth of absorbed damage, cover should be destroyed
+        assert_eq!(state.terrain.cover[0].durability, 0, "cover should be destroyed");
+        assert_eq!(
+            state.enemies[0].position, PositionState::Open,
+            "combatant should be forced out when cover is destroyed"
+        );
+        assert!(!state.cover_assignments.contains_key("raider_0"),
+            "cover assignment should be removed");
+    }
+
+    #[test]
+    fn indestructible_cover_survives() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+
+        // Rock outcrop is at index 1, durability 100, NOT destructible
+        state.set_position("raider_0", PositionState::InCover);
+        state.cover_assignments.insert("raider_0".to_string(), 1);
+
+        state.apply_damage("raider_0", 100);
+
+        assert_eq!(state.terrain.cover[1].durability, 100, "indestructible cover should survive");
+        assert_eq!(state.enemies[0].position, PositionState::InCover,
+            "combatant should stay in indestructible cover");
+    }
+
+    #[test]
+    fn force_out_of_cover_action() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        // Put enemy in cover
+        state.set_position("raider_0", PositionState::InCover);
+        state.cover_assignments.insert("raider_0".to_string(), 0);
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen").unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::ForceOutOfCover {
+            target: "raider_0".to_string(),
+        });
+
+        assert!(result.action_description.contains("forces"),
+            "should describe forcing out of cover");
+        assert_eq!(state.enemies[0].position, PositionState::Open,
+            "target should be in Open position after being forced out");
+        assert!(!state.cover_assignments.contains_key("raider_0"),
+            "cover assignment should be removed");
+    }
+
+    #[test]
+    fn force_out_of_cover_noop_on_open_target() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen").unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::ForceOutOfCover {
+            target: "raider_0".to_string(),
+        });
+
+        assert!(result.action_description.contains("not in cover"),
+            "should note target is not in cover");
+    }
+
+    #[test]
+    fn take_cover_falls_back_to_partial_when_all_occupied() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        // Occupy both cover elements
+        state.cover_assignments.insert("raider_0".to_string(), 0);
+        state.cover_assignments.insert("raider_1".to_string(), 1);
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen").unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::TakeCover);
+
+        assert!(result.action_description.contains("partial"),
+            "should get partial cover when all elements occupied");
+        assert_eq!(state.party[0].as_ref().unwrap().position, PositionState::PartialCover);
     }
 }

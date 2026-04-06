@@ -171,6 +171,42 @@ pub fn trestle_approach() -> Scene {
     )
 }
 
+/// Post-trestle combat — the dust settles on Millburn.
+///
+/// Reached via the combat resolution system after `millburn_trestle` encounter.
+pub fn trestle_aftermath() -> Scene {
+    scene(
+        "fc_trestle_aftermath", "millburn_trestle", "6_5",
+        PacingTag::Crisis,
+        vec![
+            // Combat outcome: trestle saved or destroyed
+            say_if_with("narrator",
+                "The trestle stands. Charred in places, cracked in others, \
+                 but standing. The canyon still has a crossing.",
+                vec![flag_is("trestle_saved", true)],
+                EmotionTag::Quiet,
+            ),
+            say_if_with("narrator",
+                "The trestle is gone. Two pylons lean into the canyon like \
+                 broken teeth. The crossing is dead.",
+                vec![flag_is("trestle_destroyed", true)],
+                EmotionTag::Grief,
+            ),
+            // Combat outcome: charges disarmed or detonated
+            say_if_with("ada",
+                "The charges are cold. Whoever wired them knew what they \
+                 were doing. Whoever stopped them knew more.",
+                vec![flag_is("charges_disarmed", true)],
+                EmotionTag::Neutral,
+            ),
+        ],
+        vec![
+            choice("Deal with Lucien", vec![], to_scene("fc_lucien_decision")),
+        ],
+        vec![],
+    )
+}
+
 /// Post-trestle: what to do with Lucien.
 pub fn lucien_decision() -> Scene {
     scene(
@@ -219,6 +255,12 @@ pub fn chapter_close() -> Scene {
             say_with("lucien",
                 "You think this canyon was peaceful before I got here?",
                 EmotionTag::Neutral,
+            ),
+            narrate_with(
+                "Lucien is captured. Not recruited — captured. The distinction \
+                 matters to Rosa. It matters to Miriam. Whether it matters to \
+                 Lucien is something the road will decide.",
+                EmotionTag::Tense,
             ),
             narrate(
                 "He knows where the next set of instructions was supposed to \
@@ -326,6 +368,7 @@ pub fn get_scene(id: &str) -> Option<Scene> {
         "fc_corridor_locals" => Some(corridor_locals()),
         "fc_meet_lucien" => Some(meet_lucien()),
         "fc_trestle_approach" => Some(trestle_approach()),
+        "fc_trestle_aftermath" => Some(trestle_aftermath()),
         "fc_lucien_decision" => Some(lucien_decision()),
         "fc_chapter_close" => Some(chapter_close()),
         _ => None,

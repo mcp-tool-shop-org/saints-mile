@@ -32,6 +32,15 @@ pub fn city_entry() -> Scene {
                  to read it before they decide what version you get to see.",
                 EmotionTag::Dry,
             ),
+            // Memory ref: sheriff_security_file echo from ch3
+            say_if_with("narrator",
+                "The sheriff's security file from Black Willow — 'Inquiries \
+                 referred to regional security.' This is the regional office. \
+                 The referral came here. The file that tracked Mercer was \
+                 written in this building.",
+                vec![Condition::HasMemoryObject(MemoryObjectId::new("sheriff_security_file"))],
+                EmotionTag::Tense,
+            ),
         ],
         vec![
             choice("Read the city", vec![], to_scene("il_read_city")),

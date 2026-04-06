@@ -296,6 +296,7 @@ fn render_combatant_card(frame: &mut Frame, area: Rect, c: &LiveCombatant, is_pa
             PositionState::Elevated => "Elevated",
             PositionState::FrontLine => "Front",
             PositionState::BackLine => "Back",
+            PositionState::PartialCover => "Partial",
         };
         let ammo_color = theme::ammo_color(c.ammo);
         lines.push(Line::from(vec![

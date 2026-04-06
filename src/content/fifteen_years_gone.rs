@@ -32,6 +32,15 @@ pub fn return_entry() -> Scene {
                  from settling in the wrong shape.",
                 EmotionTag::Tense,
             ),
+            // Hand injury — fifteen years of adaptation
+            say_if_with("narrator",
+                "The hand has adapted. He holds the reins differently — ring \
+                 and little finger do the grip work, index and middle guide. \
+                 Fifteen years of compensation have made the workaround invisible \
+                 to anyone who didn't know him before.",
+                vec![flag_is("hand_wounded", true)],
+                EmotionTag::Quiet,
+            ),
         ],
         vec![
             choice("See what they made of it", vec![], to_scene("fg_official_lie")),

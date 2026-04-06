@@ -66,6 +66,14 @@ pub fn ada_return() -> Scene {
                  well.",
                 EmotionTag::Neutral,
             ),
+            // Hand injury — Ada's clinical assessment after fifteen years
+            say_if_with("ada",
+                "The nerve path rerouted through the ulnar side. You retrained \
+                 without knowing it. That's the hand talking back to the brain \
+                 — it found its own road.",
+                vec![flag_is("hand_wounded", true)],
+                EmotionTag::Quiet,
+            ),
             narrate("Clinical first. Then not clinical."),
             say_with("ada",
                 "You came back. I was hoping you wouldn't have to.",
@@ -178,6 +186,15 @@ pub fn assembly_scene() -> Scene {
                 "But the weight is different. The jokes land in different \
                  places. The silences last longer. Nobody pretends this is \
                  what it was.",
+                EmotionTag::Quiet,
+            ),
+            // Memory ref: last_campfire echo from ch12
+            say_if_with("narrator",
+                "The last time they sat together at a fire, nobody said \
+                 'this is the end.' Nobody says 'this is the beginning' \
+                 now, either. Some rhythms survive fifteen years. Some \
+                 just echo.",
+                vec![Condition::HasMemoryObject(MemoryObjectId::new("last_campfire"))],
                 EmotionTag::Quiet,
             ),
         ],

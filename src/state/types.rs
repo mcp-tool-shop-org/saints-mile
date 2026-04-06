@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use crate::types::*;
 use crate::scene::types::{Condition, StateEffect};
+use super::investigation::InvestigationState;
 
 /// The complete game state — serialized to RON for save/load.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -24,6 +25,10 @@ pub struct GameState {
     pub flags: HashMap<String, FlagValue>,
     pub memory_objects: Vec<MemoryObject>,
     pub resources: TrailResources,
+    /// Active investigation state (e.g., Burned Mission multi-domain assembly).
+    pub investigation: Option<InvestigationState>,
+    /// Evidence IDs the player has collected — cross-referenced by relay branch gating.
+    pub collected_evidence: Vec<String>,
 }
 
 impl GameState {
@@ -45,7 +50,21 @@ impl GameState {
             flags: HashMap::new(),
             memory_objects: Vec::new(),
             resources: TrailResources::default(),
+            investigation: None,
+            collected_evidence: Vec::new(),
         }
+    }
+
+    /// Collect a piece of evidence by ID (no-op if already collected).
+    pub fn collect_evidence(&mut self, evidence_id: &str) {
+        if !self.collected_evidence.contains(&evidence_id.to_string()) {
+            self.collected_evidence.push(evidence_id.to_string());
+        }
+    }
+
+    /// Check if a specific piece of evidence has been collected.
+    pub fn has_collected(&self, evidence_id: &str) -> bool {
+        self.collected_evidence.iter().any(|e| e == evidence_id)
     }
 
     pub fn check_condition(&self, condition: &Condition) -> bool {
@@ -337,5 +356,235 @@ impl TrailResources {
             ResourceKind::Ammo => self.ammo = (self.ammo + delta).max(0),
             ResourceKind::HorseStamina => self.horse_stamina = (self.horse_stamina + delta).max(0),
         }
+    }
+}
+
+// --- Relay branch evidence gating ---
+
+/// Returns which evidence categories are accessible based on the relay branch.
+///
+/// - Tom branch: structural/route evidence (he knows the road, the layout).
+/// - Nella branch: human witness/community evidence (she knows the people).
+/// - Papers branch: documentary/filing evidence (the records survived).
+///
+/// Used by content/scene code to gate which evidence the player can discover.
+pub fn relay_evidence_available(state: &GameState) -> Vec<&'static str> {
+    match state.relay_branch {
+        Some(RelayBranch::Tom) => vec![
+            "structural",
+            "route",
+            "route_manifest_sm",
+            "sheriff_security_ref",
+            "medical_routing",
+        ],
+        Some(RelayBranch::Nella) => vec![
+            "human_witness",
+            "community",
+            "payroll_ledger_convoy",
+            "double_payroll",
+            "medical_routing",
+            "sheriff_security_ref",
+        ],
+        Some(RelayBranch::Papers) => vec![
+            "documentary",
+            "filing",
+            "contract_demolition",
+            "land_acquisition_chain",
+            "double_payroll",
+            "medical_routing",
+            "sheriff_security_ref",
+        ],
+        None => vec![],
+    }
+}
+
+// --- Party dispersal enforcement (Ch12+) ---
+
+/// The canonical party member IDs and their departure/return flag names.
+const DEPARTURE_FLAGS: &[(&str, &str, &str)] = &[
+    // (character_id, departure_flag, return_flag)
+    ("ada",    "ada_departed",    "ada_returned"),
+    ("rosa",   "rosa_departed",   "rosa_returned"),
+    ("eli",    "eli_departed",    "eli_returned"),
+    ("miriam", "miriam_departed", "miriam_returned"),
+    ("lucien", "lucien_departed", "lucien_returned"),
+];
+
+/// Returns the list of party member IDs who are currently available for combat
+/// and party activities. Characters with `_departed` flags set to true are
+/// excluded unless their `_returned` flag is also true (Ch14 reunions).
+///
+/// Galen is always available — he is the protagonist.
+pub fn available_party_members(state: &GameState) -> Vec<CharacterId> {
+    let mut available = Vec::new();
+
+    for member in &state.party.members {
+        // Galen is never removed from availability
+        if member.id.0 == "galen" {
+            available.push(member.id.clone());
+            continue;
+        }
+
+        // Check departure/return flags for known party members
+        let is_departed = DEPARTURE_FLAGS.iter().find(|(id, _, _)| *id == member.id.0);
+
+        match is_departed {
+            Some((_, depart_flag, return_flag)) => {
+                let departed = state.flags.get(*depart_flag)
+                    .map_or(false, |v| *v == FlagValue::Bool(true));
+                let returned = state.flags.get(*return_flag)
+                    .map_or(false, |v| *v == FlagValue::Bool(true));
+
+                if !departed || returned {
+                    available.push(member.id.clone());
+                }
+            }
+            // Unknown party members (no departure tracking) are always available
+            None => {
+                available.push(member.id.clone());
+            }
+        }
+    }
+
+    available
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn collect_evidence_deduplicates() {
+        let mut state = GameState::new_game();
+        state.collect_evidence("relay_manifest");
+        state.collect_evidence("relay_manifest");
+        assert_eq!(state.collected_evidence.len(), 1);
+    }
+
+    #[test]
+    fn has_collected_works() {
+        let mut state = GameState::new_game();
+        assert!(!state.has_collected("relay_manifest"));
+        state.collect_evidence("relay_manifest");
+        assert!(state.has_collected("relay_manifest"));
+    }
+
+    #[test]
+    fn relay_evidence_tom_branch() {
+        let mut state = GameState::new_game();
+        state.relay_branch = Some(RelayBranch::Tom);
+        let available = relay_evidence_available(&state);
+        assert!(available.contains(&"structural"));
+        assert!(available.contains(&"route"));
+        assert!(!available.contains(&"documentary"));
+        assert!(!available.contains(&"human_witness"));
+    }
+
+    #[test]
+    fn relay_evidence_nella_branch() {
+        let mut state = GameState::new_game();
+        state.relay_branch = Some(RelayBranch::Nella);
+        let available = relay_evidence_available(&state);
+        assert!(available.contains(&"human_witness"));
+        assert!(available.contains(&"community"));
+        assert!(!available.contains(&"structural"));
+        assert!(!available.contains(&"filing"));
+    }
+
+    #[test]
+    fn relay_evidence_papers_branch() {
+        let mut state = GameState::new_game();
+        state.relay_branch = Some(RelayBranch::Papers);
+        let available = relay_evidence_available(&state);
+        assert!(available.contains(&"documentary"));
+        assert!(available.contains(&"filing"));
+        assert!(!available.contains(&"structural"));
+        assert!(!available.contains(&"human_witness"));
+    }
+
+    #[test]
+    fn relay_evidence_none_returns_empty() {
+        let state = GameState::new_game(); // no relay branch set
+        assert!(relay_evidence_available(&state).is_empty());
+    }
+
+    #[test]
+    fn available_party_no_departures() {
+        let mut state = GameState::new_game();
+        // Add ada and rosa to party
+        state.party.add_member(CharacterId::new("ada"));
+        state.party.add_member(CharacterId::new("rosa"));
+        let available = available_party_members(&state);
+        // galen, eli (from new_game), ada, rosa
+        assert_eq!(available.len(), 4);
+    }
+
+    #[test]
+    fn departed_member_excluded() {
+        let mut state = GameState::new_game();
+        state.party.add_member(CharacterId::new("ada"));
+        state.flags.insert("ada_departed".to_string(), FlagValue::Bool(true));
+        let available = available_party_members(&state);
+        assert!(!available.iter().any(|id| id.0 == "ada"));
+        // galen and eli still present
+        assert_eq!(available.len(), 2);
+    }
+
+    #[test]
+    fn returned_member_included() {
+        let mut state = GameState::new_game();
+        state.party.add_member(CharacterId::new("ada"));
+        state.flags.insert("ada_departed".to_string(), FlagValue::Bool(true));
+        state.flags.insert("ada_returned".to_string(), FlagValue::Bool(true));
+        let available = available_party_members(&state);
+        assert!(available.iter().any(|id| id.0 == "ada"));
+        assert_eq!(available.len(), 3);
+    }
+
+    #[test]
+    fn galen_never_departing() {
+        let state = GameState::new_game();
+        // Even if someone mistakenly sets a departure flag for galen
+        // he's not in the DEPARTURE_FLAGS list, so he stays available
+        let available = available_party_members(&state);
+        assert!(available.iter().any(|id| id.0 == "galen"));
+    }
+
+    #[test]
+    fn multiple_departures_ch12() {
+        let mut state = GameState::new_game();
+        state.party.add_member(CharacterId::new("ada"));
+        state.party.add_member(CharacterId::new("rosa"));
+        state.party.add_member(CharacterId::new("miriam"));
+
+        // Ch12: multiple departures
+        state.flags.insert("ada_departed".to_string(), FlagValue::Bool(true));
+        state.flags.insert("rosa_departed".to_string(), FlagValue::Bool(true));
+
+        let available = available_party_members(&state);
+        assert!(available.iter().any(|id| id.0 == "galen"));
+        assert!(available.iter().any(|id| id.0 == "eli"));
+        assert!(available.iter().any(|id| id.0 == "miriam"));
+        assert!(!available.iter().any(|id| id.0 == "ada"));
+        assert!(!available.iter().any(|id| id.0 == "rosa"));
+        assert_eq!(available.len(), 3);
+    }
+
+    #[test]
+    fn investigation_wired_to_state() {
+        use super::super::investigation::burned_mission_investigation;
+        let mut state = GameState::new_game();
+        assert!(state.investigation.is_none());
+
+        // Wire investigation into state
+        state.investigation = Some(burned_mission_investigation());
+        assert!(!state.investigation.as_ref().unwrap().convergence_reached);
+        assert_eq!(state.investigation.as_ref().unwrap().fragments.len(), 6);
+
+        // Read a fragment through state
+        let inv = state.investigation.as_mut().unwrap();
+        let result = inv.read_fragment("land_grants", &CharacterId::new("galen"));
+        assert!(result.is_some());
+        assert_eq!(inv.domains_read.len(), 1);
     }
 }

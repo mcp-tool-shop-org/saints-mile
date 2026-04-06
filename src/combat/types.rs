@@ -155,6 +155,8 @@ pub struct Wound {
 pub enum PositionState {
     Open,
     InCover,
+    /// Partial cover — 25% damage reduction instead of 50%.
+    PartialCover,
     Elevated,
     FrontLine,
     BackLine,
