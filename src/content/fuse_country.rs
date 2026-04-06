@@ -313,6 +313,7 @@ pub fn trestle_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

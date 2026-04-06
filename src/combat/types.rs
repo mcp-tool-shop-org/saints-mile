@@ -15,7 +15,13 @@ pub struct Encounter {
     pub terrain: Terrain,
     pub objectives: Vec<Objective>,
     pub outcome_effects: Vec<OutcomeEffect>,
+    /// Whether the party can attempt to flee. Boss encounters set this to false.
+    /// Defaults to true for serde deserialization (existing data without this field).
+    #[serde(default = "default_escapable")]
+    pub escapable: bool,
 }
+
+fn default_escapable() -> bool { true }
 
 /// A single phase of a multi-phase encounter.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -195,6 +201,45 @@ pub struct NpcCombatant {
     pub behavior: NpcBehavior,
     pub hp: i32,
     pub nerve: i32,
+    /// Character-specific speed. Defaults to 10 via serde for legacy encounters.
+    #[serde(default = "default_npc_speed")]
+    pub speed: i32,
+    /// Character-specific accuracy. Defaults to 60 via serde for legacy encounters.
+    #[serde(default = "default_npc_accuracy")]
+    pub accuracy: i32,
+    /// Character-specific damage. Defaults to 8 via serde for legacy encounters.
+    #[serde(default = "default_npc_damage")]
+    pub damage: i32,
+}
+
+fn default_npc_speed() -> i32 { 10 }
+fn default_npc_accuracy() -> i32 { 60 }
+fn default_npc_damage() -> i32 { 8 }
+
+/// Character-specific NPC combat stats. Used by content authors and the
+/// engine to look up real stats for named NPC allies.
+#[derive(Debug, Clone)]
+pub struct NpcCharacterStats {
+    pub speed: i32,
+    pub accuracy: i32,
+    pub damage: i32,
+}
+
+/// Look up character-specific combat stats for an NPC ally.
+/// Named characters get distinct stat lines; unknown characters get defaults.
+/// Content authors can use this to populate NpcCombatant fields.
+pub fn npc_stats_for(character_id: &str) -> NpcCharacterStats {
+    match character_id {
+        // Deputies — professional, reliable, moderate all-round
+        "cal" => NpcCharacterStats { speed: 9, accuracy: 62, damage: 9 },
+        "deputy_harris" => NpcCharacterStats { speed: 11, accuracy: 65, damage: 9 },
+        // Renata — sharper but more fragile
+        "renata" => NpcCharacterStats { speed: 10, accuracy: 68, damage: 7 },
+        // Bale — convoy guard, slow but heavy-hitting
+        "bale" => NpcCharacterStats { speed: 7, accuracy: 55, damage: 12 },
+        // Generic / unknown NPC — baseline stats
+        _ => NpcCharacterStats { speed: 10, accuracy: 60, damage: 8 },
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

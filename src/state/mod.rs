@@ -12,3 +12,4 @@ pub mod investigation;
 pub mod history;
 pub mod reassembly;
 pub mod ending;
+pub mod progression;

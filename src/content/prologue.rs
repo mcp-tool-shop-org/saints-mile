@@ -586,6 +586,7 @@ pub fn glass_arroyo_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

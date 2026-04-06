@@ -1,7 +1,7 @@
 //! Input handling — crossterm event dispatch by screen.
 
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
-use crate::ui::mod_types::{App, AppScreen, InputResult};
+use crate::ui::mod_types::{App, AppScreen, InputResult, QuitOption};
 
 /// Number of save slots available. Centralizes the limit so it isn't scattered.
 const SAVE_SLOT_COUNT: usize = 3;
@@ -16,9 +16,17 @@ pub fn handle_event(app: &mut App, event: Event) -> InputResult {
 }
 
 fn handle_key(app: &mut App, key: KeyEvent) -> InputResult {
-    // Universal: Ctrl+Q quits
+    // Quit confirmation screen gets its own handler — no universal shortcuts
+    if matches!(app.screen, AppScreen::ConfirmQuit { .. }) {
+        return handle_confirm_quit_key(app, key);
+    }
+
+    // Universal: Ctrl+Q — immediate quit on title, confirmation elsewhere
     if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('q') {
-        return InputResult::Quit;
+        return match &app.screen {
+            AppScreen::Title => InputResult::Quit,
+            _ => InputResult::RequestQuit,
+        };
     }
 
     // Universal: Ctrl+S saves (when in scene)
@@ -36,6 +44,7 @@ fn handle_key(app: &mut App, key: KeyEvent) -> InputResult {
         AppScreen::Combat => handle_combat_key(app, key),
         AppScreen::CombatOutcome => handle_combat_outcome_key(key),
         AppScreen::SaveLoad { .. } => handle_save_load_key(app, key),
+        AppScreen::ConfirmQuit { .. } => unreachable!(), // handled above
     }
 }
 
@@ -133,6 +142,29 @@ fn handle_save_load_key(app: &mut App, key: KeyEvent) -> InputResult {
         }
         KeyCode::Enter => InputResult::ConfirmSaveLoad(app.save_cursor),
         KeyCode::Esc => InputResult::BackToTitle,
+        _ => InputResult::None,
+    }
+}
+
+fn handle_confirm_quit_key(app: &mut App, key: KeyEvent) -> InputResult {
+    let options = QuitOption::all();
+    match key.code {
+        KeyCode::Up | KeyCode::Char('k') => {
+            app.quit_cursor = app.quit_cursor.saturating_sub(1);
+            InputResult::None
+        }
+        KeyCode::Down | KeyCode::Char('j') => {
+            if app.quit_cursor < options.len().saturating_sub(1) {
+                app.quit_cursor += 1;
+            }
+            InputResult::None
+        }
+        KeyCode::Enter => {
+            let selected = options.get(app.quit_cursor).copied()
+                .unwrap_or(QuitOption::Cancel);
+            InputResult::ConfirmQuitOption(selected)
+        }
+        KeyCode::Esc => InputResult::CancelQuit,
         _ => InputResult::None,
     }
 }

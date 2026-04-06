@@ -370,6 +370,7 @@ pub fn pump_house_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

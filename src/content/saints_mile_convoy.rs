@@ -511,6 +511,7 @@ pub fn red_switch_wash_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 
@@ -550,6 +551,7 @@ pub fn hollow_pump_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 
@@ -572,6 +574,7 @@ pub fn saints_mile_relay_encounter() -> Encounter {
                         character: CharacterId::new("bale"),
                         behavior: NpcBehavior::Professional,
                         hp: 35, nerve: 30,
+                        speed: 7, accuracy: 55, damage: 12,
                     },
                 ],
                 entry_conditions: vec![],
@@ -635,6 +638,7 @@ pub fn saints_mile_relay_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

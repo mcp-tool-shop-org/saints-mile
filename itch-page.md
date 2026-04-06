@@ -45,7 +45,7 @@ The command menu carries biography. Young Galen fights with speed. Adult Galen f
 
 ### Features
 
-- 16 chapters across four life phases
+- Prologue + 15 chapters across four life phases
 - 6 party members with distinct combat identities
 - Standoff-driven initiative before every significant fight
 - Nerve as a second health bar — panic breaks combatants on both sides

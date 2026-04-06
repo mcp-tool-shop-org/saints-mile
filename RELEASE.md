@@ -29,7 +29,7 @@ The same skills you loved using at the bandit camp feel different at Bitter Cut.
 
 ## Features
 
-- **16 chapters** across four life phases (youth, young man, adult, older)
+- **Prologue + 15 chapters** across four life phases (youth, young man, adult, older)
 - **6 party members** with distinct combat identities and skill lines
 - **Standoff-driven initiative** — posture, focus, nerve pressure before every significant fight
 - **Nerve as second health bar** — panic breaks combatants on both sides

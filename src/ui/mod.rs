@@ -11,7 +11,7 @@ pub mod screens;
 
 /// Re-export the App types for input.rs to use.
 pub mod mod_types {
-    pub use super::{App, AppScreen, InputResult};
+    pub use super::{App, AppScreen, InputResult, QuitOption};
 }
 
 use crate::combat::engine::{EncounterState, EncounterPhase, CombatSide, ActionResult};
@@ -50,6 +50,8 @@ pub struct App {
     pub combat_actions: Vec<CombatMenuItem>,
     /// Scene to return to after combat resolves.
     pub post_combat_scene: Option<String>,
+    /// Cursor position on the quit confirmation screen.
+    pub quit_cursor: usize,
 }
 
 /// Which screen the player is on.
@@ -66,6 +68,33 @@ pub enum AppScreen {
     SaveLoad {
         mode: SaveLoadMode,
     },
+    /// Quit confirmation — shown when quitting from an active game screen.
+    ConfirmQuit {
+        /// The screen to return to if the player cancels.
+        return_screen: Box<AppScreen>,
+    },
+}
+
+/// Options on the quit confirmation screen.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum QuitOption {
+    SaveAndQuit,
+    QuitWithoutSaving,
+    Cancel,
+}
+
+impl QuitOption {
+    pub fn all() -> &'static [QuitOption] {
+        &[QuitOption::SaveAndQuit, QuitOption::QuitWithoutSaving, QuitOption::Cancel]
+    }
+
+    pub fn label(&self) -> &'static str {
+        match self {
+            QuitOption::SaveAndQuit => "Save & Quit",
+            QuitOption::QuitWithoutSaving => "Quit Without Saving",
+            QuitOption::Cancel => "Cancel",
+        }
+    }
 }
 
 /// What an input event caused.
@@ -91,6 +120,10 @@ pub enum InputResult {
     CombatCycleTarget(i32),
     // Post-standoff / post-combat advance
     AdvanceCombat,
+    // Quit confirmation
+    RequestQuit,
+    ConfirmQuitOption(QuitOption),
+    CancelQuit,
 }
 
 impl App {
@@ -111,6 +144,7 @@ impl App {
             combat_ui: CombatUi::new(),
             combat_actions: Vec::new(),
             post_combat_scene: None,
+            quit_cursor: 0,
         }
     }
 

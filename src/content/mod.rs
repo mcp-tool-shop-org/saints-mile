@@ -74,3 +74,27 @@ pub fn get_encounter(chapter: &str, id: &str) -> Option<Encounter> {
         _ => None,
     }
 }
+
+/// Maps a chapter ID to its entry scene ID.
+/// This enables automatic chapter-to-chapter transitions after a chapter close scene.
+pub fn chapter_entry_scene(chapter: &str) -> Option<&str> {
+    match chapter {
+        "prologue" => Some("prologue_poster"),
+        "cedar_wake" => Some("cw_arrival"),
+        "saints_mile_convoy" => Some("convoy_join"),
+        "black_willow" => Some("bw_morrow_aftermath"),
+        "ropehouse_blood" => Some("rh_varela_approach"),
+        "dust_revival" => Some("dr_arrival"),
+        "fuse_country" => Some("fc_corridor_entry"),
+        "iron_ledger" => Some("il_city_entry"),
+        "burned_mission" => Some("bm_valley_entry"),
+        "long_wire" => Some("lw_junction_arrival"),
+        "deadwater_trial" => Some("dw_arrival"),
+        "breakwater_junction" => Some("bj_entry"),
+        "names_in_dust" => Some("nd_aftermath"),
+        "fifteen_years_gone" => Some("fg_return"),
+        "old_friends" => Some("of_eli_return"),
+        "saints_mile_again" => Some("sm_return"),
+        _ => None,
+    }
+}

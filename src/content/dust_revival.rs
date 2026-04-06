@@ -319,6 +319,7 @@ pub fn crowd_containment_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 
@@ -360,6 +361,7 @@ pub fn aftermath_guns_encounter() -> Encounter {
             success_consequence: vec![set_flag("aftermath_survived", true)],
         }],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

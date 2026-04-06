@@ -168,4 +168,4 @@ Cut v1.0.0 when:
 4. No chapter with placeholder-feeling presentation
 5. At least 3/5 success test criteria validated by player behavior (not self-report)
 
-The game is done when a full run feels like one life, one wound, one argument with history — not 16 chapters that happen to be good.
+The game is done when a full run feels like one life, one wound, one argument with history — not 16 sections that happen to be good.

@@ -370,6 +370,7 @@ pub fn ropehouse_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

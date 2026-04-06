@@ -3,11 +3,67 @@
 //! Built as a full 4-slot party battle from day one. Even with 2 characters active,
 //! the runtime thinks like a 90s JRPG party battle.
 
+use std::collections::HashMap;
 use tracing::{debug, info};
 
 use super::types::*;
 use crate::types::*;
 use crate::scene::types::StateEffect;
+
+// ─── Skill & DuoTech Registries ───────────────────────────────────
+
+/// Runtime skill registry — maps SkillId to the Skill definition so the
+/// combat engine can look up real accuracy, damage, and cost instead of
+/// using hardcoded fallbacks.
+#[derive(Debug, Clone, Default)]
+pub struct SkillRegistry {
+    skills: HashMap<SkillId, Skill>,
+}
+
+impl SkillRegistry {
+    pub fn new() -> Self {
+        Self { skills: HashMap::new() }
+    }
+
+    pub fn register(&mut self, skill: Skill) {
+        self.skills.insert(skill.id.clone(), skill);
+    }
+
+    pub fn get(&self, id: &SkillId) -> Option<&Skill> {
+        self.skills.get(id)
+    }
+
+    /// Look up the age-specific variant for a skill. Falls back to the first
+    /// variant if the requested phase is not found.
+    pub fn get_variant(&self, id: &SkillId, phase: AgePhase) -> Option<&AgeVariant> {
+        self.skills.get(id).and_then(|s| {
+            s.age_variants.iter()
+                .find(|v| v.phase == phase)
+                .or(s.age_variants.first())
+        })
+    }
+}
+
+/// Runtime duo-tech registry — maps DuoTechId to the DuoTech definition
+/// for co-actor validation and real damage/cost lookup.
+#[derive(Debug, Clone, Default)]
+pub struct DuoTechRegistry {
+    duo_techs: HashMap<DuoTechId, DuoTech>,
+}
+
+impl DuoTechRegistry {
+    pub fn new() -> Self {
+        Self { duo_techs: HashMap::new() }
+    }
+
+    pub fn register(&mut self, dt: DuoTech) {
+        self.duo_techs.insert(dt.id.clone(), dt);
+    }
+
+    pub fn get(&self, id: &DuoTechId) -> Option<&DuoTech> {
+        self.duo_techs.get(id)
+    }
+}
 
 // ─── Encounter State Machine ───────────────────────────────────────
 
@@ -58,6 +114,18 @@ pub struct EncounterState {
 
     /// Whether the encounter is over and why.
     pub outcome: Option<EncounterOutcome>,
+
+    /// Whether the party can attempt to flee (false for boss encounters).
+    pub escapable: bool,  // resolved from Encounter.is_escapable() at construction
+
+    /// Skill registry for looking up real skill stats.
+    pub skill_registry: SkillRegistry,
+
+    /// Duo-tech registry for co-actor validation and real effect lookup.
+    pub duo_tech_registry: DuoTechRegistry,
+
+    /// Current age phase — used to select the correct skill variant.
+    pub age_phase: AgePhase,
 }
 
 /// A combatant during live combat.
@@ -234,9 +302,24 @@ pub struct StatusChange {
 
 impl EncounterState {
     /// Create a new encounter from a definition and the party's current state.
+    ///
+    /// The `skill_registry` and `duo_tech_registry` are optional — when `None`,
+    /// the engine uses empty registries and falls back to actor-level stats.
+    /// The `age_phase` determines which skill variant is looked up.
     pub fn new(
         encounter: &Encounter,
         party_members: Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<SkillId>, Vec<DuoTechId>, Vec<Wound>)>,
+    ) -> Self {
+        Self::with_registries(encounter, party_members, SkillRegistry::new(), DuoTechRegistry::new(), AgePhase::Adult)
+    }
+
+    /// Create with explicit registries and age phase for full skill/duo-tech resolution.
+    pub fn with_registries(
+        encounter: &Encounter,
+        party_members: Vec<(String, String, i32, i32, i32, i32, i32, i32, Vec<SkillId>, Vec<DuoTechId>, Vec<Wound>)>,
+        skill_registry: SkillRegistry,
+        duo_tech_registry: DuoTechRegistry,
+        age_phase: AgePhase,
     ) -> Self {
         // Build party slots — always 4, empty slots are None
         let mut party: [Option<LiveCombatant>; 4] = [None, None, None, None];
@@ -300,7 +383,7 @@ impl EncounterState {
             }).collect())
             .unwrap_or_default();
 
-        // Build NPC allies
+        // Build NPC allies — use character-specific stats from encounter data
         let npc_allies: Vec<LiveNpc> = first_phase
             .map(|p| p.npc_allies.iter().map(|n| LiveNpc {
                 combatant: LiveCombatant {
@@ -310,7 +393,7 @@ impl EncounterState {
                     hp: n.hp, max_hp: n.hp,
                     nerve: n.nerve, max_nerve: n.nerve,
                     ammo: 99, max_ammo: 99,
-                    speed: 10, accuracy: 60, damage: 8,
+                    speed: n.speed, accuracy: n.accuracy, damage: n.damage,
                     position: PositionState::Open,
                     wounds: Vec::new(),
                     panicked: false, down: false,
@@ -347,6 +430,10 @@ impl EncounterState {
             npc_allies,
             turn_queue: Vec::new(),
             current_turn: 0,
+            escapable: encounter.escapable,
+            skill_registry,
+            duo_tech_registry,
+            age_phase,
             round: 0,
             standoff_result: None,
             objectives,
@@ -559,31 +646,55 @@ impl EncounterState {
                 }
                 let (actor_damage, actor_accuracy, actor_ammo) = actor_stats.unwrap();
 
+                // Look up skill from registry for real stats (FT-001)
+                let skill_variant = self.skill_registry.get_variant(skill, self.age_phase).cloned();
+                let skill_cost = self.skill_registry.get(skill).map(|s| s.cost.clone());
+
+                // Determine ammo cost — from skill definition or default 1
+                let ammo_cost = skill_cost.as_ref().map(|c| c.ammo).unwrap_or(1);
+
                 // Check ammo
-                if actor_ammo <= 0 {
+                if actor_ammo < ammo_cost {
                     result.action_description = format!("{} is out of ammo!", actor_id);
                     return result;
                 }
 
-                // Spend ammo
-                self.modify_ammo(&actor_id, -1);
+                // Check nerve cost
+                if let Some(ref cost) = skill_cost {
+                    if cost.nerve > 0 {
+                        let actor_nerve = self.get_actor_nerve(&actor_id).unwrap_or(0);
+                        if actor_nerve < cost.nerve {
+                            result.action_description = format!(
+                                "{} doesn't have enough nerve to use {}!",
+                                actor_id, skill
+                            );
+                            return result;
+                        }
+                        // Spend nerve
+                        self.apply_nerve_damage(&actor_id, cost.nerve);
+                    }
+                }
 
-                // Calculate hit
+                // Spend ammo
+                self.modify_ammo(&actor_id, -ammo_cost);
+
+                // Calculate hit — use skill-specific accuracy if available, else actor base
+                let skill_accuracy = skill_variant.as_ref().map(|v| v.accuracy).unwrap_or(0);
+                let base_accuracy = actor_accuracy + skill_accuracy;
                 let accuracy_mod = self.standoff_result.as_ref()
                     .map(|sr| if self.round == 1 { sr.first_shot_accuracy } else { 0 })
                     .unwrap_or(0);
 
-                let final_accuracy = actor_accuracy + accuracy_mod;
-                // Fallback accuracy threshold: 50. Skill definitions carry per-skill
-                // accuracy via AgeVariant, but the engine doesn't yet resolve skill
-                // lookups at runtime. When skill resolution is wired, read the
-                // threshold from the skill's AgeVariant.accuracy instead.
+                let final_accuracy = base_accuracy + accuracy_mod;
                 let accuracy_threshold = 50;
                 let hits = final_accuracy >= accuracy_threshold;
 
                 if hits {
                     if let TargetSelection::Single(target_id) = target {
-                        let damage = actor_damage;
+                        // Use skill-specific damage if available, else actor base damage
+                        let damage = skill_variant.as_ref()
+                            .map(|v| if v.damage > 0 { v.damage } else { actor_damage })
+                            .unwrap_or(actor_damage);
                         let target_down = self.apply_damage(target_id, damage);
 
                         result.damage_dealt.push(DamageEvent {
@@ -593,10 +704,10 @@ impl EncounterState {
                             target_down,
                         });
 
-                        // Nerve damage on hit
-                        // Nerve damage on hit — damage < 3 intentionally gives 0 nerve damage
-                        // (small hits don't rattle nerve)
-                        let nerve_dmg = damage / 3;
+                        // Nerve damage — use skill-specific nerve_damage if available
+                        let nerve_dmg = skill_variant.as_ref()
+                            .map(|v| if v.nerve_damage > 0 { v.nerve_damage } else { damage / 3 })
+                            .unwrap_or(damage / 3);
                         if nerve_dmg > 0 {
                             let (broke, panicked) = self.apply_nerve_damage(target_id, nerve_dmg);
                             result.nerve_damage.push(NerveDamageEvent {
@@ -626,16 +737,75 @@ impl EncounterState {
             }
 
             CombatAction::UseDuoTech { duo_tech, target } => {
-                // Duo tech: both members act, combined effect
+                // Look up duo-tech from registry (FT-002)
+                let dt_def = self.duo_tech_registry.get(duo_tech).cloned();
+
+                // Validate co-actor: both members must be present and alive
+                if let Some(ref dt) = dt_def {
+                    let (ref member_a, ref member_b) = dt.members;
+                    let co_actor_id = if actor_id == member_a.0 {
+                        &member_b.0
+                    } else if actor_id == member_b.0 {
+                        &member_a.0
+                    } else {
+                        eprintln!(
+                            "[combat] Actor '{}' is not a member of duo-tech '{}' (members: {}, {})",
+                            actor_id, duo_tech, member_a, member_b
+                        );
+                        result.action_description = format!(
+                            "{} cannot use {} — not a member!", actor_id, duo_tech
+                        );
+                        return result;
+                    };
+
+                    // Check co-actor is present and alive
+                    let co_actor_alive = self.party.iter().flatten()
+                        .any(|m| m.id == *co_actor_id && !m.down && !m.panicked);
+                    if !co_actor_alive {
+                        result.action_description = format!(
+                            "{} cannot use {} — partner {} is down or absent!",
+                            actor_id, duo_tech, co_actor_id
+                        );
+                        return result;
+                    }
+
+                    // Validate costs — both actors pay
+                    let actor_ammo = self.get_actor_stats(&actor_id).map(|s| s.2).unwrap_or(0);
+                    let co_actor_ammo = self.get_actor_stats(co_actor_id).map(|s| s.2).unwrap_or(0);
+                    if actor_ammo < dt.cost.ammo || co_actor_ammo < dt.cost.ammo {
+                        result.action_description = format!(
+                            "{} cannot use {} — not enough ammo!", actor_id, duo_tech
+                        );
+                        return result;
+                    }
+
+                    // Check nerve cost
+                    if dt.cost.nerve > 0 {
+                        let actor_nerve = self.get_actor_nerve(&actor_id).unwrap_or(0);
+                        let co_actor_nerve = self.get_actor_nerve(co_actor_id).unwrap_or(0);
+                        if actor_nerve < dt.cost.nerve || co_actor_nerve < dt.cost.nerve {
+                            result.action_description = format!(
+                                "{} cannot use {} — not enough nerve!", actor_id, duo_tech
+                            );
+                            return result;
+                        }
+                        // Spend nerve from both
+                        self.apply_nerve_damage(&actor_id, dt.cost.nerve);
+                        self.apply_nerve_damage(co_actor_id, dt.cost.nerve);
+                    }
+
+                    // Spend ammo from both
+                    self.modify_ammo(&actor_id, -dt.cost.ammo);
+                    self.modify_ammo(co_actor_id, -dt.cost.ammo);
+                }
+
                 result.action_description = format!("{} triggers {}!", actor_id, duo_tech);
 
                 if let TargetSelection::Single(target_id) = target {
-                    // DuoTechEffect carries damage and nerve_damage fields.
-                    // When the engine gains a skill/duo-tech registry lookup, read
-                    // these from the DuoTech.effect definition. Until then, fall
-                    // back to baseline values: 15 damage, 8 nerve damage.
-                    let damage = 15; // fallback — see DuoTechEffect.damage
-                    let nerve_dmg = 8; // fallback — see DuoTechEffect.nerve_damage
+                    // Use real values from registry, fall back to baseline
+                    let (damage, nerve_dmg) = dt_def.as_ref()
+                        .map(|dt| (dt.effect.damage, dt.effect.nerve_damage))
+                        .unwrap_or((15, 8));
 
                     let target_down = self.apply_damage(target_id, damage);
                     let (broke, panicked) = self.apply_nerve_damage(target_id, nerve_dmg);
@@ -671,8 +841,55 @@ impl EncounterState {
             }
 
             CombatAction::Flee => {
-                result.action_description = format!("{} attempts to flee.", actor_id);
-                // Flee logic would check conditions
+                // FT-004: Flee action — party attempts to escape non-boss encounters
+                if !self.escapable {
+                    result.action_description = format!(
+                        "{} tries to flee — but there's no escape from this fight!", actor_id
+                    );
+                    info!(actor = %actor_id, "flee blocked — encounter is not escapable");
+                    return result;
+                }
+
+                // Calculate flee chance based on party speed vs enemy speed
+                let party_avg_speed = {
+                    let active: Vec<_> = self.party.iter().flatten()
+                        .filter(|m| !m.down && !m.panicked)
+                        .collect();
+                    if active.is_empty() { 0 }
+                    else { active.iter().map(|m| m.speed).sum::<i32>() / active.len() as i32 }
+                };
+                let enemy_avg_speed = {
+                    let active: Vec<_> = self.enemies.iter()
+                        .filter(|e| !e.down && !e.panicked)
+                        .collect();
+                    if active.is_empty() { 100 } // no enemies = auto-succeed
+                    else { active.iter().map(|e| e.speed).sum::<i32>() / active.len() as i32 }
+                };
+
+                // Base 50% chance, +5% per speed advantage, -5% per speed disadvantage
+                // Clamped to 15%–95%
+                let speed_diff = party_avg_speed - enemy_avg_speed;
+                let flee_chance = (50 + speed_diff * 5).clamp(15, 95);
+
+                // Deterministic for now: succeed if chance >= 50
+                // (A proper RNG will be wired when the game loop owns randomness.)
+                let fled = flee_chance >= 50;
+
+                if fled {
+                    result.action_description = format!("{} leads the party to flee — they escape!", actor_id);
+                    self.outcome = Some(EncounterOutcome {
+                        result: EncounterResult::Fled,
+                        effects: Vec::new(),
+                    });
+                    self.phase = EncounterPhase::Resolved;
+                    info!(actor = %actor_id, chance = flee_chance, "flee succeeded");
+                } else {
+                    result.action_description = format!(
+                        "{} tries to flee — but the enemies are too fast! ({}% chance)",
+                        actor_id, flee_chance
+                    );
+                    info!(actor = %actor_id, chance = flee_chance, "flee failed");
+                }
             }
         }
 
@@ -760,6 +977,74 @@ impl EncounterState {
         }
 
         self.outcome.as_ref()
+    }
+
+    // ─── End-of-Encounter Objective Resolution (FT-025) ─────────
+
+    /// Auto-resolve any objectives still marked Active when the encounter ends.
+    /// - If the encounter was a Victory, Active secondaries succeed (General behavior)
+    ///   or are evaluated by their behavior type.
+    /// - If the encounter was a Defeat or Fled, Active objectives fail.
+    /// Must be called after `check_resolution` has set `self.outcome`.
+    pub fn resolve_remaining_objectives(&mut self) {
+        let outcome_result = match &self.outcome {
+            Some(o) => o.result,
+            None => return, // encounter not resolved yet — nothing to do
+        };
+
+        let all_broke = self.enemies.iter().all(|e| e.panicked && !e.down);
+
+        for obj in &mut self.objectives {
+            if obj.status != ObjectiveStatus::Active {
+                continue;
+            }
+
+            match outcome_result {
+                EncounterResult::Victory | EncounterResult::ObjectiveComplete => {
+                    // Evaluate based on behavior
+                    match obj.behavior {
+                        ObjectiveBehavior::CivilianCasualties => {
+                            obj.status = if all_broke {
+                                ObjectiveStatus::Succeeded
+                            } else {
+                                ObjectiveStatus::Failed
+                            };
+                        }
+                        ObjectiveBehavior::ProtectAsset => {
+                            // If we won, the asset survived
+                            obj.status = ObjectiveStatus::Succeeded;
+                        }
+                        ObjectiveBehavior::General => {
+                            // Default: secondary objectives succeed with victory
+                            obj.status = ObjectiveStatus::Succeeded;
+                        }
+                    }
+                }
+                EncounterResult::Defeat | EncounterResult::Fled => {
+                    // All unresolved objectives fail on defeat/flee
+                    obj.status = ObjectiveStatus::Failed;
+                }
+            }
+
+            debug!(
+                objective = %obj.id,
+                status = ?obj.status,
+                "auto-resolved remaining objective at encounter end"
+            );
+        }
+
+        // Collect effects from newly resolved objectives into pending_effects
+        for obj in &self.objectives {
+            match obj.status {
+                ObjectiveStatus::Succeeded => {
+                    self.pending_effects.extend(obj.success_consequence.clone());
+                }
+                ObjectiveStatus::Failed => {
+                    self.pending_effects.extend(obj.fail_consequence.clone());
+                }
+                ObjectiveStatus::Active => {} // shouldn't happen after resolution
+            }
+        }
     }
 
     // ─── Internal Helpers ──────────────────────────────────────────
@@ -863,6 +1148,22 @@ impl EncounterState {
         (false, false)
     }
 
+    /// Get an actor's current nerve value.
+    fn get_actor_nerve(&self, id: &str) -> Option<i32> {
+        for slot in &self.party {
+            if let Some(m) = slot {
+                if m.id == id { return Some(m.nerve); }
+            }
+        }
+        for e in &self.enemies {
+            if e.id == id { return Some(e.nerve); }
+        }
+        for n in &self.npc_allies {
+            if n.combatant.id == id { return Some(n.combatant.nerve); }
+        }
+        None
+    }
+
     fn get_position(&self, id: &str) -> Option<PositionState> {
         for slot in &self.party {
             if let Some(m) = slot {
@@ -894,6 +1195,11 @@ impl EncounterState {
     /// Count active enemies.
     pub fn active_enemy_count(&self) -> usize {
         self.enemies.iter().filter(|e| !e.down && !e.panicked).count()
+    }
+
+    /// Mark this encounter as non-escapable (boss fight).
+    pub fn set_escapable(&mut self, escapable: bool) {
+        self.escapable = escapable;
     }
 }
 
@@ -962,6 +1268,7 @@ mod tests {
                 ],
             }],
             outcome_effects: vec![],
+            escapable: true,
         }
     }
 
@@ -1248,5 +1555,316 @@ mod tests {
 
         // And nerve damage
         assert!(!result.nerve_damage.is_empty());
+    }
+
+    // ─── FT-001: Skill registry wired ─────────────────────────────
+
+    #[test]
+    fn skill_registry_overrides_damage_and_accuracy() {
+        let encounter = glass_arroyo_encounter();
+        let mut registry = SkillRegistry::new();
+        registry.register(Skill {
+            id: SkillId::new("quick_draw"),
+            name: "Quick Draw".to_string(),
+            description: "Fast shot".to_string(),
+            line: SkillLine::Deadeye,
+            unlock: UnlockCondition::StartOfPhase(AgePhase::Youth),
+            age_variants: vec![AgeVariant {
+                phase: AgePhase::Adult,
+                accuracy: 10,  // +10 accuracy bonus
+                damage: 15,    // overrides actor damage
+                speed_priority: 0,
+                nerve_damage: 5,
+                description_override: None,
+            }],
+            cost: SkillCost { ammo: 1, nerve: 0, cooldown_turns: 0 },
+        });
+
+        let mut state = EncounterState::with_registries(
+            &encounter, prologue_party(), registry, DuoTechRegistry::new(), AgePhase::Adult,
+        );
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen")
+            .unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::UseSkill {
+            skill: SkillId::new("quick_draw"),
+            target: TargetSelection::Single("raider_0".to_string()),
+        });
+
+        // Should use the skill's damage (15), not the actor's base damage (10)
+        assert!(!result.damage_dealt.is_empty());
+        assert_eq!(result.damage_dealt[0].amount, 15, "skill damage should override actor base");
+        // Should use skill's nerve_damage (5), not damage/3
+        assert!(!result.nerve_damage.is_empty());
+        assert_eq!(result.nerve_damage[0].amount, 5, "skill nerve_damage should be used");
+    }
+
+    // ─── FT-002: Duo-tech co-actor validation ─────────────────────
+
+    #[test]
+    fn duo_tech_fails_when_partner_down() {
+        let encounter = glass_arroyo_encounter();
+        let mut dt_registry = DuoTechRegistry::new();
+        dt_registry.register(DuoTech {
+            id: DuoTechId::new("loaded_deck"),
+            name: "Loaded Deck".to_string(),
+            description: "Galen + Eli combo".to_string(),
+            members: (CharacterId::new("galen"), CharacterId::new("eli")),
+            unlock: UnlockCondition::StartOfPhase(AgePhase::Adult),
+            cost: DuoTechCost { ammo: 1, nerve: 0, both_turns: true },
+            effect: DuoTechEffect {
+                description: "Combined assault".to_string(),
+                damage: 20, accuracy_bonus: 10, nerve_damage: 10,
+                special: None,
+            },
+        });
+
+        let mut state = EncounterState::with_registries(
+            &encounter, prologue_party(), SkillRegistry::new(), dt_registry, AgePhase::Adult,
+        );
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        // Down Eli
+        state.party[1].as_mut().unwrap().down = true;
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen")
+            .unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::UseDuoTech {
+            duo_tech: DuoTechId::new("loaded_deck"),
+            target: TargetSelection::Single("raider_0".to_string()),
+        });
+
+        // Should fail — Eli is down
+        assert!(result.damage_dealt.is_empty(), "duo tech should deal no damage when partner is down");
+        assert!(result.action_description.contains("down or absent"));
+    }
+
+    #[test]
+    fn duo_tech_uses_registry_damage() {
+        let encounter = glass_arroyo_encounter();
+        let mut dt_registry = DuoTechRegistry::new();
+        dt_registry.register(DuoTech {
+            id: DuoTechId::new("loaded_deck"),
+            name: "Loaded Deck".to_string(),
+            description: "Galen + Eli combo".to_string(),
+            members: (CharacterId::new("galen"), CharacterId::new("eli")),
+            unlock: UnlockCondition::StartOfPhase(AgePhase::Adult),
+            cost: DuoTechCost { ammo: 0, nerve: 0, both_turns: true },
+            effect: DuoTechEffect {
+                description: "Combined assault".to_string(),
+                damage: 25, accuracy_bonus: 10, nerve_damage: 12,
+                special: None,
+            },
+        });
+
+        let mut state = EncounterState::with_registries(
+            &encounter, prologue_party(), SkillRegistry::new(), dt_registry, AgePhase::Adult,
+        );
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen")
+            .unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::UseDuoTech {
+            duo_tech: DuoTechId::new("loaded_deck"),
+            target: TargetSelection::Single("raider_0".to_string()),
+        });
+
+        // Should use registry damage (25), not fallback (15)
+        assert!(!result.damage_dealt.is_empty());
+        assert_eq!(result.damage_dealt[0].amount, 25, "duo tech should use registry damage");
+        assert_eq!(result.nerve_damage[0].amount, 12, "duo tech should use registry nerve damage");
+    }
+
+    // ─── FT-004: Flee action ──────────────────────────────────────
+
+    #[test]
+    fn flee_succeeds_when_party_faster() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        // Galen speed 12, Eli speed 10 → avg 11
+        // Enemies: raider 8, gunman 6, lookout 10 → avg 8
+        // Party is faster → flee should succeed
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen")
+            .unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::Flee);
+        assert!(result.action_description.contains("flee"), "party should flee successfully");
+        assert_eq!(state.phase, EncounterPhase::Resolved);
+        assert!(matches!(state.outcome.as_ref().unwrap().result, EncounterResult::Fled));
+    }
+
+    #[test]
+    fn flee_blocked_in_boss_encounter() {
+        let mut encounter = glass_arroyo_encounter();
+        encounter.escapable = false; // boss fight
+
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen")
+            .unwrap();
+        state.current_turn = galen_turn;
+
+        let result = state.execute_action(&CombatAction::Flee);
+        assert!(result.action_description.contains("no escape"), "boss encounters block fleeing");
+        assert_ne!(state.phase, EncounterPhase::Resolved);
+    }
+
+    // ─── FT-024: NPC ally stats from definition ───────────────────
+
+    #[test]
+    fn npc_allies_use_character_specific_stats() {
+        let mut encounter = glass_arroyo_encounter();
+        // Add NPC allies with different character-specific stats
+        encounter.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("deputy_harris"),
+            behavior: NpcBehavior::Professional,
+            hp: 35,
+            nerve: 28,
+            speed: 11,
+            accuracy: 65,
+            damage: 9,
+        });
+        encounter.phases[0].npc_allies.push(NpcCombatant {
+            character: CharacterId::new("bale"),
+            behavior: NpcBehavior::Professional,
+            hp: 35,
+            nerve: 30,
+            speed: 7,
+            accuracy: 55,
+            damage: 12,
+        });
+
+        let state = EncounterState::new(&encounter, prologue_party());
+        assert_eq!(state.npc_allies.len(), 2);
+
+        // Deputy Harris: speed 11, accuracy 65, damage 9
+        let harris = &state.npc_allies[0].combatant;
+        assert_eq!(harris.speed, 11, "Harris should use character-specific speed");
+        assert_eq!(harris.accuracy, 65, "Harris should use character-specific accuracy");
+        assert_eq!(harris.damage, 9, "Harris should use character-specific damage");
+
+        // Bale: speed 7, accuracy 55, damage 12 — different from Harris
+        let bale = &state.npc_allies[1].combatant;
+        assert_eq!(bale.speed, 7, "Bale should use character-specific speed");
+        assert_eq!(bale.accuracy, 55, "Bale should use character-specific accuracy");
+        assert_eq!(bale.damage, 12, "Bale should use character-specific damage");
+
+        // They must differ — proves stats are not hardcoded identically
+        assert_ne!(harris.speed, bale.speed, "different NPCs should have different speeds");
+        assert_ne!(harris.damage, bale.damage, "different NPCs should have different damage");
+    }
+
+    // ─── FT-025: Active objectives auto-resolve at encounter end ──
+
+    #[test]
+    fn active_objectives_resolve_on_victory() {
+        let mut encounter = glass_arroyo_encounter();
+        encounter.objectives.push(Objective {
+            id: "no_casualties".to_string(),
+            label: "Avoid civilian casualties".to_string(),
+            objective_type: ObjectiveType::Secondary,
+            fail_consequence: vec![
+                StateEffect::SetFlag {
+                    id: FlagId::new("civilians_died"),
+                    value: FlagValue::Bool(true),
+                },
+            ],
+            success_consequence: vec![],
+        });
+
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+
+        // Kill all enemies (some killed, not all broke → casualties objective fails)
+        for enemy in &mut state.enemies {
+            enemy.down = true;
+        }
+
+        state.evaluate_objectives();
+        state.check_resolution();
+        state.resolve_remaining_objectives();
+
+        // No objectives should be Active
+        let active_count = state.objectives.iter()
+            .filter(|o| o.status == ObjectiveStatus::Active)
+            .count();
+        assert_eq!(active_count, 0, "no objectives should remain Active after encounter end");
+    }
+
+    #[test]
+    fn active_objectives_fail_on_defeat() {
+        let mut encounter = glass_arroyo_encounter();
+        encounter.objectives.push(Objective {
+            id: "secondary_goal".to_string(),
+            label: "Optional goal".to_string(),
+            objective_type: ObjectiveType::Secondary,
+            fail_consequence: vec![],
+            success_consequence: vec![],
+        });
+
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+
+        // Down all party members
+        for slot in &mut state.party {
+            if let Some(m) = slot {
+                m.down = true;
+            }
+        }
+
+        state.evaluate_objectives();
+        // evaluate_objectives sets defeat outcome
+        state.resolve_remaining_objectives();
+
+        // All active objectives should be Failed on defeat
+        for obj in &state.objectives {
+            assert_ne!(obj.status, ObjectiveStatus::Active,
+                "objective '{}' should not be Active after defeat", obj.id);
+        }
+    }
+
+    #[test]
+    fn active_objectives_fail_on_flee() {
+        let encounter = glass_arroyo_encounter();
+        let mut state = EncounterState::new(&encounter, prologue_party());
+        state.resolve_standoff(StandoffPosture::SteadyHand, None);
+        state.build_turn_queue();
+
+        let galen_turn = state.turn_queue.iter()
+            .position(|t| t.combatant_id == "galen")
+            .unwrap();
+        state.current_turn = galen_turn;
+
+        // Flee
+        state.execute_action(&CombatAction::Flee);
+        state.resolve_remaining_objectives();
+
+        // Primary objective should be Failed (we fled, didn't complete it)
+        let primary = state.objectives.iter()
+            .find(|o| o.objective_type == ObjectiveType::Primary)
+            .unwrap();
+        assert_eq!(primary.status, ObjectiveStatus::Failed,
+            "primary objective should fail when party flees");
     }
 }

@@ -317,6 +317,7 @@ pub fn mission_defense_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

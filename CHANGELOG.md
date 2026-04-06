@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.0.0] - 2026-03-22
 
 ### Added
-- Initial release — 16 chapters, full combat system, save/load, TUI rendering
+- Initial release — Prologue + 15 chapters, full combat system, save/load, TUI rendering
 - Standoff and combat encounter systems
 - Convoy and crowd mechanics
 - Environmental effects and reckoning system

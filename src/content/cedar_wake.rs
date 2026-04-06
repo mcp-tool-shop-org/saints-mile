@@ -629,6 +629,7 @@ pub fn horse_thief_encounter() -> Encounter {
             ],
         }],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 
@@ -650,6 +651,9 @@ pub fn bandit_camp_encounter() -> Encounter {
                     behavior: NpcBehavior::Professional,
                     hp: 35,
                     nerve: 30,
+                    speed: 9,
+                    accuracy: 62,
+                    damage: 9,
                 },
             ],
             entry_conditions: vec![],
@@ -675,6 +679,7 @@ pub fn bandit_camp_encounter() -> Encounter {
             ],
         }],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 
@@ -698,12 +703,18 @@ pub fn bitter_cut_encounter() -> Encounter {
                     behavior: NpcBehavior::Professional,
                     hp: 35,
                     nerve: 30,
+                    speed: 9,
+                    accuracy: 62,
+                    damage: 9,
                 },
                 NpcCombatant {
                     character: CharacterId::new("renata"),
                     behavior: NpcBehavior::Professional,
                     hp: 30,
                     nerve: 25,
+                    speed: 10,
+                    accuracy: 68,
+                    damage: 7,
                 },
             ],
             entry_conditions: vec![],
@@ -743,6 +754,7 @@ pub fn bitter_cut_encounter() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

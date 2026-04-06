@@ -235,6 +235,7 @@ pub fn breakwater_battle() -> Encounter {
             },
         ],
         outcome_effects: vec![],
+        escapable: true,
     }
 }
 

@@ -18,7 +18,7 @@ Saint's Mile is a frontier JRPG for the adults who loved those games first. This
 - [The Party](/saints-mile/handbook/party/) — six characters, six roles, six frontier truths
 
 ### The Campaign
-- [Chapter Guide](/saints-mile/handbook/chapters/) — 16 emotional laws across four life phases
+- [Chapter Guide](/saints-mile/handbook/chapters/) — Prologue + 15 chapters across four life phases
 - [Opening Arc](/saints-mile/handbook/opening-arc/) — Prologue through Chapter 2: the sequence that proves the thesis
 
 ### Production

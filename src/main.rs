@@ -13,7 +13,7 @@ use crossterm::{
 };
 use ratatui::prelude::*;
 
-use saints_mile::ui::{App, AppScreen, InputResult};
+use saints_mile::ui::{App, AppScreen, InputResult, QuitOption};
 use saints_mile::ui::input::handle_event;
 use saints_mile::ui::screens::{title, scene, standoff, combat, save_load};
 use saints_mile::ui::screens::save_load::{SaveLoadMode, SaveSlotInfo};
@@ -136,6 +136,9 @@ fn render(frame: &mut Frame, app: &App) {
             let slots = discover_save_slots();
             save_load::render_save_load(frame, area, *mode, &slots, app.save_cursor);
         }
+        AppScreen::ConfirmQuit { .. } => {
+            render_confirm_quit(frame, area, app.quit_cursor);
+        }
     }
 }
 
@@ -192,6 +195,45 @@ fn render_combat_outcome(frame: &mut Frame, area: Rect, app: &App) {
     lines.push(Line::from(""));
     lines.push(Line::from(Span::styled(
         "  [Enter] Continue",
+        theme::dim_style(),
+    )));
+
+    let para = Paragraph::new(lines);
+    frame.render_widget(para, area);
+}
+
+fn render_confirm_quit(frame: &mut Frame, area: Rect, cursor: usize) {
+    use ratatui::widgets::Paragraph;
+    use saints_mile::ui::theme;
+
+    let options = QuitOption::all();
+    let mut lines = vec![
+        Line::from(""),
+        Line::from(""),
+        Line::from(Span::styled(
+            "  QUIT GAME",
+            Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD),
+        )),
+        Line::from(""),
+        Line::from(Span::styled(
+            "  You have unsaved progress. What would you like to do?",
+            Style::default().fg(Color::Rgb(160, 150, 130)),
+        )),
+        Line::from(""),
+    ];
+
+    for (i, option) in options.iter().enumerate() {
+        let marker = if i == cursor { "> " } else { "  " };
+        let color = if i == cursor { Color::White } else { Color::DarkGray };
+        lines.push(Line::from(Span::styled(
+            format!("  {} {}", marker, option.label()),
+            Style::default().fg(color),
+        )));
+    }
+
+    lines.push(Line::from(""));
+    lines.push(Line::from(Span::styled(
+        "  [Esc] Cancel",
         theme::dim_style(),
     )));
 
@@ -264,6 +306,40 @@ fn process_result(app: &mut App, result: InputResult) {
                 AppScreen::StandoffResult => app.begin_combat(),
                 AppScreen::CombatOutcome => app.exit_combat(),
                 _ => {}
+            }
+        }
+
+        // Quit confirmation flow
+        InputResult::RequestQuit => {
+            // Swap the current screen into the return_screen box
+            let current = std::mem::replace(&mut app.screen, AppScreen::Title);
+            app.quit_cursor = 0;
+            app.screen = AppScreen::ConfirmQuit {
+                return_screen: Box::new(current),
+            };
+        }
+        InputResult::ConfirmQuitOption(option) => {
+            match option {
+                QuitOption::SaveAndQuit => {
+                    app.quick_save();
+                    app.should_quit = true;
+                }
+                QuitOption::QuitWithoutSaving => {
+                    app.should_quit = true;
+                }
+                QuitOption::Cancel => {
+                    // Restore the screen we came from
+                    let screen = std::mem::replace(&mut app.screen, AppScreen::Title);
+                    if let AppScreen::ConfirmQuit { return_screen } = screen {
+                        app.screen = *return_screen;
+                    }
+                }
+            }
+        }
+        InputResult::CancelQuit => {
+            let screen = std::mem::replace(&mut app.screen, AppScreen::Title);
+            if let AppScreen::ConfirmQuit { return_screen } = screen {
+                app.screen = *return_screen;
             }
         }
     }
