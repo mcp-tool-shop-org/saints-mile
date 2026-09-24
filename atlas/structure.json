@@ -1,0 +1,4761 @@
+{
+  "boundaries": [
+    {
+      "dynamicReads": 0,
+      "dynamicSpawns": 0,
+      "dynamicSpawnsInTests": 0,
+      "dynamicWrites": 0,
+      "entryPoints": [],
+      "externals": 0,
+      "files": [
+        {
+          "hash": "fe51a48372053ad58fe3b4cc970be8bf75375c54fc88a145fc1f2e78ef9f97bf",
+          "path": ".github/ISSUE_TEMPLATE/bug_report.md"
+        },
+        {
+          "hash": "509e0d17ccd96bffcd190bfe7ad074a72a8ee7377dee0cadd7001380216efab6",
+          "path": ".github/ISSUE_TEMPLATE/feature_request.md"
+        },
+        {
+          "hash": "5621bb688cef3e6182b43c7ea8ede401b9e32042ee8dfc803caed2797a34a71b",
+          "path": ".github/pull_request_template.md"
+        },
+        {
+          "hash": "c3860b8361fe76c4a2b4fb47672f8a999782d2d701452b2c67aa56293219b2b3",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "hash": "93dc62c74dfddae3a1dc3291b236a3e266cc0f9963100f2967357b3f3833b310",
+          "path": ".github/workflows/pages.yml"
+        },
+        {
+          "hash": "3a3bb2cbc5f971293b46e3fbf3a6b10896bc6afde026d144041cc36f525fa12f",
+          "path": ".github/workflows/release-binaries.yml"
+        }
+      ],
+      "globs": [
+        ".github/**"
+      ],
+      "importConfidence": "full",
+      "name": ".github",
+      "origin": "authored",
+      "role": "config",
+      "testedBy": 0,
+      "unresolvedSites": 0
+    },
+    {
+      "dynamicReads": 0,
+      "dynamicSpawns": 0,
+      "dynamicSpawnsInTests": 0,
+      "dynamicWrites": 0,
+      "entryPoints": [],
+      "externals": 0,
+      "files": [
+        {
+          "hash": "fe2c95db87a94c3456d6df13c66686b19022466cbf59a647e7dda2885144a248",
+          "path": "msix/AppxManifest.xml"
+        },
+        {
+          "hash": "69663b367da44924e227b61748310fd91dbb3a360debe176c748b3f3fe99878d",
+          "path": "msix/Assets/Square150x150Logo.png"
+        },
+        {
+          "hash": "b7233f45ac28f641c3034ca24735cbc8449f3368b2c347105ffe63ad7e4a5cb3",
+          "path": "msix/Assets/Square310x310Logo.png"
+        },
+        {
+          "hash": "b3cf5a628a8f4f6da1d63d97f04b73852a0a238cd68847a51947d75d1ec87294",
+          "path": "msix/Assets/Square44x44Logo.png"
+        },
+        {
+          "hash": "df37495757bda6c92b640c4d1c07372e10b2f9f9f0a54d48e7575ec0111a67a9",
+          "path": "msix/Assets/Square44x44Logo.targetsize-24_altform-unplated.png"
+        },
+        {
+          "hash": "686b28168ef9688bda1532df6be3a85028f8dfcf35178d720318b046da963999",
+          "path": "msix/Assets/Square44x44Logo.targetsize-256_altform-unplated.png"
+        },
+        {
+          "hash": "8948f4dd741047e36038e1682ba1ffedf43c29ace70464d1f3b75ea158771fdf",
+          "path": "msix/Assets/Square44x44Logo.targetsize-32_altform-unplated.png"
+        },
+        {
+          "hash": "a3dcc38af57f10e25469b6a93edf576aa29fec35db6254de4297400796ac6c07",
+          "path": "msix/Assets/Square44x44Logo.targetsize-48_altform-unplated.png"
+        },
+        {
+          "hash": "3a2d2b26a45df436c31c5295a29fe51124c99db61fd8401fd241367a3af7c960",
+          "path": "msix/Assets/Square71x71Logo.png"
+        },
+        {
+          "hash": "4ef05062179b4a405dc8b28be42ce50e4b0c2b43e58db980d20135fb67199a89",
+          "path": "msix/Assets/StoreLogo.png"
+        },
+        {
+          "hash": "f0edd13735457cb486d33ded0e430b55a1404d3682e7717e57ac2752cac77682",
+          "path": "msix/Assets/Wide310x150Logo.png"
+        },
+        {
+          "hash": "8fa6a5d7133512e89cbc1d88c0a4616d57819ca4ed45ce8cd400425fd151c31e",
+          "path": "msix/build-msix.ps1"
+        },
+        {
+          "entry": "createPng",
+          "entryRule": 1,
+          "hash": "9ef50fa250e9d53bda69f006c9b1cc2d31e97399254d8428a2109b600953a866",
+          "path": "msix/gen-assets.mjs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 100,
+                  "name": "subarray",
+                  "target": null,
+                  "via": "deflateStored"
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": true,
+              "isDefaultExport": false,
+              "name": "createPng"
+            },
+            {
+              "calls": [
+                {
+                  "line": 100,
+                  "name": "subarray",
+                  "target": null
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "deflateStored"
+            }
+          ]
+        },
+        {
+          "hash": "1dcd96514f9fb2198a05032806829b469d7a5999605db0ff8cd1f9665d71db2e",
+          "path": "msix/resize-logo.mjs"
+        }
+      ],
+      "globs": [
+        "msix/**"
+      ],
+      "importConfidence": "full",
+      "name": "msix",
+      "origin": "mixed",
+      "role": "code",
+      "testedBy": 0,
+      "unresolvedSites": 1
+    },
+    {
+      "dynamicReads": 0,
+      "dynamicSpawns": 0,
+      "dynamicSpawnsInTests": 0,
+      "dynamicWrites": 0,
+      "entryPoints": [],
+      "externals": 0,
+      "files": [
+        {
+          "hash": "7d12bd76fafa28e4dc3a901fbf2fec203cf55ac3adefa4e643cd1408b2c7fc3c",
+          "path": ".gitignore"
+        },
+        {
+          "hash": "32262e7ccc11bdca2ff26a14b1669e77bc0132010ff5a30839479c88a9f05e55",
+          "path": "ARCHITECTURE.md"
+        },
+        {
+          "hash": "96a1a5dbf76a7a1550a19e24819d9d9737070524d41b7fdacf34bf7207f0ced8",
+          "path": "CHANGELOG.md"
+        },
+        {
+          "hash": "379d96b849c861331bfff7fbf4e7cb9f1384f22b5d3d7331f1e10d55b59f3774",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "hash": "f7504ca4c52d13478cc5f7cdae019ba6d422697849e0bc4aaca1af89a83bc689",
+          "path": "Cargo.toml"
+        },
+        {
+          "hash": "367e5141e4f5884e5791c4021f33a9faa958840a5decf44e1b273a87aad1c459",
+          "path": "LICENSE"
+        },
+        {
+          "hash": "164cdee106418cbeee0a37ec5585e0310972ca30d6f4a5dad359edf1ba27cc8a",
+          "path": "PLAYTEST.md"
+        },
+        {
+          "hash": "0e6dc12195e14ab7ab2d034c0b4dad25fd83d403586ce3ab5538693527fe4604",
+          "path": "README.es.md"
+        },
+        {
+          "hash": "def580d05ab0687504e375ba71115c6e13271ea68e8bd76fed9d41a9ae89115a",
+          "path": "README.fr.md"
+        },
+        {
+          "hash": "0c093a2b076f4183cf5f1908e19082117b91c6125a5bd832585f4737a784be02",
+          "path": "README.hi.md"
+        },
+        {
+          "hash": "da284499706ba90bc581d349a7983c63485e2bd6c22c9e689556a0fbfac5964b",
+          "path": "README.it.md"
+        },
+        {
+          "hash": "3b71d796a077b6277b28669d8e53ebdcefbad6ac07e6ebeaf9bf6ef79541f0f7",
+          "path": "README.ja.md"
+        },
+        {
+          "hash": "34a939a6f4af41085245e9188ff9a6427aa0af391e873627b55cff717bde2419",
+          "path": "README.md"
+        },
+        {
+          "hash": "fe9c515c5e4735f22804d31cd59139bd10aaf489ef4cae7b90aa31a55281d1e9",
+          "path": "README.pt-BR.md"
+        },
+        {
+          "hash": "13c7c1a275cecc63a025ba4db554ef40b938d274a2c2058a9c76cd4c53b22712",
+          "path": "README.zh.md"
+        },
+        {
+          "hash": "d97b2eac0f7939166cae9556ed7e419d934e9b75e8ef0f4302dbaf22f342b2d8",
+          "path": "RELEASE.md"
+        },
+        {
+          "hash": "a6ee5c9f46746c1db37c62997a845d465621a7668965a86c7d8acc9a05e14216",
+          "path": "SECURITY.md"
+        },
+        {
+          "hash": "aa263d90ebe154664dc8d0c5719f6dfdbf3dce399920c0bcd7b56889653d38bb",
+          "path": "itch-page.md"
+        },
+        {
+          "hash": "a913b8b749980f0594148a5bcacd640ecb6c0e417724d81b51e56742eed3263e",
+          "path": "verify.sh"
+        }
+      ],
+      "globs": [
+        "*"
+      ],
+      "importConfidence": "full",
+      "name": "root",
+      "origin": "authored",
+      "role": "config",
+      "testedBy": 0,
+      "unresolvedSites": 0
+    },
+    {
+      "dynamicReads": 0,
+      "dynamicSpawns": 0,
+      "dynamicSpawnsInTests": 0,
+      "dynamicWrites": 0,
+      "entryPoints": [],
+      "externals": 0,
+      "files": [
+        {
+          "hash": "6f90ab0acd7a82bb9d79f8a2ae141bf24a56208eac7770247f8a1d8cc9b03b27",
+          "path": "site/astro.config.mjs"
+        },
+        {
+          "hash": "af5d4f54dca60686724d306eb58759fb25b6f5ba4d66559ab84a968112a184e5",
+          "path": "site/package-lock.json"
+        },
+        {
+          "hash": "17ed487ab5049bb52f8c5e35f77f21be7da639f1fb6a3fa70e9b02ffabfe7be6",
+          "path": "site/package.json"
+        },
+        {
+          "hash": "ee756dfba4122d2acc94a39b2555d9f200fff56a87a8c0b10f9cd01df26a8b62",
+          "path": "site/src/content.config.ts"
+        },
+        {
+          "hash": "e453f047feeaaae6dfc6df73475e16bf19d2d80530c4558c2fa00b00b8ab7b40",
+          "path": "site/src/content/docs/handbook/beginners.md"
+        },
+        {
+          "hash": "9bf17c873ac4286908ff5dc7d125a9993f5e529d4b868955f617c126ba5a5ddf",
+          "path": "site/src/content/docs/handbook/build-constitution.md"
+        },
+        {
+          "hash": "5d8821d2bcb36973b373b6ace8506e3299818a5ea3a8c0dc6d157494f8c731a1",
+          "path": "site/src/content/docs/handbook/chapters.md"
+        },
+        {
+          "hash": "20da46fb83e864a75812341a447351c012472f4f9ab16a03a252dccf7b35a19d",
+          "path": "site/src/content/docs/handbook/combat.md"
+        },
+        {
+          "hash": "f194c9fe24ae13ecf2aa28cfa444dbfcc3cb6e1af837b7604d7b2edc03ce548b",
+          "path": "site/src/content/docs/handbook/faq.md"
+        },
+        {
+          "hash": "ceb65ed20ad485ad50c0a6b18de79c0f66bde5e3641e7befeba3362ad9eee816",
+          "path": "site/src/content/docs/handbook/implementation.md"
+        },
+        {
+          "hash": "76d1c89e03b5387b70ba2fd9cc1a8ea3cfc1f550b2578e7bf73094101610d5ef",
+          "path": "site/src/content/docs/handbook/index.md"
+        },
+        {
+          "hash": "a4df54b78e3858cf2790bdbb3f5914a98fa98b9724de7085b18ce6f96900ab16",
+          "path": "site/src/content/docs/handbook/opening-arc.md"
+        },
+        {
+          "hash": "9641b52f47421d11e056842c1a1a0d6fa0c3750b08c582d7db84d0bcb79870dc",
+          "path": "site/src/content/docs/handbook/party.md"
+        },
+        {
+          "hash": "cd30bc466a0e2bbe9901b1d20edff32996296e7eb8e437c0c5501ecf8a7cecf4",
+          "path": "site/src/content/docs/handbook/product-thesis.md"
+        },
+        {
+          "hash": "7aa6f1db79977546c32f5b824f2078193039b15b8befa79137439d1da7d8f802",
+          "path": "site/src/content/docs/handbook/troubleshooting.md"
+        },
+        {
+          "hash": "3e25831663a95981fbab755c6b1abcdf278d882e1754380099e77566f076edfa",
+          "path": "site/src/pages/index.astro"
+        },
+        {
+          "hash": "2cce56eca5be9fe2d731140ff2c7d57031d6c3c725126c1a6a77989a942b7383",
+          "path": "site/src/site-config.ts"
+        },
+        {
+          "hash": "5dbcbc2352c162fd0d22e21f2d909104a09d275c86b09b4f4acbb3226da2f945",
+          "path": "site/src/styles/global.css"
+        },
+        {
+          "hash": "8f521e78d8d44635ac594723664df1300e382ac6be1acba6b50c8dffa6cd8229",
+          "path": "site/src/styles/starlight-custom.css"
+        },
+        {
+          "hash": "b5b0a5b04a14cddd7713c5e1c82e86c79c17c2f86b170e26e9b170b3d5e01cd9",
+          "path": "site/tsconfig.json"
+        }
+      ],
+      "globs": [
+        "site/**"
+      ],
+      "importConfidence": "full",
+      "name": "site",
+      "origin": "authored",
+      "role": "site",
+      "testedBy": 0,
+      "unresolvedSites": 0
+    },
+    {
+      "dynamicReads": 0,
+      "dynamicSpawns": 0,
+      "dynamicSpawnsInTests": 0,
+      "dynamicWrites": 4,
+      "entryPoints": [
+        "src/lib.rs",
+        "src/main.rs"
+      ],
+      "externals": 0,
+      "files": [
+        {
+          "hash": "63d70de671143ca81bb70964ed0d65805b9c6c88f4d541e57a6c0b5b8bcf277a",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/combat/convoy.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "ae6a932ae8544be6d58fa09163219f72e39fc2996a664da78d75b27ded0bb463",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/combat/crowd.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "69b9462805be9b9785f0be3a28ef24c4f990c11a5b0373c70d61cacc9339255e",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/combat/engine.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "trestle_environment"
+          ],
+          "hash": "e364a2f135e7cfd662539dfd7c5c0633b5c450d94cd62bc2efad52169455a989",
+          "path": "src/combat/environment.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "ec13fdb10ac72dcaca52bd68bc781993ce1059b53c659c4f2d0f7a6222ae0fcb",
+          "importsFiles": [
+            "src/combat/convoy.rs",
+            "src/combat/crowd.rs",
+            "src/combat/engine.rs",
+            "src/combat/environment.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/reckoning.rs",
+            "src/combat/split_party.rs",
+            "src/combat/types.rs",
+            "src/combat/wounds.rs"
+          ],
+          "path": "src/combat/mod.rs"
+        },
+        {
+          "exports": [
+            "ada",
+            "ch3_party",
+            "ch3_party_pre_ada",
+            "ch4_party",
+            "ch5_roster",
+            "eli_adult",
+            "galen",
+            "lucien",
+            "miriam",
+            "rosa"
+          ],
+          "hash": "ad5d737810f93573e963039d8b825cef0328f89e135fbebec8403a7ff4aa4879",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/combat/party_defs.rs"
+        },
+        {
+          "exports": [
+            "ada_medical_testimony",
+            "eli_defining_act",
+            "eli_system_read",
+            "galen_present_evidence",
+            "miriam_stabilize",
+            "opposition_strike",
+            "rosa_territorial_testimony"
+          ],
+          "hash": "aa26103b8e1e8770264590c23c8bf57ff8ec17e2135496f62a3c4a7abd4d0a96",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/combat/reckoning.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "evaluate_synergy",
+            "long_wire_split",
+            "resolve_team"
+          ],
+          "hash": "6f21a1777ac86231a004ae5767bd17a28a7056f9695b38dc618047073fd9b18f",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/combat/split_party.rs"
+        },
+        {
+          "exports": [
+            "npc_stats_for"
+          ],
+          "hash": "4e3189bf24f739095cb9a7166cfca4f8307469cf18526b824b5d9513552dc231",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/combat/types.rs"
+        },
+        {
+          "exports": [
+            "blunt_trauma",
+            "exhaustion",
+            "gunshot_wound",
+            "nerve_shock",
+            "recover_wound",
+            "rest_recovery",
+            "triage"
+          ],
+          "hash": "14c404c8eaf707f752004e8f1f610fd5bddb14cad88e96e5cf5e1385b99428fe",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/combat/wounds.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "chapter_close",
+            "district_scene",
+            "get_encounter",
+            "get_scene",
+            "morrow_aftermath",
+            "pump_house_encounter",
+            "road_scene",
+            "sheriff_trail_scene",
+            "triage_scene"
+          ],
+          "hash": "2cfcdf793b9c674a8a7082e45a8904bfa934af2f1f363836329308d0d50e945b",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/black_willow.rs"
+        },
+        {
+          "exports": [
+            "ada_treatment",
+            "breakwater_battle",
+            "get_encounter",
+            "get_scene",
+            "hand_injury",
+            "junction_entry",
+            "preparation",
+            "victory"
+          ],
+          "hash": "075eba6956cb38fb5ce8530467ab50e7a6282e8619a7e6d36d1fd24dfd83c0d1",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/breakwater_junction.rs"
+        },
+        {
+          "exports": [
+            "choice",
+            "choice_if",
+            "end",
+            "enemy",
+            "enemy_full",
+            "flag_eq",
+            "flag_is",
+            "has_skill",
+            "memory",
+            "narrate",
+            "narrate_with",
+            "relate",
+            "rep",
+            "say",
+            "say_if",
+            "say_if_with",
+            "say_with",
+            "scene",
+            "scene_with_memory",
+            "set_flag",
+            "set_text",
+            "to_combat",
+            "to_scene",
+            "unlock"
+          ],
+          "hash": "5478de0d15c2a47ce5fc7145418f3fd07ef301f8d0363e6fdebb69495f7e4b92",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/builders.rs"
+        },
+        {
+          "exports": [
+            "basement_scene",
+            "bell_moment",
+            "chapter_close",
+            "get_encounter",
+            "get_scene",
+            "mission_defense_aftermath",
+            "mission_defense_encounter",
+            "party_reads_scene",
+            "ruins_scene",
+            "valley_entry"
+          ],
+          "hash": "326263a20e7c2d6045252274344f018c7e2ae06d7295d57072bca00d6ca08065",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/burned_mission.rs"
+        },
+        {
+          "exports": [
+            "arrival_scene",
+            "bandit_briefing",
+            "bandit_camp_encounter",
+            "bandit_camp_return",
+            "bitter_cut_aftermath",
+            "bitter_cut_arrival",
+            "bitter_cut_dispatch",
+            "bitter_cut_dispatch_delivery",
+            "bitter_cut_encounter",
+            "bitter_cut_return",
+            "evening_scene",
+            "first_courier_scene",
+            "get_encounter",
+            "get_scene",
+            "horse_thief_briefing",
+            "horse_thief_encounter",
+            "horse_thief_return",
+            "livery_scene",
+            "mercantile_scene",
+            "night_boardwalk",
+            "shooting_post_scene",
+            "voss_office_scene",
+            "youth_galen"
+          ],
+          "hash": "dca1c091bbcd35fb9b5a80cf6fe7ab41660156c0cab07a3501dc2537b447635d",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/cedar_wake.rs"
+        },
+        {
+          "exports": [
+            "arrival",
+            "assembly",
+            "counterstrike",
+            "eli_act",
+            "get_scene",
+            "hearing",
+            "verdict"
+          ],
+          "hash": "e932ce4fb2c7c8b933c8a56b7470265b1c4f28181b6d3188213d0ca7f1e15744",
+          "importsFiles": [
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/deadwater_trial.rs"
+        },
+        {
+          "exports": [
+            "aftermath_guns_encounter",
+            "chapter_close",
+            "crowd_aftermath_intro",
+            "crowd_breaks",
+            "crowd_containment_encounter",
+            "crowd_fight_setup",
+            "dunnick_camp",
+            "get_encounter",
+            "get_scene",
+            "read_revival",
+            "revival_arrival",
+            "sermon_scene"
+          ],
+          "hash": "cf745a9cfe3040bf43d89e3023f4b31f61778821e0f2e21189b57af13ee67ac7",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/dust_revival.rs"
+        },
+        {
+          "exports": [
+            "chapter_close",
+            "eli_first",
+            "first_contact",
+            "get_scene",
+            "official_lie",
+            "old_witness",
+            "others_first",
+            "return_entry"
+          ],
+          "hash": "7b6137455a446d95eec01e06f94cf5300cb4dcbd60d446f696fa75887f7aca94",
+          "importsFiles": [
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/fifteen_years_gone.rs"
+        },
+        {
+          "exports": [
+            "burned_depot",
+            "chapter_close",
+            "corridor_entry",
+            "corridor_locals",
+            "get_encounter",
+            "get_scene",
+            "lucien_decision",
+            "meet_lucien",
+            "trestle_aftermath",
+            "trestle_approach",
+            "trestle_encounter"
+          ],
+          "hash": "b914730898eb65939e6b46d00f66e0a313320261dbc2069884b41362bc102856",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/fuse_country.rs"
+        },
+        {
+          "exports": [
+            "archive_break_encounter",
+            "archive_entry",
+            "archive_escape",
+            "archive_problem",
+            "chapter_close",
+            "city_entry",
+            "get_encounter",
+            "get_scene",
+            "read_city"
+          ],
+          "hash": "75476c83596667d3bdc316a44903b127d5ce52fd34dbecdd3907346101657c0d",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/iron_ledger.rs"
+        },
+        {
+          "exports": [
+            "assignment_scene",
+            "chapter_close",
+            "get_scene",
+            "junction_arrival",
+            "reports_scene",
+            "split_execution"
+          ],
+          "hash": "1e06343dfaa193c617ee1834473fee8a1ed03a7823063794baf130bf3bec3dd3",
+          "importsFiles": [
+            "src/combat/split_party.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/long_wire.rs"
+        },
+        {
+          "exports": [
+            "chapter_entry_scene",
+            "get_encounter",
+            "get_scene"
+          ],
+          "hash": "b75f316fcf89c0523797f5274e97a63919fb170a899a40f9380190c343ff05be",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/black_willow.rs",
+            "src/content/breakwater_junction.rs",
+            "src/content/builders.rs",
+            "src/content/burned_mission.rs",
+            "src/content/cedar_wake.rs",
+            "src/content/deadwater_trial.rs",
+            "src/content/dust_revival.rs",
+            "src/content/fifteen_years_gone.rs",
+            "src/content/fuse_country.rs",
+            "src/content/iron_ledger.rs",
+            "src/content/long_wire.rs",
+            "src/content/names_in_dust.rs",
+            "src/content/old_friends.rs",
+            "src/content/prologue.rs",
+            "src/content/ropehouse_blood.rs",
+            "src/content/saints_mile_again.rs",
+            "src/content/saints_mile_convoy.rs",
+            "src/scene/types.rs"
+          ],
+          "path": "src/content/mod.rs"
+        },
+        {
+          "exports": [
+            "aftermath",
+            "get_scene",
+            "last_campfire",
+            "last_road",
+            "separations"
+          ],
+          "hash": "c97cbed29abb3f0102d716bef1948559e0feebccb9eb4c5d7a209617404969eb",
+          "importsFiles": [
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/names_in_dust.rs"
+        },
+        {
+          "exports": [
+            "ada_return",
+            "assembly_scene",
+            "chapter_close",
+            "eli_return",
+            "get_scene",
+            "miriam_return",
+            "rosa_return"
+          ],
+          "hash": "6e9b833899f07cf555e56347e20f7a0dca43b3d7748251ab6b3356b9f5109200",
+          "importsFiles": [
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/old_friends.rs"
+        },
+        {
+          "exports": [
+            "campfire_choice_scene",
+            "eli_intro_scene",
+            "get_encounter",
+            "get_scene",
+            "glass_arroyo_encounter",
+            "morrow_square_scene",
+            "poster_scene",
+            "prologue_party",
+            "return_homestead_scene",
+            "return_town_direct_scene",
+            "ride_to_arroyo_scene"
+          ],
+          "hash": "b2545f561eebdcb5d95fa4bfdc461789ca2d71da81df0c0a6977407203f6da95",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/prologue.rs"
+        },
+        {
+          "exports": [
+            "chapter_close",
+            "get_encounter",
+            "get_scene",
+            "homestead_scene",
+            "ropehouse_aftermath",
+            "ropehouse_approach",
+            "ropehouse_encounter",
+            "varela_approach",
+            "water_claim_scene"
+          ],
+          "hash": "3dd5c39fe2cca29caab2129d8439d75a687d6e1adb06c842f011609d8fcaeee1",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/state/argument.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/ropehouse_blood.rs"
+        },
+        {
+          "exports": [
+            "final_choice",
+            "get_scene",
+            "return_to_saints_mile",
+            "testament",
+            "voss_confrontation"
+          ],
+          "hash": "d40cadae96a83477844ad6831affcc42434f2e21598daa0b939035638d872fcb",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/saints_mile_again.rs"
+        },
+        {
+          "exports": [
+            "convoy_day1_road",
+            "convoy_day2",
+            "convoy_day3",
+            "convoy_join",
+            "get_encounter",
+            "get_scene",
+            "hollow_pump_encounter",
+            "night1_camp",
+            "night1_eli_talk",
+            "night2_camp",
+            "night2_eli_walk",
+            "red_switch_wash_encounter",
+            "relay_aftermath",
+            "relay_arrival",
+            "relay_triage",
+            "saints_mile_relay_encounter",
+            "young_man_galen"
+          ],
+          "hash": "b30b1d748e954b9d6e501c72efbce4361e39eacbc218d3bf01e101a4ee6e2b98",
+          "importsFiles": [
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/content/saints_mile_convoy.rs"
+        },
+        {
+          "hash": "da6d997a317a76adbdf1777e4079edbff6234668eb937205330d5d919cfcd178",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/dev/event_log.rs"
+        },
+        {
+          "exports": [
+            "generate_fixtures",
+            "print_fixture_summary"
+          ],
+          "hash": "66591edb56b9de5e3314843b998a2ec8727074a4847af9b4650c0eea72939ee8",
+          "importsFiles": [
+            "src/dev/quickstart.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/dev/fixtures.rs"
+        },
+        {
+          "hash": "0b6c424ed74032793fa0da10e4eafddd006c94c292ca479814cd01e46b5d5dc9",
+          "importsFiles": [
+            "src/dev/event_log.rs",
+            "src/dev/fixtures.rs",
+            "src/dev/quickstart.rs"
+          ],
+          "path": "src/dev/mod.rs"
+        },
+        {
+          "hash": "d6f1bb63ee8084d90ca87c0411a15ba51c50c51e33a971251532b37972fe6e02",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/dev/quickstart.rs"
+        },
+        {
+          "hash": "7be79fc74008a68db5f25fca36ff284a5f55acfddb63882b72bde7c7caf9b20d",
+          "importsFiles": [
+            "src/combat/mod.rs",
+            "src/content/mod.rs",
+            "src/dev/mod.rs",
+            "src/pressure/mod.rs",
+            "src/scene/mod.rs",
+            "src/state/mod.rs",
+            "src/types.rs",
+            "src/ui/mod.rs"
+          ],
+          "path": "src/lib.rs"
+        },
+        {
+          "entry": "main",
+          "entryRule": 1,
+          "hash": "63b78e4684fc022b8714f8968de33a5836de7ba76cf92ec142dfcf8be14450a2",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/dev/quickstart.rs",
+            "src/state/store.rs",
+            "src/ui/input.rs",
+            "src/ui/mod.rs",
+            "src/ui/screens/combat.rs",
+            "src/ui/screens/error.rs",
+            "src/ui/screens/pause.rs",
+            "src/ui/screens/save_load.rs",
+            "src/ui/screens/scene.rs",
+            "src/ui/screens/standoff.rs",
+            "src/ui/screens/status.rs",
+            "src/ui/screens/title.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/main.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 83,
+                  "name": "new",
+                  "receiver": "App",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 88,
+                  "name": "from_state",
+                  "receiver": "StateStore",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  }
+                },
+                {
+                  "line": 145,
+                  "name": "render_title",
+                  "target": {
+                    "file": "src/ui/screens/title.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 76,
+                      "name": "age_accent",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_top_bar"
+                    },
+                    {
+                      "line": 77,
+                      "name": "age_label",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_top_bar"
+                    },
+                    {
+                      "line": 102,
+                      "name": "render_dialogue",
+                      "target": {
+                        "file": "src/ui/widgets/dialogue.rs"
+                      },
+                      "via": "render_dialogue_area"
+                    },
+                    {
+                      "line": 106,
+                      "name": "render_echoes",
+                      "target": {
+                        "file": "src/ui/widgets/memory_echo.rs"
+                      },
+                      "via": "render_dialogue_area"
+                    },
+                    {
+                      "line": 111,
+                      "name": "pacing_border",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_dialogue_area"
+                    },
+                    {
+                      "line": 176,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
+                  "line": 150,
+                  "name": "render_end_scene",
+                  "target": {
+                    "file": "src/ui/screens/scene.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 76,
+                      "name": "age_accent",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_top_bar"
+                    },
+                    {
+                      "line": 77,
+                      "name": "age_label",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_top_bar"
+                    },
+                    {
+                      "line": 102,
+                      "name": "render_dialogue",
+                      "target": {
+                        "file": "src/ui/widgets/dialogue.rs"
+                      },
+                      "via": "render_dialogue_area"
+                    },
+                    {
+                      "line": 106,
+                      "name": "render_echoes",
+                      "target": {
+                        "file": "src/ui/widgets/memory_echo.rs"
+                      },
+                      "via": "render_dialogue_area"
+                    },
+                    {
+                      "line": 111,
+                      "name": "pacing_border",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_dialogue_area"
+                    },
+                    {
+                      "line": 60,
+                      "name": "render_choice_menu",
+                      "target": {
+                        "file": "src/ui/widgets/choice_menu.rs"
+                      }
+                    }
+                  ],
+                  "line": 156,
+                  "name": "render_scene",
+                  "target": {
+                    "file": "src/ui/screens/scene.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 137,
+                      "name": "gauge_color",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_enemy_readout"
+                    },
+                    {
+                      "line": 163,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_enemy_readout"
+                    }
+                  ],
+                  "line": 169,
+                  "name": "render_standoff",
+                  "target": {
+                    "file": "src/ui/screens/standoff.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 313,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
+                  "line": 176,
+                  "name": "render_standoff_result",
+                  "target": {
+                    "file": "src/ui/screens/standoff.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 167,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_turn_bar"
+                    },
+                    {
+                      "line": 266,
+                      "name": "gauge_color",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_combatant_card"
+                    },
+                    {
+                      "line": 303,
+                      "name": "ammo_color",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_combatant_card"
+                    },
+                    {
+                      "line": 318,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_combatant_card"
+                    },
+                    {
+                      "line": 381,
+                      "name": "age_accent",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_action_menu"
+                    },
+                    {
+                      "line": 382,
+                      "name": "age_menu_title",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_action_menu"
+                    },
+                    {
+                      "line": 409,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_action_menu"
+                    },
+                    {
+                      "line": 475,
+                      "name": "ammo_color",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_combat_footer"
+                    }
+                  ],
+                  "line": 181,
+                  "name": "render_combat",
+                  "target": {
+                    "file": "src/ui/screens/combat.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 262,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combat_outcome"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 41,
+                      "name": "title_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    },
+                    {
+                      "line": 67,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
+                  "line": 192,
+                  "name": "render_save_load",
+                  "target": {
+                    "file": "src/ui/screens/save_load.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 273,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "render_confirm_quit"
+                },
+                {
+                  "line": 301,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_confirm_quit"
+                },
+                {
+                  "line": 198,
+                  "name": "render_error",
+                  "target": {
+                    "file": "src/ui/screens/error.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 11,
+                      "name": "all",
+                      "receiver": "PauseOption",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      }
+                    },
+                    {
+                      "line": 34,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
+                  "line": 201,
+                  "name": "render_pause",
+                  "target": {
+                    "file": "src/ui/screens/pause.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "line": 88,
+                      "name": "echo_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    },
+                    {
+                      "line": 149,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
+                  "line": 204,
+                  "name": "render_status",
+                  "target": {
+                    "file": "src/ui/screens/status.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "inner": [
+                    {
+                      "branch": "matches!(app.screen, AppScreen::ConfirmQuit { .. })",
+                      "line": 229,
+                      "name": "all",
+                      "receiver": "QuitOption",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_confirm_quit_key"
+                    },
+                    {
+                      "branch": "matches!(app.screen, AppScreen::ConfirmQuit { .. })",
+                      "line": 244,
+                      "name": "ConfirmQuitOption",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_confirm_quit_key"
+                    },
+                    {
+                      "branch": "matches!(app.screen, AppScreen::Pause { .. })",
+                      "line": 199,
+                      "name": "all",
+                      "receiver": "PauseOption",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_pause_key"
+                    },
+                    {
+                      "branch": "matches!(app.screen, AppScreen::Pause { .. })",
+                      "line": 214,
+                      "name": "ConfirmPauseOption",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_pause_key"
+                    },
+                    {
+                      "line": 110,
+                      "name": "ConfirmChoice",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_scene_key"
+                    },
+                    {
+                      "line": 121,
+                      "name": "StandoffCyclePosture",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_standoff_key"
+                    },
+                    {
+                      "line": 123,
+                      "name": "StandoffCycleFocus",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_standoff_key"
+                    },
+                    {
+                      "line": 140,
+                      "name": "CombatCycleAction",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_combat_key"
+                    },
+                    {
+                      "line": 142,
+                      "name": "CombatCycleTarget",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_combat_key"
+                    },
+                    {
+                      "branch": "let Some(slot_idx) = app.delete_confirming",
+                      "line": 163,
+                      "name": "ConfirmDeleteSave",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_save_load_key"
+                    },
+                    {
+                      "line": 184,
+                      "name": "ConfirmSaveLoad",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_save_load_key"
+                    },
+                    {
+                      "line": 185,
+                      "name": "RequestDeleteSave",
+                      "receiver": "InputResult",
+                      "target": {
+                        "file": "src/ui/mod.rs"
+                      },
+                      "via": "handle_save_load_key"
+                    }
+                  ],
+                  "line": 127,
+                  "name": "handle_event",
+                  "target": {
+                    "file": "src/ui/input.rs"
+                  },
+                  "via": "run_loop"
+                },
+                {
+                  "line": 510,
+                  "name": "load",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  },
+                  "via": "handle_save_load"
+                },
+                {
+                  "line": 478,
+                  "name": "delete_save",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  },
+                  "via": "process_result"
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": true,
+              "isDefaultExport": false,
+              "name": "main"
+            },
+            {
+              "calls": [
+                {
+                  "line": 145,
+                  "name": "render_title",
+                  "target": {
+                    "file": "src/ui/screens/title.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 150,
+                  "name": "render_end_scene",
+                  "target": {
+                    "file": "src/ui/screens/scene.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 156,
+                  "name": "render_scene",
+                  "target": {
+                    "file": "src/ui/screens/scene.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 169,
+                  "name": "render_standoff",
+                  "target": {
+                    "file": "src/ui/screens/standoff.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 176,
+                  "name": "render_standoff_result",
+                  "target": {
+                    "file": "src/ui/screens/standoff.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 181,
+                  "name": "render_combat",
+                  "target": {
+                    "file": "src/ui/screens/combat.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 262,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combat_outcome"
+                },
+                {
+                  "line": 192,
+                  "name": "render_save_load",
+                  "target": {
+                    "file": "src/ui/screens/save_load.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 273,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "render_confirm_quit"
+                },
+                {
+                  "line": 301,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_confirm_quit"
+                },
+                {
+                  "line": 198,
+                  "name": "render_error",
+                  "target": {
+                    "file": "src/ui/screens/error.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 201,
+                  "name": "render_pause",
+                  "target": {
+                    "file": "src/ui/screens/pause.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 204,
+                  "name": "render_status",
+                  "target": {
+                    "file": "src/ui/screens/status.rs"
+                  },
+                  "via": "render"
+                },
+                {
+                  "line": 127,
+                  "name": "handle_event",
+                  "target": {
+                    "file": "src/ui/input.rs"
+                  }
+                },
+                {
+                  "line": 510,
+                  "name": "load",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  },
+                  "via": "handle_save_load"
+                },
+                {
+                  "line": 478,
+                  "name": "delete_save",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  },
+                  "via": "process_result"
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "run_loop"
+            },
+            {
+              "calls": [
+                {
+                  "line": 145,
+                  "name": "render_title",
+                  "target": {
+                    "file": "src/ui/screens/title.rs"
+                  }
+                },
+                {
+                  "line": 150,
+                  "name": "render_end_scene",
+                  "target": {
+                    "file": "src/ui/screens/scene.rs"
+                  }
+                },
+                {
+                  "line": 156,
+                  "name": "render_scene",
+                  "target": {
+                    "file": "src/ui/screens/scene.rs"
+                  }
+                },
+                {
+                  "line": 169,
+                  "name": "render_standoff",
+                  "target": {
+                    "file": "src/ui/screens/standoff.rs"
+                  }
+                },
+                {
+                  "line": 176,
+                  "name": "render_standoff_result",
+                  "target": {
+                    "file": "src/ui/screens/standoff.rs"
+                  }
+                },
+                {
+                  "line": 181,
+                  "name": "render_combat",
+                  "target": {
+                    "file": "src/ui/screens/combat.rs"
+                  }
+                },
+                {
+                  "line": 262,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combat_outcome"
+                },
+                {
+                  "line": 192,
+                  "name": "render_save_load",
+                  "target": {
+                    "file": "src/ui/screens/save_load.rs"
+                  }
+                },
+                {
+                  "line": 273,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "render_confirm_quit"
+                },
+                {
+                  "line": 301,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_confirm_quit"
+                },
+                {
+                  "line": 198,
+                  "name": "render_error",
+                  "target": {
+                    "file": "src/ui/screens/error.rs"
+                  }
+                },
+                {
+                  "line": 201,
+                  "name": "render_pause",
+                  "target": {
+                    "file": "src/ui/screens/pause.rs"
+                  }
+                },
+                {
+                  "line": 204,
+                  "name": "render_status",
+                  "target": {
+                    "file": "src/ui/screens/status.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render"
+            },
+            {
+              "calls": [
+                {
+                  "line": 262,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_combat_outcome"
+            },
+            {
+              "calls": [
+                {
+                  "line": 273,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 301,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_confirm_quit"
+            },
+            {
+              "calls": [
+                {
+                  "line": 510,
+                  "name": "load",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  },
+                  "via": "handle_save_load"
+                },
+                {
+                  "line": 478,
+                  "name": "delete_save",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "process_result"
+            },
+            {
+              "calls": [
+                {
+                  "line": 510,
+                  "name": "load",
+                  "target": {
+                    "file": "src/state/store.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_save_load"
+            }
+          ]
+        },
+        {
+          "hash": "9fad9f51469ea0245cb0336e52d1854e524786cff2fa3f231c0a1ff267fbc3e0",
+          "importsFiles": [
+            "src/pressure/types.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/pressure/engine.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "bd40034ff316b5d0e830551f304d92d2e634410d62ade25e62c5818cd4f58e8b",
+          "importsFiles": [
+            "src/pressure/engine.rs",
+            "src/pressure/types.rs"
+          ],
+          "path": "src/pressure/mod.rs"
+        },
+        {
+          "hash": "dbf0ff9e6cf5ac450ca5178d75ce09e5a221d4767dbb5bcdc84d4aa7eae1d1b1",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/pressure/types.rs"
+        },
+        {
+          "hash": "6833a624b5987f5a4db79c64ac171d7526e802f4bf645e43143d6c147b4a258c",
+          "importsFiles": [
+            "src/scene/runner.rs",
+            "src/scene/types.rs"
+          ],
+          "path": "src/scene/mod.rs"
+        },
+        {
+          "hash": "5b0d18fd1b859f9434ba3b894fdbd2e426b3ffadac414970ae276c18e67d1da8",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/scene/runner.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "988f2fe00ca647a705fd2ab9b5f555b698daf6689e9dca8964a063f5779d32b4",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/scene/types.rs"
+        },
+        {
+          "exports": [
+            "water_claim_argument"
+          ],
+          "hash": "6c4dea47a4e55ee133396a945d29c192e8485aab17341fff6b72f7a2ebc4c09e",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/state/argument.rs"
+        },
+        {
+          "exports": [
+            "resolve_ending"
+          ],
+          "hash": "299de412d6a0e07bd8250ed099c8432d107f41af85e7aa70c4a87e7c842b751b",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/state/ending.rs"
+        },
+        {
+          "exports": [
+            "branch_verification_counts",
+            "iron_ledger_archive",
+            "lucien_archive_contribution",
+            "verify_against_branch"
+          ],
+          "hash": "d83ffd3a43b268c6045efd26c9576bc83263521ff83af4407faa178f70490f3b",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/state/evidence.rs"
+        },
+        {
+          "hash": "bc721058fb1090cdb09920a2b8b1625dc5ba3953ba637e2303b72ba3affd7432",
+          "path": "src/state/history.rs"
+        },
+        {
+          "exports": [
+            "burned_mission_investigation"
+          ],
+          "hash": "0a29d13de2a7e5c7cc684cd1af1524c10ce94116b0d8cd44b0f2e109cf280e4a",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/state/investigation.rs"
+        },
+        {
+          "hash": "9531cf069a950375c2feba8d038f8168e5974021e0235220e2d66f72855986a8",
+          "importsFiles": [
+            "src/state/argument.rs",
+            "src/state/ending.rs",
+            "src/state/evidence.rs",
+            "src/state/history.rs",
+            "src/state/investigation.rs",
+            "src/state/progression.rs",
+            "src/state/reassembly.rs",
+            "src/state/settings.rs",
+            "src/state/store.rs",
+            "src/state/types.rs"
+          ],
+          "path": "src/state/mod.rs"
+        },
+        {
+          "exports": [
+            "can_enter_chapter"
+          ],
+          "hash": "a1cee9428a99a642b83800f5758dfe19d4713a225fc77510ae0db77c97a9dab2",
+          "importsFiles": [
+            "src/state/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/state/progression.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "can_approach_saints_mile",
+            "chapter_14_reassembly"
+          ],
+          "hash": "84368ed0e20ff28625c0187e039b8051fc60fd367d1f19259b388568e6316b75",
+          "importsFiles": [
+            "src/types.rs"
+          ],
+          "path": "src/state/reassembly.rs"
+        },
+        {
+          "hash": "1c4e147aa6ff0ea0d91c5977f9b57ac650c2289085c8233950470427d00bae8e",
+          "path": "src/state/settings.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "auto_save"
+          ],
+          "hash": "adca357338e8ca1c20ad5d868d26fb1cc7e3cda38965922d196b4902f4b15066",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/state/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/state/store.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "available_party_members",
+            "relay_evidence_available"
+          ],
+          "hash": "cf0112f822057201cefe9d976c040538b641e16d2897e3f7d593232bc1e8e87f",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/state/investigation.rs",
+            "src/types.rs"
+          ],
+          "path": "src/state/types.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "ea9b7c2122dddec61210e476c5a64cbe6da47b93d4c234be3d8b00a352314de3",
+          "path": "src/types.rs"
+        },
+        {
+          "entry": "handle_event",
+          "entryRule": 4,
+          "exports": [
+            "handle_event"
+          ],
+          "hash": "06a206b7b4e38a12a9e6a6506f6610b44ef0efe5949dcff3f5e2ecce647b2119",
+          "importsFiles": [
+            "src/ui/mod.rs"
+          ],
+          "path": "src/ui/input.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "branch": "matches!(app.screen, AppScreen::ConfirmQuit { .. })",
+                  "line": 229,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_confirm_quit_key"
+                },
+                {
+                  "branch": "matches!(app.screen, AppScreen::ConfirmQuit { .. })",
+                  "line": 244,
+                  "name": "ConfirmQuitOption",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_confirm_quit_key"
+                },
+                {
+                  "branch": "matches!(app.screen, AppScreen::Pause { .. })",
+                  "line": 199,
+                  "name": "all",
+                  "receiver": "PauseOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_pause_key"
+                },
+                {
+                  "branch": "matches!(app.screen, AppScreen::Pause { .. })",
+                  "line": 214,
+                  "name": "ConfirmPauseOption",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_pause_key"
+                },
+                {
+                  "line": 110,
+                  "name": "ConfirmChoice",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_scene_key"
+                },
+                {
+                  "line": 121,
+                  "name": "StandoffCyclePosture",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_standoff_key"
+                },
+                {
+                  "line": 123,
+                  "name": "StandoffCycleFocus",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_standoff_key"
+                },
+                {
+                  "line": 140,
+                  "name": "CombatCycleAction",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_combat_key"
+                },
+                {
+                  "line": 142,
+                  "name": "CombatCycleTarget",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_combat_key"
+                },
+                {
+                  "branch": "let Some(slot_idx) = app.delete_confirming",
+                  "line": 163,
+                  "name": "ConfirmDeleteSave",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_save_load_key"
+                },
+                {
+                  "line": 184,
+                  "name": "ConfirmSaveLoad",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_save_load_key"
+                },
+                {
+                  "line": 185,
+                  "name": "RequestDeleteSave",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_save_load_key"
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_event"
+            },
+            {
+              "calls": [
+                {
+                  "branch": "matches!(app.screen, AppScreen::ConfirmQuit { .. })",
+                  "line": 229,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_confirm_quit_key"
+                },
+                {
+                  "branch": "matches!(app.screen, AppScreen::ConfirmQuit { .. })",
+                  "line": 244,
+                  "name": "ConfirmQuitOption",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_confirm_quit_key"
+                },
+                {
+                  "branch": "matches!(app.screen, AppScreen::Pause { .. })",
+                  "line": 199,
+                  "name": "all",
+                  "receiver": "PauseOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_pause_key"
+                },
+                {
+                  "branch": "matches!(app.screen, AppScreen::Pause { .. })",
+                  "line": 214,
+                  "name": "ConfirmPauseOption",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_pause_key"
+                },
+                {
+                  "line": 110,
+                  "name": "ConfirmChoice",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_scene_key"
+                },
+                {
+                  "line": 121,
+                  "name": "StandoffCyclePosture",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_standoff_key"
+                },
+                {
+                  "line": 123,
+                  "name": "StandoffCycleFocus",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_standoff_key"
+                },
+                {
+                  "line": 140,
+                  "name": "CombatCycleAction",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_combat_key"
+                },
+                {
+                  "line": 142,
+                  "name": "CombatCycleTarget",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_combat_key"
+                },
+                {
+                  "branch": "let Some(slot_idx) = app.delete_confirming",
+                  "line": 163,
+                  "name": "ConfirmDeleteSave",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_save_load_key"
+                },
+                {
+                  "line": 184,
+                  "name": "ConfirmSaveLoad",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_save_load_key"
+                },
+                {
+                  "line": 185,
+                  "name": "RequestDeleteSave",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  },
+                  "via": "handle_save_load_key"
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_key"
+            },
+            {
+              "calls": [
+                {
+                  "line": 110,
+                  "name": "ConfirmChoice",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_scene_key"
+            },
+            {
+              "calls": [
+                {
+                  "line": 121,
+                  "name": "StandoffCyclePosture",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 123,
+                  "name": "StandoffCycleFocus",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_standoff_key"
+            },
+            {
+              "calls": [
+                {
+                  "line": 140,
+                  "name": "CombatCycleAction",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 142,
+                  "name": "CombatCycleTarget",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_combat_key"
+            },
+            {
+              "calls": [
+                {
+                  "branch": "let Some(slot_idx) = app.delete_confirming",
+                  "line": 163,
+                  "name": "ConfirmDeleteSave",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 184,
+                  "name": "ConfirmSaveLoad",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 185,
+                  "name": "RequestDeleteSave",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_save_load_key"
+            },
+            {
+              "calls": [
+                {
+                  "line": 199,
+                  "name": "all",
+                  "receiver": "PauseOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 214,
+                  "name": "ConfirmPauseOption",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_pause_key"
+            },
+            {
+              "calls": [
+                {
+                  "line": 229,
+                  "name": "all",
+                  "receiver": "QuitOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 244,
+                  "name": "ConfirmQuitOption",
+                  "receiver": "InputResult",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "handle_confirm_quit_key"
+            }
+          ]
+        },
+        {
+          "hash": "88b65f62619ccee13c7fcc07b0e716a4e16347cad2257a8fefbf376bde429c27",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/combat/wounds.rs",
+            "src/content/mod.rs",
+            "src/content/prologue.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/settings.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "src/ui/input.rs",
+            "src/ui/screens/combat.rs",
+            "src/ui/screens/mod.rs",
+            "src/ui/screens/save_load.rs",
+            "src/ui/screens/standoff.rs",
+            "src/ui/text_reveal.rs",
+            "src/ui/theme.rs",
+            "src/ui/widgets/mod.rs"
+          ],
+          "path": "src/ui/mod.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "branch": "game.party.members.is_empty()",
+                  "line": 719,
+                  "name": "prologue_party",
+                  "target": {
+                    "file": "src/content/prologue.rs"
+                  }
+                },
+                {
+                  "line": 727,
+                  "name": "galen",
+                  "target": {
+                    "file": "src/combat/party_defs.rs"
+                  }
+                },
+                {
+                  "line": 728,
+                  "name": "eli_adult",
+                  "target": {
+                    "file": "src/combat/party_defs.rs"
+                  }
+                },
+                {
+                  "line": 729,
+                  "name": "ada",
+                  "target": {
+                    "file": "src/combat/party_defs.rs"
+                  }
+                },
+                {
+                  "line": 730,
+                  "name": "rosa",
+                  "target": {
+                    "file": "src/combat/party_defs.rs"
+                  }
+                },
+                {
+                  "line": 731,
+                  "name": "miriam",
+                  "target": {
+                    "file": "src/combat/party_defs.rs"
+                  }
+                },
+                {
+                  "line": 732,
+                  "name": "lucien",
+                  "target": {
+                    "file": "src/combat/party_defs.rs"
+                  }
+                },
+                {
+                  "line": 739,
+                  "name": "gunshot_wound",
+                  "target": {
+                    "file": "src/combat/wounds.rs"
+                  }
+                },
+                {
+                  "line": 740,
+                  "name": "blunt_trauma",
+                  "target": {
+                    "file": "src/combat/wounds.rs"
+                  }
+                },
+                {
+                  "line": 741,
+                  "name": "exhaustion",
+                  "target": {
+                    "file": "src/combat/wounds.rs"
+                  }
+                },
+                {
+                  "line": 742,
+                  "name": "nerve_shock",
+                  "target": {
+                    "file": "src/combat/wounds.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "build_party_data"
+            },
+            {
+              "calls": [
+                {
+                  "line": 789,
+                  "name": "new",
+                  "target": {
+                    "file": "src/types.rs"
+                  }
+                },
+                {
+                  "line": 790,
+                  "name": "Single",
+                  "receiver": "TargetSelection",
+                  "target": {
+                    "file": "src/combat/engine.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "build_enemy_action"
+            },
+            {
+              "calls": [
+                {
+                  "line": 1010,
+                  "name": "new",
+                  "target": {
+                    "file": "src/types.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "update_age_phase_for_chapter"
+            }
+          ]
+        },
+        {
+          "entry": "render_combat",
+          "entryRule": 4,
+          "exports": [
+            "bar_chars",
+            "render_action_menu",
+            "render_combat"
+          ],
+          "hash": "901c1040ef16db901e5ace2cf48c5edf465d21af9de6ece3d4eb50c0a51145a8",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/combat.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 167,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_turn_bar"
+                },
+                {
+                  "line": 266,
+                  "name": "gauge_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 303,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 318,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 381,
+                  "name": "age_accent",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_action_menu"
+                },
+                {
+                  "line": 382,
+                  "name": "age_menu_title",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_action_menu"
+                },
+                {
+                  "line": 409,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_action_menu"
+                },
+                {
+                  "line": 475,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combat_footer"
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_combat"
+            },
+            {
+              "calls": [
+                {
+                  "line": 167,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_turn_bar"
+            },
+            {
+              "calls": [
+                {
+                  "line": 266,
+                  "name": "gauge_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 303,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 318,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_enemy_strip"
+            },
+            {
+              "calls": [
+                {
+                  "line": 266,
+                  "name": "gauge_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 303,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                },
+                {
+                  "line": 318,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_combatant_card"
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_party_strip"
+            },
+            {
+              "calls": [
+                {
+                  "line": 266,
+                  "name": "gauge_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 303,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 318,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_combatant_card"
+            },
+            {
+              "calls": [
+                {
+                  "line": 381,
+                  "name": "age_accent",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 382,
+                  "name": "age_menu_title",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 409,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_action_menu"
+            },
+            {
+              "calls": [
+                {
+                  "line": 431,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_objectives"
+            },
+            {
+              "calls": [
+                {
+                  "line": 475,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_combat_footer"
+            }
+          ]
+        },
+        {
+          "exports": [
+            "render_crowd"
+          ],
+          "hash": "6217a7c711a6bf475f42c4acf65ae325e92896207726c28f34ca3513d19fc372",
+          "importsFiles": [
+            "src/combat/crowd.rs",
+            "src/ui/screens/combat.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/crowd.rs"
+        },
+        {
+          "exports": [
+            "render_error"
+          ],
+          "hash": "77eca56e25f161f8b329f10a15adf35433f2b525d4b73ddfc51f1e1a87121fb4",
+          "importsFiles": [
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/error.rs"
+        },
+        {
+          "exports": [
+            "render_escort"
+          ],
+          "hash": "54f14e0ee77d986a0b65cbb45ae9b570ea3fe951d62fd172e199de208ea92c7d",
+          "importsFiles": [
+            "src/pressure/types.rs",
+            "src/ui/screens/combat.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/escort.rs"
+        },
+        {
+          "hash": "fa26d05112df80f0377c9f2c2ca119eb4e521a75db0c95d319eaffb6acc824e5",
+          "importsFiles": [
+            "src/ui/screens/combat.rs",
+            "src/ui/screens/crowd.rs",
+            "src/ui/screens/error.rs",
+            "src/ui/screens/escort.rs",
+            "src/ui/screens/pause.rs",
+            "src/ui/screens/reckoning.rs",
+            "src/ui/screens/save_load.rs",
+            "src/ui/screens/scene.rs",
+            "src/ui/screens/standoff.rs",
+            "src/ui/screens/status.rs",
+            "src/ui/screens/title.rs",
+            "src/ui/screens/transmission.rs"
+          ],
+          "path": "src/ui/screens/mod.rs"
+        },
+        {
+          "entry": "render_pause",
+          "entryRule": 4,
+          "exports": [
+            "render_pause"
+          ],
+          "hash": "d7d810c8cb9126e7a6e86f29e91e4a2847ac1682d1ec179d33e8f7a12efbed78",
+          "importsFiles": [
+            "src/ui/mod.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/pause.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 11,
+                  "name": "all",
+                  "receiver": "PauseOption",
+                  "target": {
+                    "file": "src/ui/mod.rs"
+                  }
+                },
+                {
+                  "line": 34,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_pause"
+            }
+          ]
+        },
+        {
+          "exports": [
+            "render_reckoning"
+          ],
+          "hash": "c03c5a68c203852ba7531fae70358fe2131b5b866c13c4432df50d77c5d5d061",
+          "importsFiles": [
+            "src/combat/reckoning.rs",
+            "src/ui/screens/combat.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/reckoning.rs"
+        },
+        {
+          "entry": "render_save_load",
+          "entryRule": 4,
+          "exports": [
+            "render_save_load"
+          ],
+          "hash": "e919af29c016d231e1b0f2deea1d7ed6f72222beb5f6e7a3944d046109f7d206",
+          "importsFiles": [
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/save_load.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 41,
+                  "name": "title_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 67,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_save_load"
+            }
+          ]
+        },
+        {
+          "entry": "render_scene",
+          "entryRule": 4,
+          "exports": [
+            "render_end_scene",
+            "render_scene"
+          ],
+          "hash": "58338f658df9d81dfd1752f6f57f84467d11387bac2af4579db13833690e9c2a",
+          "importsFiles": [
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "src/ui/text_reveal.rs",
+            "src/ui/theme.rs",
+            "src/ui/widgets/choice_menu.rs",
+            "src/ui/widgets/dialogue.rs",
+            "src/ui/widgets/memory_echo.rs"
+          ],
+          "path": "src/ui/screens/scene.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 76,
+                  "name": "age_accent",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_top_bar"
+                },
+                {
+                  "line": 77,
+                  "name": "age_label",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_top_bar"
+                },
+                {
+                  "line": 102,
+                  "name": "render_dialogue",
+                  "target": {
+                    "file": "src/ui/widgets/dialogue.rs"
+                  },
+                  "via": "render_dialogue_area"
+                },
+                {
+                  "line": 106,
+                  "name": "render_echoes",
+                  "target": {
+                    "file": "src/ui/widgets/memory_echo.rs"
+                  },
+                  "via": "render_dialogue_area"
+                },
+                {
+                  "line": 111,
+                  "name": "pacing_border",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_dialogue_area"
+                },
+                {
+                  "line": 60,
+                  "name": "render_choice_menu",
+                  "target": {
+                    "file": "src/ui/widgets/choice_menu.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_scene"
+            },
+            {
+              "calls": [
+                {
+                  "line": 76,
+                  "name": "age_accent",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 77,
+                  "name": "age_label",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_top_bar"
+            },
+            {
+              "calls": [
+                {
+                  "line": 102,
+                  "name": "render_dialogue",
+                  "target": {
+                    "file": "src/ui/widgets/dialogue.rs"
+                  }
+                },
+                {
+                  "line": 106,
+                  "name": "render_echoes",
+                  "target": {
+                    "file": "src/ui/widgets/memory_echo.rs"
+                  }
+                },
+                {
+                  "line": 111,
+                  "name": "pacing_border",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_dialogue_area"
+            },
+            {
+              "calls": [
+                {
+                  "line": 76,
+                  "name": "age_accent",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_top_bar"
+                },
+                {
+                  "line": 77,
+                  "name": "age_label",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_top_bar"
+                },
+                {
+                  "line": 102,
+                  "name": "render_dialogue",
+                  "target": {
+                    "file": "src/ui/widgets/dialogue.rs"
+                  },
+                  "via": "render_dialogue_area"
+                },
+                {
+                  "line": 106,
+                  "name": "render_echoes",
+                  "target": {
+                    "file": "src/ui/widgets/memory_echo.rs"
+                  },
+                  "via": "render_dialogue_area"
+                },
+                {
+                  "line": 111,
+                  "name": "pacing_border",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_dialogue_area"
+                },
+                {
+                  "line": 176,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_end_scene"
+            }
+          ]
+        },
+        {
+          "entry": "render_standoff",
+          "entryRule": 4,
+          "exports": [
+            "render_standoff",
+            "render_standoff_result"
+          ],
+          "hash": "900c1d57d436e54a96c1b25c4b673d2d314ca9e9363d403127641186a3f49e3e",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/standoff.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 137,
+                  "name": "gauge_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_enemy_readout"
+                },
+                {
+                  "line": 163,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_enemy_readout"
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_standoff"
+            },
+            {
+              "calls": [
+                {
+                  "line": 137,
+                  "name": "gauge_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 163,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_enemy_readout"
+            },
+            {
+              "calls": [
+                {
+                  "line": 226,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": false,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_posture_menu"
+            },
+            {
+              "calls": [
+                {
+                  "line": 313,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_standoff_result"
+            }
+          ]
+        },
+        {
+          "entry": "render_status",
+          "entryRule": 4,
+          "exports": [
+            "render_status"
+          ],
+          "hash": "17e9f4971fd36a614434b4361674551095701579bb9fc5419141987a781eba56",
+          "importsFiles": [
+            "src/state/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/status.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 88,
+                  "name": "echo_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "line": 149,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_status"
+            }
+          ]
+        },
+        {
+          "exports": [
+            "render_title"
+          ],
+          "hash": "1c689ea8a9589716e2a48fe181b0dd1ce7fd26c4f7802ebf22724d780353c285",
+          "importsFiles": [
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/title.rs"
+        },
+        {
+          "exports": [
+            "render_transmission_assignment",
+            "render_transmission_results"
+          ],
+          "hash": "72292fef533c2d223c0e01d53aa5bad4ea62c6988b9e25b7ed6b57845962339d",
+          "importsFiles": [
+            "src/combat/split_party.rs",
+            "src/pressure/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/screens/transmission.rs"
+        },
+        {
+          "hash": "51ebd96bbc73b810c87705e55c8ea3cda4445fd69b123b9f4a0adee030caef3d",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/text_reveal.rs"
+        },
+        {
+          "exports": [
+            "age_accent",
+            "age_label",
+            "age_menu_title",
+            "age_name_style",
+            "ammo_color",
+            "body_style",
+            "dim_style",
+            "echo_border_style",
+            "echo_style",
+            "emotion_color",
+            "gauge_color",
+            "lock_reason_style",
+            "locked_style",
+            "narrator_style",
+            "pacing_border",
+            "pacing_reveal_ms",
+            "title_style"
+          ],
+          "hash": "8aaea3e8e8d9e74c5e4989b11d4a9da779ee11ccb3c8ef24a790bf31eda531e3",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "src/ui/theme.rs"
+        },
+        {
+          "exports": [
+            "render_choice_menu"
+          ],
+          "hash": "76396ce0b957983fd44e8fb534eba76f1a8cc1d3d74decaa4e2fd8020037b633",
+          "importsFiles": [
+            "src/scene/runner.rs",
+            "src/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/widgets/choice_menu.rs"
+        },
+        {
+          "exports": [
+            "render_dialogue"
+          ],
+          "hash": "452430827d50de51322754b552db25b8572985b4f7dc5a296b907cf8bb7e2489",
+          "importsFiles": [
+            "src/scene/runner.rs",
+            "src/ui/text_reveal.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/widgets/dialogue.rs"
+        },
+        {
+          "exports": [
+            "render_echoes"
+          ],
+          "hash": "5434ca77876fc25aeb95a046e79faaf04842562d48f3e1f357d42e892f3b1c12",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/state/types.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/widgets/memory_echo.rs"
+        },
+        {
+          "hash": "25a1dc29b8cf92071cf8957607f2cfd4422ed4f29509172eedc0dbe13814f64c",
+          "importsFiles": [
+            "src/ui/widgets/choice_menu.rs",
+            "src/ui/widgets/dialogue.rs",
+            "src/ui/widgets/memory_echo.rs",
+            "src/ui/widgets/stat_bar.rs"
+          ],
+          "path": "src/ui/widgets/mod.rs"
+        },
+        {
+          "exports": [
+            "stat_gauge"
+          ],
+          "hash": "dfe86989262fc25ab39853624812c31d1ff67c44d66db0371d33d4a683c4f714",
+          "importsFiles": [
+            "src/ui/theme.rs"
+          ],
+          "path": "src/ui/widgets/stat_bar.rs"
+        }
+      ],
+      "globs": [
+        "src/**"
+      ],
+      "importConfidence": "full",
+      "name": "src",
+      "origin": "authored",
+      "outsideReads": 3,
+      "outsideWrites": 6,
+      "role": "code",
+      "testedBy": 46,
+      "unresolvedSites": 0
+    },
+    {
+      "dynamicReads": 0,
+      "dynamicSpawns": 0,
+      "dynamicSpawnsInTests": 0,
+      "dynamicWrites": 0,
+      "entryPoints": [],
+      "externals": 0,
+      "files": [
+        {
+          "hash": "24b2cf37fc656e172025d8b0db47742ebc43b3d54992ed796b2257942192a86c",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/content/breakwater_junction.rs",
+            "src/content/names_in_dust.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/adult_act_end.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "6f12e26f3f425ca86f22535ef07b7d4552c639e604612edc65c5fb23427cbaa6",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/combat/wounds.rs",
+            "src/content/black_willow.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/black_willow.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "9211899139588012917369f2e4c7168a6412253378dc9af70cee55036152f772",
+          "importsFiles": [
+            "src/content/breakwater_junction.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/breakwater_junction.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "1ad3a8d49e17ea7c78205ddf1ab403ba4f61db4a197a3ae24ba7bbaefdfc159a",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/content/burned_mission.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/investigation.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/burned_mission.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "3f6918cac6cc7a9326fc3c63138f0536e45e1c0e09425b1acb2aec231d2c017d",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/content/cedar_wake.rs",
+            "src/content/prologue.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/cedar_wake.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "b92465c570e127ac2dc5302ae4c7b6ab61c906737796d50fd3523b76084ae1bb",
+          "importsFiles": [
+            "src/combat/party_defs.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/combat_party_defs.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "02f434bf3260267898a166691c5b4c1b821e553f63fe8272e6eb773cc95bf9ff",
+          "importsFiles": [
+            "src/combat/wounds.rs"
+          ],
+          "path": "tests/combat_wounds.rs",
+          "testsInside": true
+        },
+        {
+          "exports": [
+            "run_combat",
+            "run_scene"
+          ],
+          "hash": "cb7764f8214a41fa40e8aa5ee819cdce7add54fe5e9d1892a59ff0b2cdbddbad",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/content/mod.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/common/mod.rs"
+        },
+        {
+          "hash": "8d80307b8b3bdb703dc2fcaf8420918531eb618d30ddc43917db5a50e79ccc2f",
+          "importsFiles": [
+            "src/content/mod.rs"
+          ],
+          "path": "tests/content_lookup.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "6a05c75b7c39772297b00374c76ca498872bba9ab632c2726f941f4387938ba3",
+          "importsFiles": [
+            "src/combat/reckoning.rs",
+            "src/content/deadwater_trial.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/deadwater_trial.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "f64bdff04609cea7a40c3795ddb96128daa7d637e23e8a427434bc26e5b7fba2",
+          "importsFiles": [
+            "src/dev/event_log.rs",
+            "src/dev/fixtures.rs",
+            "src/dev/quickstart.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/dev_infrastructure.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "b261b512e60b1996dc6216ae65ad26f2b45ecb4234097b1dcb833f903a8b9bbc",
+          "importsFiles": [
+            "src/combat/crowd.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/content/dust_revival.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/dust_revival.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "dfb377626b57f021d9de6cda3e221fb854b43a44fa378bc33bfb1fb526f82922",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/content/mod.rs",
+            "src/state/store.rs",
+            "src/types.rs",
+            "src/ui/mod.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/feature_wave1.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "6279fb6ca261427654e05bef896701e2908c317400610cb3fe30323b2c3acd5d",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/environment.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/content/mod.rs",
+            "src/pressure/engine.rs",
+            "src/pressure/types.rs",
+            "src/scene/types.rs",
+            "src/state/evidence.rs",
+            "src/state/reassembly.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/feature_wave2.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "15f0fe379adc1234a09b1b3a2780486569ff7ed307ef16629ee4d04d58939ebb",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/content/mod.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "src/ui/mod.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/feature_wave3.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "135c1a81be447974deae9409a4aa7737ad4c3adb6b0f28047676a2fdcaae061f",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/combat/wounds.rs",
+            "src/dev/quickstart.rs",
+            "src/scene/types.rs",
+            "src/state/settings.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "src/ui/mod.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/feature_wave4.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "592644fa33795d88337fe78bd028dd8908f7387a7dbb5b140ff95f0a3ebaecea",
+          "importsFiles": [
+            "src/combat/party_defs.rs",
+            "src/content/fifteen_years_gone.rs",
+            "src/scene/runner.rs",
+            "src/state/history.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/fifteen_years_gone.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "a86ffd4056b644062e4e8ee74b9aa9201b68caac9eb490e6b7c0abf702bec63c",
+          "importsFiles": [
+            "src/content/mod.rs",
+            "src/dev/quickstart.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/progression.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/full_playthrough.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "c445820c49ca75dd44e08b4256b45a82b7b15b469ede8e08e1c3cec889a299a2",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/environment.rs",
+            "src/combat/party_defs.rs",
+            "src/content/fuse_country.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/fuse_country.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "51fa1db344b2918bbe4013f3cdca7491363ca30cc80bc84e2af5ebdd04e33fb4",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/content/iron_ledger.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/evidence.rs",
+            "src/state/store.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/iron_ledger.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "74394b1a7ad3b99196495812c03f933d457f8b81bdc8a12c882eaf0e6682218d",
+          "importsFiles": [
+            "src/combat/split_party.rs",
+            "src/content/long_wire.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/long_wire.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "11b38330c41de1384de8a6a7549cecc20cd3733d1fcca39ff479a7961a388451",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/content/prologue.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/morrow_crossing.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "d1b800806ae81317426c421a97212aa751e4fc0c1e5969ab8b1d800c09752bc0",
+          "importsFiles": [
+            "src/content/names_in_dust.rs",
+            "src/scene/runner.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/names_in_dust.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "143d745496aa90804646e431a6c1be5e4284c0e9c9a24763e3281a68ef5cb8e1",
+          "importsFiles": [
+            "src/content/old_friends.rs",
+            "src/scene/runner.rs",
+            "src/state/reassembly.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/old_friends.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "a916e875ba9b4ee09ef67c509f51dce00a785b00cbb058a49076a15df894fe50",
+          "importsFiles": [
+            "src/pressure/types.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/pressure_encounters.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "1ef652995b2a841432550a5bde83825317bc0a68c9b4550e573e500b192135c3",
+          "importsFiles": [
+            "src/content/mod.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/prologue.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "8ba2a81f65af1f925b657f45f750608ede15d14bd61910748a7ba035d33746d8",
+          "importsFiles": [
+            "src/state/reassembly.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/reassembly.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "0b1d32550b718567eb66959259d61f61215ff3761db46b466e06708119b95348",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/types.rs",
+            "src/content/ropehouse_blood.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/argument.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/ropehouse_blood.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "63ebc763fee2bd614389b46b761fe29b00a1ff5efaf17e70121fb0f75b5a240c",
+          "importsFiles": [
+            "src/content/saints_mile_again.rs",
+            "src/scene/runner.rs",
+            "src/state/ending.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/saints_mile_again.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "0b0c7a1c2bb567dda748621bc6f344d7166db5c026ce12e9d37728cba013c77e",
+          "importsFiles": [
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/content/saints_mile_convoy.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/saints_mile_convoy.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "3ca85f3c2862fb64574f3cf82c051af579922d183239deef55c20069d5b6baab",
+          "importsFiles": [
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "tests/common/mod.rs"
+          ],
+          "path": "tests/scene_system.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "6331029c26b124338e8f78550ac31ddf2354e8a6d713bcc186347d395d601774",
+          "importsFiles": [
+            "src/combat/split_party.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/split_party.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "c1439e547000e4d7ab1806352168dba989b0008531f0b1c97903622c0d74b8aa",
+          "importsFiles": [
+            "src/state/argument.rs",
+            "src/state/evidence.rs",
+            "src/state/investigation.rs",
+            "src/types.rs"
+          ],
+          "path": "tests/state_systems.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "94f7eedbaa403318294da358c4c6589ba254320f694860c7e29ab304231a402f",
+          "importsFiles": [
+            "src/scene/types.rs",
+            "src/types.rs",
+            "src/ui/text_reveal.rs",
+            "src/ui/theme.rs"
+          ],
+          "path": "tests/ui_logic.rs",
+          "testsInside": true
+        },
+        {
+          "hash": "a4f5dcd8f7a1ebea98acc3cd018ba090731bd3b9a6b52fcf75cbcc91fe53a1c6",
+          "path": "tests/version.rs",
+          "testsInside": true
+        }
+      ],
+      "globs": [
+        "tests/**"
+      ],
+      "importConfidence": "full",
+      "name": "tests",
+      "origin": "authored",
+      "role": "test",
+      "testedBy": 0,
+      "unresolvedSites": 0
+    }
+  ],
+  "doors": [
+    {
+      "checksCount": 2,
+      "commands": [
+        {
+          "job": "check-test",
+          "step": "Atlas check",
+          "text": "npx --yes @dogfood-lab/atlas@1.19.0 check"
+        },
+        {
+          "job": "check-test",
+          "step": "4",
+          "text": "cargo check"
+        },
+        {
+          "job": "check-test",
+          "step": "5",
+          "text": "cargo test"
+        }
+      ],
+      "elsewhere": [],
+      "file": ".github/workflows/ci.yml",
+      "landings": [],
+      "mentions": [],
+      "name": "CI",
+      "permissions": [],
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "src",
+          "depth": 0,
+          "files": 74
+        },
+        {
+          "boundary": "tests",
+          "depth": 0,
+          "files": 35
+        }
+      ],
+      "readers": [],
+      "runs": [
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/combat/convoy.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/combat/crowd.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/combat/engine.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/combat/environment.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/combat/reckoning.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/combat/wounds.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/lib.rs",
+          "runKind": "checks",
+          "via": "cargo check"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/main.rs",
+          "runKind": "checks",
+          "via": "cargo check"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/pressure/engine.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/scene/runner.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/state/progression.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/state/settings.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/state/store.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "src/state/types.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/adult_act_end.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/black_willow.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/breakwater_junction.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/burned_mission.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/cedar_wake.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/combat_party_defs.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/combat_wounds.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/content_lookup.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/deadwater_trial.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/dev_infrastructure.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/dust_revival.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/feature_wave1.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/feature_wave2.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/feature_wave3.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/feature_wave4.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/fifteen_years_gone.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/full_playthrough.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/fuse_country.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/iron_ledger.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/long_wire.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/morrow_crossing.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/names_in_dust.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/old_friends.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/pressure_encounters.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/prologue.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/reassembly.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/ropehouse_blood.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/saints_mile_again.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/saints_mile_convoy.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/scene_system.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/split_party.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/state_systems.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/ui_logic.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        },
+        {
+          "job": "check-test",
+          "matched": true,
+          "path": "tests/version.rs",
+          "runKind": "executes",
+          "via": "cargo test"
+        }
+      ],
+      "runsCount": 48,
+      "secrets": [],
+      "sends": {
+        "deploysPages": false,
+        "dispatchesTo": [],
+        "opensIssues": false,
+        "opensIssuesOnFailure": false,
+        "opensPullRequests": false,
+        "publishes": false,
+        "publishesTo": [],
+        "releases": false
+      },
+      "stages": [],
+      "triggers": [
+        {
+          "branches": [
+            "main"
+          ],
+          "event": "pull_request",
+          "paths": [
+            ".github/workflows/**",
+            "Cargo.lock",
+            "Cargo.toml",
+            "atlas/**",
+            "site/astro.config.mjs",
+            "site/package-lock.json",
+            "site/package.json",
+            "src/**"
+          ]
+        },
+        {
+          "branches": [
+            "main"
+          ],
+          "event": "push",
+          "paths": [
+            ".github/workflows/**",
+            "Cargo.lock",
+            "Cargo.toml",
+            "atlas/**",
+            "site/astro.config.mjs",
+            "site/package-lock.json",
+            "site/package.json",
+            "src/**"
+          ]
+        },
+        {
+          "event": "workflow_dispatch"
+        }
+      ],
+      "uses": [
+        "actions/checkout",
+        "actions/setup-node",
+        "dtolnay/rust-toolchain"
+      ],
+      "usesWorkflowToken": false
+    },
+    {
+      "checksCount": 0,
+      "commands": [
+        {
+          "job": "build",
+          "step": "Install site dependencies",
+          "text": "npm ci"
+        },
+        {
+          "job": "build",
+          "step": "Build site",
+          "text": "npm run build"
+        }
+      ],
+      "elsewhere": [],
+      "file": ".github/workflows/pages.yml",
+      "landings": [],
+      "mentions": [],
+      "name": "Deploy site to GitHub Pages",
+      "permissions": [
+        "contents:read",
+        "id-token:write",
+        "pages:write"
+      ],
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "site",
+          "depth": 0,
+          "files": 3
+        }
+      ],
+      "readers": [],
+      "runs": [
+        {
+          "job": "build",
+          "matched": true,
+          "path": "site/astro.config.mjs",
+          "runKind": "executes",
+          "via": "astro build"
+        },
+        {
+          "directory": true,
+          "job": "build",
+          "matched": true,
+          "path": "site/src/",
+          "runKind": "executes",
+          "via": "astro build"
+        }
+      ],
+      "runsCount": 2,
+      "secrets": [],
+      "sends": {
+        "deploysPages": true,
+        "dispatchesTo": [],
+        "opensIssues": false,
+        "opensIssuesOnFailure": false,
+        "opensPullRequests": false,
+        "publishes": false,
+        "publishesTo": [],
+        "releases": false
+      },
+      "stages": [],
+      "triggers": [
+        {
+          "branches": [
+            "main"
+          ],
+          "event": "push",
+          "paths": [
+            ".github/workflows/pages.yml",
+            "site/**"
+          ]
+        },
+        {
+          "event": "workflow_dispatch"
+        }
+      ],
+      "uses": [
+        "actions/checkout",
+        "actions/deploy-pages",
+        "actions/setup-node",
+        "actions/upload-pages-artifact"
+      ],
+      "usesWorkflowToken": false
+    },
+    {
+      "checksCount": 2,
+      "commands": [
+        {
+          "job": "validate",
+          "step": "Extract expected version from tag",
+          "text": "TAG=\"${GITHUB_REF_NAME}\"\nVERSION=\"${TAG#v}\"\necho \"EXPECTED_VERSION=${VERSION}\" >> \"$GITHUB_ENV\"\necho \"Expected version from tag: ${VERSION}\"\n"
+        },
+        {
+          "job": "validate",
+          "step": "Validate Cargo.toml version matches tag",
+          "text": "CARGO_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*\"\\(.*\\)\"/\\1/')\necho \"Cargo.toml version: ${CARGO_VERSION}\"\necho \"Tag version: ${EXPECTED_VERSION}\"\nif [ \"$CARGO_VERSION\" != \"$EXPECTED_VERSION\" ]; then\n  echo \"::error::Version mismatch! Cargo.toml has ${CARGO_VERSION} but tag says ${EXPECTED_VERSION}\"\n  exit 1\nfi\necho \"Version alignment confirmed: ${CARGO_VERSION}\"\n"
+        },
+        {
+          "job": "validate",
+          "step": "Validate CHANGELOG.md has entry for this version",
+          "text": "if ! grep -q \"\\[${EXPECTED_VERSION}\\]\" CHANGELOG.md; then\n  echo \"::error::CHANGELOG.md has no entry for version ${EXPECTED_VERSION}\"\n  exit 1\nfi\necho \"CHANGELOG.md entry found for ${EXPECTED_VERSION}\"\n"
+        },
+        {
+          "job": "build",
+          "step": "Build release binary",
+          "text": "cargo build --release"
+        },
+        {
+          "job": "build",
+          "step": "Rename binary",
+          "text": "set -e\nVERSION=${GITHUB_REF_NAME#v}\nif [ -z \"$VERSION\" ] || [ \"$VERSION\" = \"$GITHUB_REF_NAME\" ]; then\n  echo \"Tag-based version not available, falling back to cargo metadata...\"\n  VERSION=$(cargo metadata --no-deps --format-version 1 | python3 -c \"import sys,json; print(json.load(sys.stdin)['packages'][0]['version'])\")\nfi\nif [ -z \"$VERSION\" ]; then\n  echo \"ERROR: Failed to extract version\"\n  exit 1\nfi\necho \"Extracted version: ${VERSION}\"\nOUTNAME=\"${{ env.TOOL_NAME }}-${VERSION}-${{ matrix.target }}${{ matrix.ext }}\"\nmv \"target/release/${{ env.TOOL_NAME }}${{ matrix.ext }}\" \"target/release/${OUTNAME}\"\necho \"ASSET_NAME=${OUTNAME}\" >> \"$GITHUB_ENV\"\necho \"VERSION=${VERSION}\" >> \"$GITHUB_ENV\"\n"
+        },
+        {
+          "job": "msix",
+          "step": "Build release binary",
+          "text": "cargo build --release"
+        },
+        {
+          "job": "msix",
+          "step": "Generate MSIX assets",
+          "text": "node msix/gen-assets.mjs"
+        },
+        {
+          "job": "msix",
+          "step": "Build MSIX",
+          "text": "$SdkBin = Get-ChildItem \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\*\\x64\\makeappx.exe\" |\n  Sort-Object FullName -Descending | Select-Object -First 1\n$MakeAppx = $SdkBin.FullName\n\n$LayoutDir = \"msix\\layout\"\nNew-Item -ItemType Directory -Path $LayoutDir -Force | Out-Null\nNew-Item -ItemType Directory -Path \"$LayoutDir\\Assets\" -Force | Out-Null\n\nCopy-Item \"target\\release\\saints-mile.exe\" -Destination $LayoutDir\nCopy-Item \"msix\\AppxManifest.xml\" -Destination $LayoutDir\nGet-ChildItem \"msix\\Assets\\*.png\" | ForEach-Object {\n  Copy-Item $_.FullName -Destination \"$LayoutDir\\Assets\"\n}\n\n& $MakeAppx pack /d $LayoutDir /p \"msix\\SaintsMile.msix\" /o\n"
+        },
+        {
+          "job": "release",
+          "step": "Generate checksums",
+          "text": "set -e\ncd artifacts\nVERSION=$(ls | head -1 | sed \"s/${TOOL_NAME}-//;s/-.*//\" )\nif [ -z \"$VERSION\" ]; then\n  echo \"ERROR: Failed to extract version from artifact names\"\n  exit 1\nfi\necho \"Extracted version for checksums: ${VERSION}\"\nsha256sum * > \"checksums-${VERSION}.txt\"\ncat \"checksums-${VERSION}.txt\"\n"
+        },
+        {
+          "job": "release",
+          "step": "Upload to latest release (workflow_dispatch)",
+          "text": "TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName')\nfor f in artifacts/*; do\n  gh release upload \"$TAG\" \"$f\" --clobber\ndone\n"
+        },
+        {
+          "job": "publish-crate",
+          "step": "Publish to crates.io",
+          "text": "cargo publish --allow-dirty"
+        }
+      ],
+      "elsewhere": [],
+      "file": ".github/workflows/release-binaries.yml",
+      "gated": [
+        {
+          "jobs": [
+            "publish-crate",
+            "release",
+            "validate"
+          ],
+          "pushes": false,
+          "sends": [
+            "publishesTo:crates.io",
+            "releases"
+          ],
+          "stages": [],
+          "when": {
+            "event": "release"
+          }
+        }
+      ],
+      "landings": [
+        "msix/Assets"
+      ],
+      "mentions": [
+        {
+          "job": "validate",
+          "path": "CHANGELOG.md"
+        },
+        {
+          "job": "validate",
+          "path": "Cargo.toml"
+        }
+      ],
+      "name": "Release Binaries",
+      "permissions": [
+        "contents:write"
+      ],
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "msix",
+          "depth": 0,
+          "files": 1
+        },
+        {
+          "boundary": "src",
+          "depth": 0,
+          "files": 74
+        }
+      ],
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config",
+          "target": "msix/Assets"
+        },
+        {
+          "by": "msix/build-msix.ps1",
+          "call": "Copy-Item",
+          "confidence": "text",
+          "target": "msix/Assets"
+        }
+      ],
+      "runs": [
+        {
+          "job": "msix",
+          "path": "msix/gen-assets.mjs",
+          "runKind": "executes"
+        },
+        {
+          "job": "build",
+          "matched": true,
+          "path": "src/lib.rs",
+          "runKind": "checks",
+          "via": "cargo build"
+        },
+        {
+          "job": "msix",
+          "matched": true,
+          "path": "src/lib.rs",
+          "runKind": "checks",
+          "via": "cargo build"
+        },
+        {
+          "job": "build",
+          "matched": true,
+          "path": "src/main.rs",
+          "runKind": "checks",
+          "via": "cargo build"
+        },
+        {
+          "job": "msix",
+          "matched": true,
+          "path": "src/main.rs",
+          "runKind": "checks",
+          "via": "cargo build"
+        }
+      ],
+      "runsCount": 3,
+      "secrets": [
+        "CARGO_REGISTRY_TOKEN",
+        "GITHUB_TOKEN"
+      ],
+      "sends": {
+        "deploysPages": false,
+        "dispatchesTo": [],
+        "opensIssues": false,
+        "opensIssuesOnFailure": false,
+        "opensPullRequests": false,
+        "publishes": false,
+        "publishesTo": [],
+        "releases": false
+      },
+      "stages": [],
+      "triggers": [
+        {
+          "event": "release",
+          "types": [
+            "published"
+          ]
+        },
+        {
+          "event": "workflow_dispatch"
+        }
+      ],
+      "uses": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/upload-artifact",
+        "dtolnay/rust-toolchain",
+        "softprops/action-gh-release"
+      ],
+      "usesWorkflowToken": true
+    },
+    {
+      "checksCount": 0,
+      "commands": [],
+      "elsewhere": [],
+      "file": "Cargo.toml",
+      "kind": "command",
+      "landings": [],
+      "mentions": [],
+      "name": "saints-mile",
+      "permissions": [],
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "src",
+          "depth": 0,
+          "files": 58
+        }
+      ],
+      "readers": [],
+      "runs": [
+        {
+          "path": "src/main.rs",
+          "runKind": "executes"
+        }
+      ],
+      "runsCount": 1,
+      "secrets": [],
+      "sends": {
+        "deploysPages": false,
+        "dispatchesTo": [],
+        "opensIssues": false,
+        "opensIssuesOnFailure": false,
+        "opensPullRequests": false,
+        "publishes": false,
+        "publishesTo": [],
+        "releases": false
+      },
+      "stages": [],
+      "triggers": [],
+      "uses": [],
+      "usesWorkflowToken": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "tests",
+      "fromTests": true,
+      "kind": "file",
+      "to": "src"
+    }
+  ],
+  "generatedFrom": {
+    "commit": "49f52661f44e1ab2c933189755506848617db8ff",
+    "tracked": 168
+  },
+  "landings": [
+    {
+      "readers": [
+        {
+          "by": ".github/workflows/release-binaries.yml"
+        }
+      ],
+      "target": "CHANGELOG.md",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": ".github/workflows/release-binaries.yml"
+        }
+      ],
+      "target": "Cargo.toml",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/build-msix.ps1",
+          "call": "Copy-Item",
+          "confidence": "text"
+        }
+      ],
+      "target": "msix/AppxManifest.xml",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/build-msix.ps1",
+          "call": "Copy-Item",
+          "confidence": "text"
+        }
+      ],
+      "target": "msix/Assets",
+      "writers": [
+        {
+          "by": "msix/gen-assets.mjs",
+          "confidence": "ast"
+        },
+        {
+          "by": "msix/resize-logo.mjs",
+          "confidence": "ast"
+        }
+      ]
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config"
+        }
+      ],
+      "target": "msix/Assets/Square150x150Logo.png",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config"
+        }
+      ],
+      "target": "msix/Assets/Square310x310Logo.png",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config"
+        }
+      ],
+      "target": "msix/Assets/Square44x44Logo.png",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config"
+        }
+      ],
+      "target": "msix/Assets/Square71x71Logo.png",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config"
+        }
+      ],
+      "target": "msix/Assets/StoreLogo.png",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "msix/AppxManifest.xml",
+          "call": "configuration",
+          "confidence": "config"
+        }
+      ],
+      "target": "msix/Assets/Wide310x150Logo.png",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "site/astro.config.mjs",
+          "call": "content-collection",
+          "confidence": "ast"
+        }
+      ],
+      "target": "site/src/content/docs",
+      "writers": []
+    },
+    {
+      "readers": [
+        {
+          "by": "site/astro.config.mjs",
+          "call": "autogenerate",
+          "confidence": "ast"
+        }
+      ],
+      "target": "site/src/content/docs/handbook",
+      "writers": []
+    }
+  ],
+  "overlaps": [],
+  "submodules": [],
+  "symlinks": [],
+  "testFiles": 47,
+  "unassigned": []
+}

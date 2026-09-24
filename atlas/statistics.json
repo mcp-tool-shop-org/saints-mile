@@ -1,0 +1,1015 @@
+{
+  "authorship": {
+    "parts": [],
+    "places": []
+  },
+  "boundaries": [
+    {
+      "breakage": {
+        "coChangesOnly": [],
+        "collapsed": false,
+        "confidence": "low",
+        "importsAndCoChanges": [],
+        "importsOnly": []
+      },
+      "cohesion": null,
+      "cohesionDropped": false,
+      "confidence": "low",
+      "highWater": null,
+      "name": ".github",
+      "qualifyingSourceCommits": 0,
+      "rebaseline": null
+    },
+    {
+      "breakage": {
+        "coChangesOnly": [],
+        "collapsed": false,
+        "confidence": "low",
+        "importsAndCoChanges": [],
+        "importsOnly": []
+      },
+      "cohesion": null,
+      "cohesionDropped": false,
+      "confidence": "low",
+      "highWater": null,
+      "name": "msix",
+      "qualifyingSourceCommits": 2,
+      "rebaseline": null
+    },
+    {
+      "breakage": {
+        "coChangesOnly": [],
+        "collapsed": false,
+        "confidence": "low",
+        "importsAndCoChanges": [],
+        "importsOnly": []
+      },
+      "cohesion": null,
+      "cohesionDropped": false,
+      "confidence": "low",
+      "highWater": null,
+      "name": "root",
+      "qualifyingSourceCommits": 0,
+      "rebaseline": null
+    },
+    {
+      "breakage": {
+        "coChangesOnly": [],
+        "collapsed": false,
+        "confidence": "low",
+        "importsAndCoChanges": [],
+        "importsOnly": []
+      },
+      "cohesion": null,
+      "cohesionDropped": false,
+      "confidence": "low",
+      "highWater": null,
+      "name": "site",
+      "qualifyingSourceCommits": 3,
+      "rebaseline": null
+    },
+    {
+      "breakage": {
+        "coChangesOnly": [],
+        "collapsed": false,
+        "confidence": "low",
+        "importsAndCoChanges": [],
+        "importsOnly": [
+          "tests"
+        ]
+      },
+      "cohesion": 1,
+      "cohesionDropped": false,
+      "confidence": "low",
+      "highWater": null,
+      "name": "src",
+      "qualifyingSourceCommits": 28,
+      "rebaseline": null
+    },
+    {
+      "breakage": {
+        "coChangesOnly": [],
+        "collapsed": false,
+        "confidence": "low",
+        "importsAndCoChanges": [],
+        "importsOnly": []
+      },
+      "cohesion": null,
+      "cohesionDropped": false,
+      "confidence": "low",
+      "highWater": null,
+      "name": "tests",
+      "qualifyingSourceCommits": 22,
+      "rebaseline": null
+    }
+  ],
+  "churn": {
+    "definition": "commits is how many commits in the window touch the file, including merges and commits dropped from coupling. lines is added plus deleted in those commits.",
+    "files": [
+      {
+        "commits": 1,
+        "lines": 45,
+        "path": ".github/ISSUE_TEMPLATE/bug_report.md"
+      },
+      {
+        "commits": 1,
+        "lines": 27,
+        "path": ".github/ISSUE_TEMPLATE/feature_request.md"
+      },
+      {
+        "commits": 1,
+        "lines": 25,
+        "path": ".github/pull_request_template.md"
+      },
+      {
+        "commits": 4,
+        "lines": 41,
+        "path": ".github/workflows/ci.yml"
+      },
+      {
+        "commits": 3,
+        "lines": 66,
+        "path": ".github/workflows/pages.yml"
+      },
+      {
+        "commits": 7,
+        "lines": 226,
+        "path": ".github/workflows/release-binaries.yml"
+      },
+      {
+        "commits": 3,
+        "lines": 31,
+        "path": ".gitignore"
+      },
+      {
+        "commits": 1,
+        "lines": 255,
+        "path": "ARCHITECTURE.md"
+      },
+      {
+        "commits": 3,
+        "lines": 60,
+        "path": "CHANGELOG.md"
+      },
+      {
+        "commits": 1,
+        "lines": 112,
+        "path": "CONTRIBUTING.md"
+      },
+      {
+        "commits": 6,
+        "lines": 29,
+        "path": "Cargo.toml"
+      },
+      {
+        "commits": 1,
+        "lines": 21,
+        "path": "LICENSE"
+      },
+      {
+        "commits": 3,
+        "lines": 175,
+        "path": "PLAYTEST.md"
+      },
+      {
+        "commits": 2,
+        "lines": 82,
+        "path": "README.es.md"
+      },
+      {
+        "commits": 2,
+        "lines": 82,
+        "path": "README.fr.md"
+      },
+      {
+        "commits": 2,
+        "lines": 80,
+        "path": "README.hi.md"
+      },
+      {
+        "commits": 2,
+        "lines": 82,
+        "path": "README.it.md"
+      },
+      {
+        "commits": 2,
+        "lines": 80,
+        "path": "README.ja.md"
+      },
+      {
+        "commits": 4,
+        "lines": 137,
+        "path": "README.md"
+      },
+      {
+        "commits": 2,
+        "lines": 82,
+        "path": "README.pt-BR.md"
+      },
+      {
+        "commits": 2,
+        "lines": 80,
+        "path": "README.zh.md"
+      },
+      {
+        "commits": 2,
+        "lines": 77,
+        "path": "RELEASE.md"
+      },
+      {
+        "commits": 2,
+        "lines": 27,
+        "path": "SECURITY.md"
+      },
+      {
+        "commits": 3,
+        "lines": 102,
+        "path": "itch-page.md"
+      },
+      {
+        "commits": 1,
+        "lines": 61,
+        "path": "msix/AppxManifest.xml"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square150x150Logo.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square310x310Logo.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square44x44Logo.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square44x44Logo.targetsize-24_altform-unplated.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square44x44Logo.targetsize-256_altform-unplated.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square44x44Logo.targetsize-32_altform-unplated.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square44x44Logo.targetsize-48_altform-unplated.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Square71x71Logo.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/StoreLogo.png"
+      },
+      {
+        "commits": 2,
+        "lines": 0,
+        "path": "msix/Assets/Wide310x150Logo.png"
+      },
+      {
+        "commits": 1,
+        "lines": 141,
+        "path": "msix/build-msix.ps1"
+      },
+      {
+        "commits": 1,
+        "lines": 143,
+        "path": "msix/gen-assets.mjs"
+      },
+      {
+        "commits": 1,
+        "lines": 50,
+        "path": "msix/resize-logo.mjs"
+      },
+      {
+        "commits": 2,
+        "lines": 34,
+        "path": "site/astro.config.mjs"
+      },
+      {
+        "commits": 2,
+        "lines": 11738,
+        "path": "site/package-lock.json"
+      },
+      {
+        "commits": 2,
+        "lines": 24,
+        "path": "site/package.json"
+      },
+      {
+        "commits": 1,
+        "lines": 7,
+        "path": "site/src/content.config.ts"
+      },
+      {
+        "commits": 1,
+        "lines": 165,
+        "path": "site/src/content/docs/handbook/beginners.md"
+      },
+      {
+        "commits": 1,
+        "lines": 62,
+        "path": "site/src/content/docs/handbook/build-constitution.md"
+      },
+      {
+        "commits": 1,
+        "lines": 73,
+        "path": "site/src/content/docs/handbook/chapters.md"
+      },
+      {
+        "commits": 2,
+        "lines": 85,
+        "path": "site/src/content/docs/handbook/combat.md"
+      },
+      {
+        "commits": 1,
+        "lines": 63,
+        "path": "site/src/content/docs/handbook/faq.md"
+      },
+      {
+        "commits": 3,
+        "lines": 116,
+        "path": "site/src/content/docs/handbook/implementation.md"
+      },
+      {
+        "commits": 4,
+        "lines": 42,
+        "path": "site/src/content/docs/handbook/index.md"
+      },
+      {
+        "commits": 1,
+        "lines": 101,
+        "path": "site/src/content/docs/handbook/opening-arc.md"
+      },
+      {
+        "commits": 1,
+        "lines": 94,
+        "path": "site/src/content/docs/handbook/party.md"
+      },
+      {
+        "commits": 1,
+        "lines": 70,
+        "path": "site/src/content/docs/handbook/product-thesis.md"
+      },
+      {
+        "commits": 1,
+        "lines": 100,
+        "path": "site/src/content/docs/handbook/troubleshooting.md"
+      },
+      {
+        "commits": 2,
+        "lines": 35,
+        "path": "site/src/pages/index.astro"
+      },
+      {
+        "commits": 2,
+        "lines": 77,
+        "path": "site/src/site-config.ts"
+      },
+      {
+        "commits": 1,
+        "lines": 7,
+        "path": "site/src/styles/global.css"
+      },
+      {
+        "commits": 1,
+        "lines": 16,
+        "path": "site/src/styles/starlight-custom.css"
+      },
+      {
+        "commits": 1,
+        "lines": 5,
+        "path": "site/tsconfig.json"
+      },
+      {
+        "commits": 2,
+        "lines": 383,
+        "path": "src/combat/convoy.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 496,
+        "path": "src/combat/crowd.rs"
+      },
+      {
+        "commits": 8,
+        "lines": 3605,
+        "path": "src/combat/engine.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 454,
+        "path": "src/combat/environment.rs"
+      },
+      {
+        "commits": 8,
+        "lines": 17,
+        "path": "src/combat/mod.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 268,
+        "path": "src/combat/party_defs.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 344,
+        "path": "src/combat/reckoning.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 206,
+        "path": "src/combat/split_party.rs"
+      },
+      {
+        "commits": 6,
+        "lines": 383,
+        "path": "src/combat/types.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 217,
+        "path": "src/combat/wounds.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 430,
+        "path": "src/content/black_willow.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 291,
+        "path": "src/content/breakwater_junction.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 275,
+        "path": "src/content/builders.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 421,
+        "path": "src/content/burned_mission.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 826,
+        "path": "src/content/cedar_wake.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 389,
+        "path": "src/content/deadwater_trial.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 413,
+        "path": "src/content/dust_revival.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 472,
+        "path": "src/content/fifteen_years_gone.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 383,
+        "path": "src/content/fuse_country.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 364,
+        "path": "src/content/iron_ledger.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 222,
+        "path": "src/content/long_wire.rs"
+      },
+      {
+        "commits": 18,
+        "lines": 118,
+        "path": "src/content/mod.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 193,
+        "path": "src/content/names_in_dust.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 305,
+        "path": "src/content/old_friends.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 650,
+        "path": "src/content/prologue.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 409,
+        "path": "src/content/ropehouse_blood.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 502,
+        "path": "src/content/saints_mile_again.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 696,
+        "path": "src/content/saints_mile_convoy.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 186,
+        "path": "src/dev/event_log.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 111,
+        "path": "src/dev/fixtures.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 8,
+        "path": "src/dev/mod.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 274,
+        "path": "src/dev/quickstart.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 13,
+        "path": "src/lib.rs"
+      },
+      {
+        "commits": 9,
+        "lines": 631,
+        "path": "src/main.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 548,
+        "path": "src/pressure/engine.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 8,
+        "path": "src/pressure/mod.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 91,
+        "path": "src/pressure/types.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 12,
+        "path": "src/scene/mod.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 721,
+        "path": "src/scene/runner.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 114,
+        "path": "src/scene/types.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 114,
+        "path": "src/state/argument.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 151,
+        "path": "src/state/ending.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 170,
+        "path": "src/state/evidence.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 101,
+        "path": "src/state/history.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 149,
+        "path": "src/state/investigation.rs"
+      },
+      {
+        "commits": 10,
+        "lines": 16,
+        "path": "src/state/mod.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 170,
+        "path": "src/state/progression.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 100,
+        "path": "src/state/reassembly.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 161,
+        "path": "src/state/settings.rs"
+      },
+      {
+        "commits": 5,
+        "lines": 647,
+        "path": "src/state/store.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 590,
+        "path": "src/state/types.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 103,
+        "path": "src/types.rs"
+      },
+      {
+        "commits": 4,
+        "lines": 265,
+        "path": "src/ui/input.rs"
+      },
+      {
+        "commits": 6,
+        "lines": 1213,
+        "path": "src/ui/mod.rs"
+      },
+      {
+        "commits": 3,
+        "lines": 523,
+        "path": "src/ui/screens/combat.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 282,
+        "path": "src/ui/screens/crowd.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 32,
+        "path": "src/ui/screens/error.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 247,
+        "path": "src/ui/screens/escort.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 14,
+        "path": "src/ui/screens/mod.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 39,
+        "path": "src/ui/screens/pause.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 281,
+        "path": "src/ui/screens/reckoning.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 114,
+        "path": "src/ui/screens/save_load.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 180,
+        "path": "src/ui/screens/scene.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 345,
+        "path": "src/ui/screens/standoff.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 154,
+        "path": "src/ui/screens/status.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 42,
+        "path": "src/ui/screens/title.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 270,
+        "path": "src/ui/screens/transmission.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 141,
+        "path": "src/ui/text_reveal.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 164,
+        "path": "src/ui/theme.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 74,
+        "path": "src/ui/widgets/choice_menu.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 76,
+        "path": "src/ui/widgets/dialogue.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 73,
+        "path": "src/ui/widgets/memory_echo.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 6,
+        "path": "src/ui/widgets/mod.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 22,
+        "path": "src/ui/widgets/stat_bar.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 265,
+        "path": "tests/adult_act_end.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 426,
+        "path": "tests/black_willow.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 79,
+        "path": "tests/breakwater_junction.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 262,
+        "path": "tests/burned_mission.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 406,
+        "path": "tests/cedar_wake.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 136,
+        "path": "tests/combat_party_defs.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 71,
+        "path": "tests/combat_wounds.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 94,
+        "path": "tests/common/mod.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 49,
+        "path": "tests/content_lookup.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 244,
+        "path": "tests/deadwater_trial.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 169,
+        "path": "tests/dev_infrastructure.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 466,
+        "path": "tests/dust_revival.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 784,
+        "path": "tests/feature_wave1.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 726,
+        "path": "tests/feature_wave2.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 642,
+        "path": "tests/feature_wave3.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 555,
+        "path": "tests/feature_wave4.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 234,
+        "path": "tests/fifteen_years_gone.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 205,
+        "path": "tests/full_playthrough.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 399,
+        "path": "tests/fuse_country.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 423,
+        "path": "tests/iron_ledger.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 237,
+        "path": "tests/long_wire.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 366,
+        "path": "tests/morrow_crossing.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 81,
+        "path": "tests/names_in_dust.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 195,
+        "path": "tests/old_friends.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 167,
+        "path": "tests/pressure_encounters.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 203,
+        "path": "tests/prologue.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 139,
+        "path": "tests/reassembly.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 298,
+        "path": "tests/ropehouse_blood.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 265,
+        "path": "tests/saints_mile_again.rs"
+      },
+      {
+        "commits": 2,
+        "lines": 330,
+        "path": "tests/saints_mile_convoy.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 334,
+        "path": "tests/scene_system.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 114,
+        "path": "tests/split_party.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 258,
+        "path": "tests/state_systems.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 207,
+        "path": "tests/ui_logic.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 33,
+        "path": "tests/version.rs"
+      },
+      {
+        "commits": 1,
+        "lines": 16,
+        "path": "verify.sh"
+      }
+    ]
+  },
+  "confidence": {
+    "level": "low",
+    "reason": "fewer than 20 source files reach 10 revisions in the window"
+  },
+  "generatedAt": "2026-09-24T21:43:39.125Z",
+  "generatedFrom": {
+    "commit": "49f52661f44e1ab2c933189755506848617db8ff"
+  },
+  "pairs": [
+    {
+      "a": "src/combat/engine.rs",
+      "b": "src/combat/types.rs",
+      "either": 8,
+      "shared": 4,
+      "strength": 0.5
+    },
+    {
+      "a": "src/combat/engine.rs",
+      "b": "src/ui/mod.rs",
+      "either": 8,
+      "shared": 4,
+      "strength": 0.5
+    }
+  ],
+  "parameters": {
+    "appliedChangesetLimit": 42,
+    "changeset": 50,
+    "changesetFraction": 0.25,
+    "cohesionDrop": 0.2,
+    "couplingPopulation": "source",
+    "fallenShared": 3,
+    "floor": "fallen",
+    "floorHeld": false,
+    "floorTrigger": "revision-depth",
+    "headDate": "2026-09-17T18:45:28-07:00",
+    "inScopeFiles": 168,
+    "pinnedStart": null,
+    "priorFloor": null,
+    "qualifyingCommits": 42,
+    "qualifyingMinimum": 30,
+    "revisions": 5,
+    "shared": 10,
+    "sharedFloorUsed": 3,
+    "since": "2026-03-22T01:45:28.000Z",
+    "sourceExtensions": [
+      ".js",
+      ".mjs",
+      ".cjs",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".mts",
+      ".cts",
+      ".py",
+      ".rs",
+      ".gd"
+    ],
+    "sourceFileReach": 20,
+    "sourceFileRise": 25,
+    "sourceFilesReachingStrongFloor": 2,
+    "strength": 0.5,
+    "windowDays": 180
+  },
+  "strengthDefinition": "strength is the shared qualifying commits divided by either. either is the number of qualifying commits that touch either file."
+}

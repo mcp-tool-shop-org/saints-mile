@@ -1,0 +1,312 @@
+{
+  "authored": [
+    ".github/",
+    "root",
+    "site/"
+  ],
+  "breaks": [
+    {
+      "doors": 3,
+      "importedBy": [],
+      "importedByTests": [
+        "tests"
+      ],
+      "kind": "part",
+      "name": "src",
+      "partLabel": "src"
+    },
+    {
+      "kind": "place",
+      "readers": [
+        "msix"
+      ],
+      "target": "msix/Assets/",
+      "writers": [
+        "msix"
+      ]
+    }
+  ],
+  "changes": {
+    "first": true
+  },
+  "changesTogether": [
+    {
+      "a": "src/combat/engine.rs",
+      "b": "src/combat/types.rs",
+      "either": 8,
+      "partLabels": [
+        "src",
+        "src"
+      ],
+      "parts": [
+        "src",
+        "src"
+      ],
+      "relation": "inside",
+      "shared": 4
+    },
+    {
+      "a": "src/combat/engine.rs",
+      "b": "src/ui/mod.rs",
+      "either": 8,
+      "partLabels": [
+        "src",
+        "src"
+      ],
+      "parts": [
+        "src",
+        "src"
+      ],
+      "relation": "inside",
+      "shared": 4
+    }
+  ],
+  "changesTogetherNote": [
+    "Confidence is low: fewer than 20 source files reach 10 revisions in the window.",
+    "Window: 180 days; a pair counts from 3 shared commits, since 2 source files reach 10 revisions; the floor rises to 10 when 25 do."
+  ],
+  "changesTogetherWithTests": 0,
+  "commit": "49f52661f44e1ab2c933189755506848617db8ff",
+  "defaultBranch": "main",
+  "derived": "6 parts, mostly Rust (109 files). Work enters through 4 doors; CI and Release Binaries each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to crates.io. People run saints-mile.",
+  "doors": [
+    {
+      "checks": [
+        "src/lib.rs",
+        "src/main.rs"
+      ],
+      "checksCount": 2,
+      "checksMore": 0,
+      "file": ".github/workflows/ci.yml",
+      "id": ".github/workflows/ci.yml",
+      "landings": [],
+      "name": "CI",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "src",
+          "depth": 0,
+          "files": 74
+        },
+        {
+          "boundary": "tests",
+          "depth": 0,
+          "files": 35
+        }
+      ],
+      "runs": [
+        "src/combat/convoy.rs",
+        "src/combat/crowd.rs",
+        "src/combat/engine.rs",
+        "src/combat/environment.rs",
+        "src/combat/reckoning.rs",
+        "src/combat/wounds.rs",
+        "src/pressure/engine.rs",
+        "src/scene/runner.rs",
+        "src/state/progression.rs",
+        "src/state/settings.rs",
+        "src/state/store.rs",
+        "src/state/types.rs",
+        "tests/adult_act_end.rs",
+        "tests/black_willow.rs",
+        "tests/breakwater_junction.rs",
+        "tests/burned_mission.rs",
+        "tests/cedar_wake.rs",
+        "tests/combat_party_defs.rs",
+        "tests/combat_wounds.rs",
+        "tests/content_lookup.rs",
+        "tests/deadwater_trial.rs",
+        "tests/dev_infrastructure.rs",
+        "tests/dust_revival.rs",
+        "tests/feature_wave1.rs",
+        "tests/feature_wave2.rs",
+        "tests/feature_wave3.rs",
+        "tests/feature_wave4.rs",
+        "tests/fifteen_years_gone.rs",
+        "tests/full_playthrough.rs",
+        "tests/fuse_country.rs",
+        "tests/iron_ledger.rs",
+        "tests/long_wire.rs",
+        "tests/morrow_crossing.rs",
+        "tests/names_in_dust.rs",
+        "tests/old_friends.rs",
+        "tests/pressure_encounters.rs",
+        "tests/prologue.rs",
+        "tests/reassembly.rs",
+        "tests/ropehouse_blood.rs",
+        "tests/saints_mile_again.rs",
+        "tests/saints_mile_convoy.rs",
+        "tests/scene_system.rs",
+        "tests/split_party.rs",
+        "tests/state_systems.rs",
+        "tests/ui_logic.rs",
+        "tests/version.rs"
+      ],
+      "runsCount": 46,
+      "runsMore": 43,
+      "sends": [],
+      "stages": [],
+      "triggers": [
+        "on a pull request touching 8 paths",
+        "on a push to main touching 8 paths",
+        "or by hand"
+      ]
+    },
+    {
+      "checks": [
+        "src/lib.rs",
+        "src/main.rs"
+      ],
+      "checksCount": 2,
+      "checksMore": 0,
+      "file": ".github/workflows/release-binaries.yml",
+      "id": ".github/workflows/release-binaries.yml",
+      "landings": [
+        "msix/Assets/"
+      ],
+      "name": "Release Binaries",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "msix",
+          "depth": 0,
+          "files": 1
+        },
+        {
+          "boundary": "src",
+          "depth": 0,
+          "files": 74
+        }
+      ],
+      "runs": [
+        "msix/gen-assets.mjs"
+      ],
+      "runsCount": 1,
+      "runsMore": 0,
+      "sends": [
+        "publishes to crates.io on a release event",
+        "creates a GitHub release on a release event"
+      ],
+      "stages": [],
+      "triggers": [
+        "when a release is published",
+        "or by hand"
+      ]
+    },
+    {
+      "checks": [],
+      "checksCount": 0,
+      "checksMore": 0,
+      "file": ".github/workflows/pages.yml",
+      "id": ".github/workflows/pages.yml",
+      "landings": [],
+      "name": "Deploy site to GitHub Pages",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "site",
+          "depth": 0,
+          "files": 3
+        }
+      ],
+      "runs": [
+        "site/astro.config.mjs",
+        "site/src/"
+      ],
+      "runsCount": 2,
+      "runsMore": 0,
+      "sends": [
+        "deploys the site"
+      ],
+      "stages": [],
+      "triggers": [
+        "on a push to main touching 2 paths",
+        "or by hand"
+      ]
+    },
+    {
+      "checks": [],
+      "checksCount": 0,
+      "checksMore": 0,
+      "file": "Cargo.toml",
+      "id": "Cargo.toml#saints-mile",
+      "kind": "command",
+      "landings": [],
+      "name": "saints-mile",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "src",
+          "depth": 0,
+          "files": 58
+        }
+      ],
+      "runs": [
+        "src/main.rs"
+      ],
+      "runsCount": 1,
+      "runsMore": 0,
+      "sends": [],
+      "stages": [],
+      "triggers": []
+    }
+  ],
+  "duplicates": [],
+  "duplicatesLead": null,
+  "duplicatesNote": [],
+  "edges": [],
+  "generated": [
+    {
+      "place": "msix/Assets/",
+      "writers": [
+        "msix/gen-assets.mjs",
+        "msix/resize-logo.mjs"
+      ]
+    }
+  ],
+  "generatedAt": "2026-09-24T21:43:39.125Z",
+  "limits": [
+    "1 import site could not be resolved.",
+    "4 writes use paths built at run time and are not named here.",
+    "6 writes and 3 reads go to the directory the command is run in, the home directory, a temporary directory or a path its caller passes, not to this repository.",
+    "Statistics confidence is low: fewer than 20 source files reach 10 revisions in the window."
+  ],
+  "mainDoor": ".github/workflows/ci.yml",
+  "partLabels": {
+    ".github": ".github",
+    "msix": "msix",
+    "root": "the repository root",
+    "site": "the site",
+    "src": "src",
+    "tests": "tests"
+  },
+  "parts": 6,
+  "readers": [],
+  "repo": "mcp-tool-shop-org/saints-mile",
+  "sequences": [],
+  "startDoor": "Cargo.toml#saints-mile",
+  "startHere": [
+    "src/main.rs"
+  ],
+  "startReason": "This path follows saints-mile (a command people run) from its entry, since CI runs only tests.",
+  "summary": null,
+  "summaryFrom": null,
+  "testFiles": 47,
+  "testedBy": {
+    "msix": 0,
+    "src": 46
+  },
+  "unnamedWrites": 4,
+  "unread": [],
+  "unreadFiles": 0,
+  "unreadNote": [],
+  "untested": [
+    {
+      "part": "msix",
+      "partLabel": "msix",
+      "testedBy": 0
+    }
+  ],
+  "untestedNote": [],
+  "written": 1
+}
