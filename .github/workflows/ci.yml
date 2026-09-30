@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: '22'
       - name: Atlas check
-        run: npx --yes @dogfood-lab/atlas@1.19.0 check
+        run: npx --yes @dogfood-lab/atlas@1.24.0 check
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo check
       - run: cargo test

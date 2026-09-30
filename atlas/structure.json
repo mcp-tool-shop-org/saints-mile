@@ -21,7 +21,7 @@
           "path": ".github/pull_request_template.md"
         },
         {
-          "hash": "c3860b8361fe76c4a2b4fb47672f8a999782d2d701452b2c67aa56293219b2b3",
+          "hash": "cf60ad12d405101062638a7cbf6942de50dd4763d779d712bf4db5b3090b1a0c",
           "path": ".github/workflows/ci.yml"
         },
         {
@@ -147,6 +147,13 @@
       "origin": "mixed",
       "role": "code",
       "testedBy": 0,
+      "unresolvedNamed": [
+        {
+          "path": "msix/resize-logo.mjs",
+          "specifier": "sharp",
+          "why": "undeclared"
+        }
+      ],
       "unresolvedSites": 1
     },
     {
@@ -265,6 +272,7 @@
           "path": "site/package.json"
         },
         {
+          "constantOnly": true,
           "hash": "ee756dfba4122d2acc94a39b2555d9f200fff56a87a8c0b10f9cd01df26a8b62",
           "path": "site/src/content.config.ts"
         },
@@ -314,9 +322,18 @@
         },
         {
           "hash": "3e25831663a95981fbab755c6b1abcdf278d882e1754380099e77566f076edfa",
+          "importOrder": [
+            "site/src/styles/global.css",
+            "site/src/site-config.ts"
+          ],
+          "importsFiles": [
+            "site/src/site-config.ts",
+            "site/src/styles/global.css"
+          ],
           "path": "site/src/pages/index.astro"
         },
         {
+          "constantOnly": true,
           "hash": "2cce56eca5be9fe2d731140ff2c7d57031d6c3c725126c1a6a77989a942b7383",
           "path": "site/src/site-config.ts"
         },
@@ -347,7 +364,7 @@
       "dynamicReads": 0,
       "dynamicSpawns": 0,
       "dynamicSpawnsInTests": 0,
-      "dynamicWrites": 4,
+      "dynamicWrites": 0,
       "entryPoints": [
         "src/lib.rs",
         "src/main.rs"
@@ -356,6 +373,10 @@
       "files": [
         {
           "hash": "63d70de671143ca81bb70964ed0d65805b9c6c88f4d541e57a6c0b5b8bcf277a",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/types.rs"
@@ -373,6 +394,11 @@
         },
         {
           "hash": "69b9462805be9b9785f0be3a28ef24c4f990c11a5b0373c70d61cacc9339255e",
+          "importOrder": [
+            "src/combat/types.rs",
+            "src/types.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/scene/types.rs",
@@ -391,6 +417,17 @@
         },
         {
           "hash": "ec13fdb10ac72dcaca52bd68bc781993ce1059b53c659c4f2d0f7a6222ae0fcb",
+          "importOrder": [
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/convoy.rs",
+            "src/combat/crowd.rs",
+            "src/combat/environment.rs",
+            "src/combat/reckoning.rs",
+            "src/combat/split_party.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/wounds.rs"
+          ],
           "importsFiles": [
             "src/combat/convoy.rs",
             "src/combat/crowd.rs",
@@ -418,6 +455,10 @@
             "rosa"
           ],
           "hash": "ad5d737810f93573e963039d8b825cef0328f89e135fbebec8403a7ff4aa4879",
+          "importOrder": [
+            "src/types.rs",
+            "src/combat/types.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/types.rs"
@@ -458,6 +499,10 @@
             "npc_stats_for"
           ],
           "hash": "4e3189bf24f739095cb9a7166cfca4f8307469cf18526b824b5d9513552dc231",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/types.rs"
@@ -475,6 +520,10 @@
             "triage"
           ],
           "hash": "14c404c8eaf707f752004e8f1f610fd5bddb14cad88e96e5cf5e1385b99428fe",
+          "importOrder": [
+            "src/types.rs",
+            "src/combat/types.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/types.rs"
@@ -495,6 +544,12 @@
             "triage_scene"
           ],
           "hash": "2cfcdf793b9c674a8a7082e45a8904bfa934af2f1f363836329308d0d50e945b",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -515,6 +570,12 @@
             "victory"
           ],
           "hash": "075eba6956cb38fb5ce8530467ab50e7a6282e8619a7e6d36d1fd24dfd83c0d1",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -551,6 +612,11 @@
             "unlock"
           ],
           "hash": "5478de0d15c2a47ce5fc7145418f3fd07ef301f8d0363e6fdebb69495f7e4b92",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/scene/types.rs",
@@ -572,6 +638,12 @@
             "valley_entry"
           ],
           "hash": "326263a20e7c2d6045252274344f018c7e2ae06d7295d57072bca00d6ca08065",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -607,6 +679,12 @@
             "youth_galen"
           ],
           "hash": "dca1c091bbcd35fb9b5a80cf6fe7ab41660156c0cab07a3501dc2537b447635d",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -626,6 +704,11 @@
             "verdict"
           ],
           "hash": "e932ce4fb2c7c8b933c8a56b7470265b1c4f28181b6d3188213d0ca7f1e15744",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/content/builders.rs",
             "src/scene/types.rs",
@@ -649,6 +732,12 @@
             "sermon_scene"
           ],
           "hash": "cf745a9cfe3040bf43d89e3023f4b31f61778821e0f2e21189b57af13ee67ac7",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -669,6 +758,11 @@
             "return_entry"
           ],
           "hash": "7b6137455a446d95eec01e06f94cf5300cb4dcbd60d446f696fa75887f7aca94",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/content/builders.rs",
             "src/scene/types.rs",
@@ -691,6 +785,12 @@
             "trestle_encounter"
           ],
           "hash": "b914730898eb65939e6b46d00f66e0a313320261dbc2069884b41362bc102856",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -712,6 +812,12 @@
             "read_city"
           ],
           "hash": "75476c83596667d3bdc316a44903b127d5ce52fd34dbecdd3907346101657c0d",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -730,6 +836,13 @@
             "split_execution"
           ],
           "hash": "1e06343dfaa193c617ee1834473fee8a1ed03a7823063794baf130bf3bec3dd3",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/combat/split_party.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/split_party.rs",
             "src/combat/types.rs",
@@ -746,6 +859,27 @@
             "get_scene"
           ],
           "hash": "b75f316fcf89c0523797f5274e97a63919fb170a899a40f9380190c343ff05be",
+          "importOrder": [
+            "src/content/prologue.rs",
+            "src/content/cedar_wake.rs",
+            "src/content/saints_mile_convoy.rs",
+            "src/content/black_willow.rs",
+            "src/content/ropehouse_blood.rs",
+            "src/content/dust_revival.rs",
+            "src/content/fuse_country.rs",
+            "src/content/iron_ledger.rs",
+            "src/content/burned_mission.rs",
+            "src/content/long_wire.rs",
+            "src/content/deadwater_trial.rs",
+            "src/content/breakwater_junction.rs",
+            "src/content/names_in_dust.rs",
+            "src/content/fifteen_years_gone.rs",
+            "src/content/old_friends.rs",
+            "src/content/saints_mile_again.rs",
+            "src/content/builders.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/black_willow.rs",
@@ -778,6 +912,11 @@
             "separations"
           ],
           "hash": "c97cbed29abb3f0102d716bef1948559e0feebccb9eb4c5d7a209617404969eb",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/content/builders.rs",
             "src/scene/types.rs",
@@ -796,6 +935,11 @@
             "rosa_return"
           ],
           "hash": "6e9b833899f07cf555e56347e20f7a0dca43b3d7748251ab6b3356b9f5109200",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/content/builders.rs",
             "src/scene/types.rs",
@@ -818,6 +962,11 @@
             "ride_to_arroyo_scene"
           ],
           "hash": "b2545f561eebdcb5d95fa4bfdc461789ca2d71da81df0c0a6977407203f6da95",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/scene/types.rs",
@@ -838,6 +987,13 @@
             "water_claim_scene"
           ],
           "hash": "3dd5c39fe2cca29caab2129d8439d75a687d6e1adb06c842f011609d8fcaeee1",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs",
+            "src/state/argument.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -856,6 +1012,12 @@
             "voss_confrontation"
           ],
           "hash": "d40cadae96a83477844ad6831affcc42434f2e21598daa0b939035638d872fcb",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -885,6 +1047,12 @@
             "young_man_galen"
           ],
           "hash": "b30b1d748e954b9d6e501c72efbce4361e39eacbc218d3bf01e101a4ee6e2b98",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/combat/types.rs",
+            "src/content/builders.rs"
+          ],
           "importsFiles": [
             "src/combat/types.rs",
             "src/content/builders.rs",
@@ -906,6 +1074,13 @@
             "print_fixture_summary"
           ],
           "hash": "66591edb56b9de5e3314843b998a2ec8727074a4847af9b4650c0eea72939ee8",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/dev/quickstart.rs"
+          ],
           "importsFiles": [
             "src/dev/quickstart.rs",
             "src/scene/types.rs",
@@ -917,6 +1092,11 @@
         },
         {
           "hash": "0b6c424ed74032793fa0da10e4eafddd006c94c292ca479814cd01e46b5d5dc9",
+          "importOrder": [
+            "src/dev/quickstart.rs",
+            "src/dev/event_log.rs",
+            "src/dev/fixtures.rs"
+          ],
           "importsFiles": [
             "src/dev/event_log.rs",
             "src/dev/fixtures.rs",
@@ -926,6 +1106,12 @@
         },
         {
           "hash": "d6f1bb63ee8084d90ca87c0411a15ba51c50c51e33a971251532b37972fe6e02",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/state/store.rs",
@@ -936,6 +1122,16 @@
         },
         {
           "hash": "7be79fc74008a68db5f25fca36ff284a5f55acfddb63882b72bde7c7caf9b20d",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/mod.rs",
+            "src/combat/mod.rs",
+            "src/state/mod.rs",
+            "src/pressure/mod.rs",
+            "src/content/mod.rs",
+            "src/dev/mod.rs",
+            "src/ui/mod.rs"
+          ],
           "importsFiles": [
             "src/combat/mod.rs",
             "src/content/mod.rs",
@@ -951,6 +1147,33 @@
         {
           "entry": "main",
           "entryRule": 1,
+          "failurePaths": [
+            {
+              "in": "process_result",
+              "kind": "match-err",
+              "line": 438
+            },
+            {
+              "in": "process_result",
+              "kind": "match-err",
+              "line": 478
+            },
+            {
+              "in": "handle_save_load",
+              "kind": "match-err",
+              "line": 499
+            },
+            {
+              "in": "handle_save_load",
+              "kind": "match-err",
+              "line": 516
+            },
+            {
+              "in": "discover_save_slots",
+              "kind": "match-err",
+              "line": 557
+            }
+          ],
           "hash": "63b78e4684fc022b8714f8968de33a5836de7ba76cf92ec142dfcf8be14450a2",
           "importsFiles": [
             "src/combat/engine.rs",
@@ -968,6 +1191,7 @@
             "src/ui/screens/title.rs",
             "src/ui/theme.rs"
           ],
+          "library": "src/lib.rs",
           "path": "src/main.rs",
           "sequences": [
             {
@@ -989,6 +1213,15 @@
                   }
                 },
                 {
+                  "inner": [
+                    {
+                      "line": 23,
+                      "name": "title_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
                   "line": 145,
                   "name": "render_title",
                   "target": {
@@ -1180,7 +1413,7 @@
                       "via": "render_combatant_card"
                     },
                     {
-                      "line": 318,
+                      "line": 305,
                       "name": "dim_style",
                       "target": {
                         "file": "src/ui/theme.rs"
@@ -1198,6 +1431,24 @@
                     {
                       "line": 382,
                       "name": "age_menu_title",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_action_menu"
+                    },
+                    {
+                      "branch": "!action.available",
+                      "line": 396,
+                      "name": "locked_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      },
+                      "via": "render_action_menu"
+                    },
+                    {
+                      "branch": "!action.available",
+                      "line": 397,
+                      "name": "lock_reason_style",
                       "target": {
                         "file": "src/ui/theme.rs"
                       },
@@ -1277,6 +1528,15 @@
                   "via": "render_confirm_quit"
                 },
                 {
+                  "inner": [
+                    {
+                      "line": 26,
+                      "name": "dim_style",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    }
+                  ],
                   "line": 198,
                   "name": "render_error",
                   "target": {
@@ -1311,6 +1571,13 @@
                 },
                 {
                   "inner": [
+                    {
+                      "line": 64,
+                      "name": "ammo_color",
+                      "target": {
+                        "file": "src/ui/theme.rs"
+                      }
+                    },
                     {
                       "line": 88,
                       "name": "echo_style",
@@ -1807,6 +2074,10 @@
         },
         {
           "hash": "bd40034ff316b5d0e830551f304d92d2e634410d62ade25e62c5818cd4f58e8b",
+          "importOrder": [
+            "src/pressure/types.rs",
+            "src/pressure/engine.rs"
+          ],
           "importsFiles": [
             "src/pressure/engine.rs",
             "src/pressure/types.rs"
@@ -1815,6 +2086,10 @@
         },
         {
           "hash": "dbf0ff9e6cf5ac450ca5178d75ce09e5a221d4767dbb5bcdc84d4aa7eae1d1b1",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/types.rs"
@@ -1823,6 +2098,10 @@
         },
         {
           "hash": "6833a624b5987f5a4db79c64ac171d7526e802f4bf645e43143d6c147b4a258c",
+          "importOrder": [
+            "src/scene/types.rs",
+            "src/scene/runner.rs"
+          ],
           "importsFiles": [
             "src/scene/runner.rs",
             "src/scene/types.rs"
@@ -1831,6 +2110,12 @@
         },
         {
           "hash": "5b0d18fd1b859f9434ba3b894fdbd2e426b3ffadac414970ae276c18e67d1da8",
+          "importOrder": [
+            "src/scene/types.rs",
+            "src/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/state/store.rs",
@@ -1896,6 +2181,18 @@
         },
         {
           "hash": "9531cf069a950375c2feba8d038f8168e5974021e0235220e2d66f72855986a8",
+          "importOrder": [
+            "src/state/types.rs",
+            "src/state/store.rs",
+            "src/state/settings.rs",
+            "src/state/argument.rs",
+            "src/state/evidence.rs",
+            "src/state/investigation.rs",
+            "src/state/history.rs",
+            "src/state/reassembly.rs",
+            "src/state/ending.rs",
+            "src/state/progression.rs"
+          ],
           "importsFiles": [
             "src/state/argument.rs",
             "src/state/ending.rs",
@@ -1934,6 +2231,18 @@
           "path": "src/state/reassembly.rs"
         },
         {
+          "failurePaths": [
+            {
+              "in": "load",
+              "kind": "match-err",
+              "line": 55
+            },
+            {
+              "in": "load",
+              "kind": "match-err",
+              "line": 58
+            }
+          ],
           "hash": "1c4e147aa6ff0ea0d91c5977f9b57ac650c2289085c8233950470427d00bae8e",
           "path": "src/state/settings.rs",
           "testsInside": true
@@ -1942,7 +2251,24 @@
           "exports": [
             "auto_save"
           ],
+          "failurePaths": [
+            {
+              "in": "delete_save",
+              "kind": "err",
+              "line": 158
+            },
+            {
+              "in": "delete_save",
+              "kind": "err",
+              "line": 166
+            }
+          ],
           "hash": "adca357338e8ca1c20ad5d868d26fb1cc7e3cda38965922d196b4902f4b15066",
+          "importOrder": [
+            "src/state/types.rs",
+            "src/scene/types.rs",
+            "src/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/state/types.rs",
@@ -1957,6 +2283,11 @@
             "relay_evidence_available"
           ],
           "hash": "cf0112f822057201cefe9d976c040538b641e16d2897e3f7d593232bc1e8e87f",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/state/investigation.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/state/investigation.rs",
@@ -2372,6 +2703,28 @@
         },
         {
           "hash": "88b65f62619ccee13c7fcc07b0e716a4e16347cad2257a8fefbf376bde429c27",
+          "importOrder": [
+            "src/ui/theme.rs",
+            "src/ui/text_reveal.rs",
+            "src/ui/input.rs",
+            "src/ui/widgets/mod.rs",
+            "src/ui/screens/mod.rs",
+            "src/combat/engine.rs",
+            "src/combat/types.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/settings.rs",
+            "src/state/types.rs",
+            "src/types.rs",
+            "src/ui/screens/save_load.rs",
+            "src/ui/screens/standoff.rs",
+            "src/ui/screens/combat.rs",
+            "src/content/mod.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/wounds.rs",
+            "src/content/prologue.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -2566,7 +2919,7 @@
                   "via": "render_combatant_card"
                 },
                 {
-                  "line": 318,
+                  "line": 305,
                   "name": "dim_style",
                   "target": {
                     "file": "src/ui/theme.rs"
@@ -2584,6 +2937,24 @@
                 {
                   "line": 382,
                   "name": "age_menu_title",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_action_menu"
+                },
+                {
+                  "branch": "!action.available",
+                  "line": 396,
+                  "name": "locked_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  },
+                  "via": "render_action_menu"
+                },
+                {
+                  "branch": "!action.available",
+                  "line": 397,
+                  "name": "lock_reason_style",
                   "target": {
                     "file": "src/ui/theme.rs"
                   },
@@ -2645,7 +3016,7 @@
                   "via": "render_combatant_card"
                 },
                 {
-                  "line": 318,
+                  "line": 305,
                   "name": "dim_style",
                   "target": {
                     "file": "src/ui/theme.rs"
@@ -2677,7 +3048,7 @@
                   "via": "render_combatant_card"
                 },
                 {
-                  "line": 318,
+                  "line": 305,
                   "name": "dim_style",
                   "target": {
                     "file": "src/ui/theme.rs"
@@ -2707,7 +3078,7 @@
                   }
                 },
                 {
-                  "line": 318,
+                  "line": 305,
                   "name": "dim_style",
                   "target": {
                     "file": "src/ui/theme.rs"
@@ -2731,6 +3102,22 @@
                 {
                   "line": 382,
                   "name": "age_menu_title",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "branch": "!action.available",
+                  "line": 396,
+                  "name": "locked_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
+                  "branch": "!action.available",
+                  "line": 397,
+                  "name": "lock_reason_style",
                   "target": {
                     "file": "src/ui/theme.rs"
                   }
@@ -2785,6 +3172,11 @@
             "render_crowd"
           ],
           "hash": "6217a7c711a6bf475f42c4acf65ae325e92896207726c28f34ca3513d19fc372",
+          "importOrder": [
+            "src/combat/crowd.rs",
+            "src/ui/theme.rs",
+            "src/ui/screens/combat.rs"
+          ],
           "importsFiles": [
             "src/combat/crowd.rs",
             "src/ui/screens/combat.rs",
@@ -2793,6 +3185,8 @@
           "path": "src/ui/screens/crowd.rs"
         },
         {
+          "entry": "render_error",
+          "entryRule": 4,
           "exports": [
             "render_error"
           ],
@@ -2800,13 +3194,35 @@
           "importsFiles": [
             "src/ui/theme.rs"
           ],
-          "path": "src/ui/screens/error.rs"
+          "path": "src/ui/screens/error.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 26,
+                  "name": "dim_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_error"
+            }
+          ]
         },
         {
           "exports": [
             "render_escort"
           ],
           "hash": "54f14e0ee77d986a0b65cbb45ae9b570ea3fe951d62fd172e199de208ea92c7d",
+          "importOrder": [
+            "src/pressure/types.rs",
+            "src/ui/theme.rs",
+            "src/ui/screens/combat.rs"
+          ],
           "importsFiles": [
             "src/pressure/types.rs",
             "src/ui/screens/combat.rs",
@@ -2816,6 +3232,20 @@
         },
         {
           "hash": "fa26d05112df80f0377c9f2c2ca119eb4e521a75db0c95d319eaffb6acc824e5",
+          "importOrder": [
+            "src/ui/screens/title.rs",
+            "src/ui/screens/scene.rs",
+            "src/ui/screens/standoff.rs",
+            "src/ui/screens/combat.rs",
+            "src/ui/screens/escort.rs",
+            "src/ui/screens/crowd.rs",
+            "src/ui/screens/reckoning.rs",
+            "src/ui/screens/transmission.rs",
+            "src/ui/screens/save_load.rs",
+            "src/ui/screens/error.rs",
+            "src/ui/screens/pause.rs",
+            "src/ui/screens/status.rs"
+          ],
           "importsFiles": [
             "src/ui/screens/combat.rs",
             "src/ui/screens/crowd.rs",
@@ -2875,6 +3305,11 @@
             "render_reckoning"
           ],
           "hash": "c03c5a68c203852ba7531fae70358fe2131b5b866c13c4432df50d77c5d5d061",
+          "importOrder": [
+            "src/combat/reckoning.rs",
+            "src/ui/theme.rs",
+            "src/ui/screens/combat.rs"
+          ],
           "importsFiles": [
             "src/combat/reckoning.rs",
             "src/ui/screens/combat.rs",
@@ -3211,6 +3646,13 @@
             {
               "calls": [
                 {
+                  "line": 64,
+                  "name": "ammo_color",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                },
+                {
                   "line": 88,
                   "name": "echo_style",
                   "target": {
@@ -3233,6 +3675,8 @@
           ]
         },
         {
+          "entry": "render_title",
+          "entryRule": 4,
           "exports": [
             "render_title"
           ],
@@ -3240,7 +3684,24 @@
           "importsFiles": [
             "src/ui/theme.rs"
           ],
-          "path": "src/ui/screens/title.rs"
+          "path": "src/ui/screens/title.rs",
+          "sequences": [
+            {
+              "calls": [
+                {
+                  "line": 23,
+                  "name": "title_style",
+                  "target": {
+                    "file": "src/ui/theme.rs"
+                  }
+                }
+              ],
+              "exported": true,
+              "invokedAtTopLevel": false,
+              "isDefaultExport": false,
+              "name": "render_title"
+            }
+          ]
         },
         {
           "exports": [
@@ -3284,6 +3745,10 @@
             "title_style"
           ],
           "hash": "8aaea3e8e8d9e74c5e4989b11d4a9da779ee11ccb3c8ef24a790bf31eda531e3",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/types.rs"
@@ -3295,6 +3760,11 @@
             "render_choice_menu"
           ],
           "hash": "76396ce0b957983fd44e8fb534eba76f1a8cc1d3d74decaa4e2fd8020037b633",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/ui/theme.rs"
+          ],
           "importsFiles": [
             "src/scene/runner.rs",
             "src/types.rs",
@@ -3307,6 +3777,11 @@
             "render_dialogue"
           ],
           "hash": "452430827d50de51322754b552db25b8572985b4f7dc5a296b907cf8bb7e2489",
+          "importOrder": [
+            "src/scene/runner.rs",
+            "src/ui/theme.rs",
+            "src/ui/text_reveal.rs"
+          ],
           "importsFiles": [
             "src/scene/runner.rs",
             "src/ui/text_reveal.rs",
@@ -3328,6 +3803,12 @@
         },
         {
           "hash": "25a1dc29b8cf92071cf8957607f2cfd4422ed4f29509172eedc0dbe13814f64c",
+          "importOrder": [
+            "src/ui/widgets/dialogue.rs",
+            "src/ui/widgets/choice_menu.rs",
+            "src/ui/widgets/memory_echo.rs",
+            "src/ui/widgets/stat_bar.rs"
+          ],
           "importsFiles": [
             "src/ui/widgets/choice_menu.rs",
             "src/ui/widgets/dialogue.rs",
@@ -3353,10 +3834,37 @@
       "importConfidence": "full",
       "name": "src",
       "origin": "authored",
+      "outsidePlaces": [
+        {
+          "reads": 1,
+          "where": [
+            "caller"
+          ],
+          "writes": 6
+        },
+        {
+          "reads": 0,
+          "where": [
+            "caller",
+            "cwd:saves/"
+          ],
+          "writes": 4
+        },
+        {
+          "reads": 2,
+          "where": [
+            "cwd:saves/"
+          ],
+          "writes": 0
+        }
+      ],
       "outsideReads": 3,
-      "outsideWrites": 6,
+      "outsideWrites": 10,
       "role": "code",
-      "testedBy": 46,
+      "testRunners": [
+        "cargo test"
+      ],
+      "testedBy": 47,
       "unresolvedSites": 0
     },
     {
@@ -3369,6 +3877,17 @@
       "files": [
         {
           "hash": "24b2cf37fc656e172025d8b0db47742ebc43b3d54992ed796b2257942192a86c",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/content/breakwater_junction.rs",
+            "src/content/names_in_dust.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3380,11 +3899,23 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/adult_act_end.rs",
           "testsInside": true
         },
         {
           "hash": "6f12e26f3f425ca86f22535ef07b7d4552c639e604612edc65c5fb23427cbaa6",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/combat/wounds.rs",
+            "src/state/store.rs",
+            "src/content/black_willow.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3396,11 +3927,19 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/black_willow.rs",
           "testsInside": true
         },
         {
           "hash": "9211899139588012917369f2e4c7168a6412253378dc9af70cee55036152f772",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/content/breakwater_junction.rs",
+            "src/state/store.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/content/breakwater_junction.rs",
             "src/scene/runner.rs",
@@ -3408,11 +3947,23 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/breakwater_junction.rs",
           "testsInside": true
         },
         {
           "hash": "1ad3a8d49e17ea7c78205ddf1ab403ba4f61db4a197a3ae24ba7bbaefdfc159a",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/state/investigation.rs",
+            "src/content/burned_mission.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3424,11 +3975,23 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/burned_mission.rs",
           "testsInside": true
         },
         {
           "hash": "3f6918cac6cc7a9326fc3c63138f0536e45e1c0e09425b1acb2aec231d2c017d",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/state/store.rs",
+            "src/content/cedar_wake.rs",
+            "src/content/builders.rs",
+            "src/content/prologue.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/types.rs",
@@ -3440,15 +4003,21 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/cedar_wake.rs",
           "testsInside": true
         },
         {
           "hash": "b92465c570e127ac2dc5302ae4c7b6ab61c906737796d50fd3523b76084ae1bb",
+          "importOrder": [
+            "src/types.rs",
+            "src/combat/party_defs.rs"
+          ],
           "importsFiles": [
             "src/combat/party_defs.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/combat_party_defs.rs",
           "testsInside": true
         },
@@ -3457,6 +4026,7 @@
           "importsFiles": [
             "src/combat/wounds.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/combat_wounds.rs",
           "testsInside": true
         },
@@ -3466,6 +4036,15 @@
             "run_scene"
           ],
           "hash": "cb7764f8214a41fa40e8aa5ee819cdce7add54fe5e9d1892a59ff0b2cdbddbad",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/content/mod.rs",
+            "src/state/store.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/types.rs",
@@ -3475,6 +4054,7 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/common/mod.rs"
         },
         {
@@ -3482,11 +4062,20 @@
           "importsFiles": [
             "src/content/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/content_lookup.rs",
           "testsInside": true
         },
         {
           "hash": "6a05c75b7c39772297b00374c76ca498872bba9ab632c2726f941f4387938ba3",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/reckoning.rs",
+            "src/state/store.rs",
+            "src/content/deadwater_trial.rs"
+          ],
           "importsFiles": [
             "src/combat/reckoning.rs",
             "src/content/deadwater_trial.rs",
@@ -3495,11 +4084,19 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/deadwater_trial.rs",
           "testsInside": true
         },
         {
           "hash": "f64bdff04609cea7a40c3795ddb96128daa7d637e23e8a427434bc26e5b7fba2",
+          "importOrder": [
+            "src/types.rs",
+            "src/dev/quickstart.rs",
+            "src/dev/event_log.rs",
+            "src/dev/fixtures.rs",
+            "src/state/store.rs"
+          ],
           "importsFiles": [
             "src/dev/event_log.rs",
             "src/dev/fixtures.rs",
@@ -3507,11 +4104,23 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/dev_infrastructure.rs",
           "testsInside": true
         },
         {
           "hash": "b261b512e60b1996dc6216ae65ad26f2b45ecb4234097b1dcb833f903a8b9bbc",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/engine.rs",
+            "src/combat/crowd.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/content/dust_revival.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/combat/crowd.rs",
             "src/combat/engine.rs",
@@ -3523,11 +4132,22 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/dust_revival.rs",
           "testsInside": true
         },
         {
           "hash": "dfb377626b57f021d9de6cda3e221fb854b43a44fa378bc33bfb1fb526f82922",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/content/mod.rs",
+            "src/ui/mod.rs",
+            "src/state/store.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3538,11 +4158,28 @@
             "src/ui/mod.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/feature_wave1.rs",
           "testsInside": true
         },
         {
           "hash": "6279fb6ca261427654e05bef896701e2908c317400610cb3fe30323b2c3acd5d",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/environment.rs",
+            "src/combat/party_defs.rs",
+            "src/content/mod.rs",
+            "src/pressure/types.rs",
+            "src/pressure/engine.rs",
+            "src/scene/types.rs",
+            "src/state/evidence.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/state/reassembly.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/environment.rs",
@@ -3559,11 +4196,24 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/feature_wave2.rs",
           "testsInside": true
         },
         {
           "hash": "15f0fe379adc1234a09b1b3a2780486569ff7ed307ef16629ee4d04d58939ebb",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/content/mod.rs",
+            "src/state/store.rs",
+            "src/scene/types.rs",
+            "src/state/types.rs",
+            "src/ui/mod.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3576,11 +4226,25 @@
             "src/ui/mod.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/feature_wave3.rs",
           "testsInside": true
         },
         {
           "hash": "135c1a81be447974deae9409a4aa7737ad4c3adb6b0f28047676a2fdcaae061f",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/wounds.rs",
+            "src/dev/quickstart.rs",
+            "src/state/store.rs",
+            "src/state/settings.rs",
+            "src/state/types.rs",
+            "src/scene/types.rs",
+            "src/ui/mod.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/types.rs",
@@ -3594,11 +4258,20 @@
             "src/ui/mod.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/feature_wave4.rs",
           "testsInside": true
         },
         {
           "hash": "592644fa33795d88337fe78bd028dd8908f7387a7dbb5b140ff95f0a3ebaecea",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/state/history.rs",
+            "src/content/fifteen_years_gone.rs"
+          ],
           "importsFiles": [
             "src/combat/party_defs.rs",
             "src/content/fifteen_years_gone.rs",
@@ -3607,11 +4280,23 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/fifteen_years_gone.rs",
           "testsInside": true
         },
         {
           "hash": "a86ffd4056b644062e4e8ee74b9aa9201b68caac9eb490e6b7c0abf702bec63c",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/content/mod.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs",
+            "src/dev/quickstart.rs",
+            "src/state/progression.rs"
+          ],
           "importsFiles": [
             "src/content/mod.rs",
             "src/dev/quickstart.rs",
@@ -3623,11 +4308,23 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/full_playthrough.rs",
           "testsInside": true
         },
         {
           "hash": "c445820c49ca75dd44e08b4256b45a82b7b15b469ede8e08e1c3cec889a299a2",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/engine.rs",
+            "src/combat/environment.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/content/fuse_country.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/environment.rs",
@@ -3639,11 +4336,23 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/fuse_country.rs",
           "testsInside": true
         },
         {
           "hash": "51fa1db344b2918bbe4013f3cdca7491363ca30cc80bc84e2af5ebdd04e33fb4",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/state/evidence.rs",
+            "src/content/iron_ledger.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3655,11 +4364,20 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/iron_ledger.rs",
           "testsInside": true
         },
         {
           "hash": "74394b1a7ad3b99196495812c03f933d457f8b81bdc8a12c882eaf0e6682218d",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/split_party.rs",
+            "src/state/store.rs",
+            "src/content/long_wire.rs"
+          ],
           "importsFiles": [
             "src/combat/split_party.rs",
             "src/content/long_wire.rs",
@@ -3668,11 +4386,21 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/long_wire.rs",
           "testsInside": true
         },
         {
           "hash": "11b38330c41de1384de8a6a7549cecc20cd3733d1fcca39ff479a7961a388451",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/state/store.rs",
+            "src/content/prologue.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/types.rs",
@@ -3682,22 +4410,37 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/morrow_crossing.rs",
           "testsInside": true
         },
         {
           "hash": "d1b800806ae81317426c421a97212aa751e4fc0c1e5969ab8b1d800c09752bc0",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/content/names_in_dust.rs",
+            "src/state/store.rs"
+          ],
           "importsFiles": [
             "src/content/names_in_dust.rs",
             "src/scene/runner.rs",
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/names_in_dust.rs",
           "testsInside": true
         },
         {
           "hash": "143d745496aa90804646e431a6c1be5e4284c0e9c9a24763e3281a68ef5cb8e1",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/state/store.rs",
+            "src/state/reassembly.rs",
+            "src/content/old_friends.rs"
+          ],
           "importsFiles": [
             "src/content/old_friends.rs",
             "src/scene/runner.rs",
@@ -3705,21 +4448,37 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/old_friends.rs",
           "testsInside": true
         },
         {
           "hash": "a916e875ba9b4ee09ef67c509f51dce00a785b00cbb058a49076a15df894fe50",
+          "importOrder": [
+            "src/types.rs",
+            "src/pressure/types.rs",
+            "src/scene/types.rs"
+          ],
           "importsFiles": [
             "src/pressure/types.rs",
             "src/scene/types.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/pressure_encounters.rs",
           "testsInside": true
         },
         {
           "hash": "1ef652995b2a841432550a5bde83825317bc0a68c9b4550e573e500b192135c3",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/content/mod.rs",
+            "src/scene/runner.rs",
+            "src/scene/types.rs",
+            "src/state/store.rs",
+            "src/state/types.rs"
+          ],
           "importsFiles": [
             "src/content/mod.rs",
             "src/scene/runner.rs",
@@ -3729,20 +4488,37 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/prologue.rs",
           "testsInside": true
         },
         {
           "hash": "8ba2a81f65af1f925b657f45f750608ede15d14bd61910748a7ba035d33746d8",
+          "importOrder": [
+            "src/types.rs",
+            "src/state/reassembly.rs"
+          ],
           "importsFiles": [
             "src/state/reassembly.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/reassembly.rs",
           "testsInside": true
         },
         {
           "hash": "0b1d32550b718567eb66959259d61f61215ff3761db46b466e06708119b95348",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/combat/party_defs.rs",
+            "src/state/store.rs",
+            "src/state/argument.rs",
+            "src/content/ropehouse_blood.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/party_defs.rs",
@@ -3754,11 +4530,19 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/ropehouse_blood.rs",
           "testsInside": true
         },
         {
           "hash": "63ebc763fee2bd614389b46b761fe29b00a1ff5efaf17e70121fb0f75b5a240c",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/runner.rs",
+            "src/state/store.rs",
+            "src/state/ending.rs",
+            "src/content/saints_mile_again.rs"
+          ],
           "importsFiles": [
             "src/content/saints_mile_again.rs",
             "src/scene/runner.rs",
@@ -3766,11 +4550,21 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/saints_mile_again.rs",
           "testsInside": true
         },
         {
           "hash": "0b0c7a1c2bb567dda748621bc6f344d7166db5c026ce12e9d37728cba013c77e",
+          "importOrder": [
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/combat/types.rs",
+            "src/combat/engine.rs",
+            "src/state/store.rs",
+            "src/content/saints_mile_convoy.rs"
+          ],
           "importsFiles": [
             "src/combat/engine.rs",
             "src/combat/types.rs",
@@ -3780,11 +4574,20 @@
             "src/state/store.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/saints_mile_convoy.rs",
           "testsInside": true
         },
         {
           "hash": "3ca85f3c2862fb64574f3cf82c051af579922d183239deef55c20069d5b6baab",
+          "importOrder": [
+            "tests/common/mod.rs",
+            "src/types.rs",
+            "src/scene/types.rs",
+            "src/scene/runner.rs",
+            "src/state/store.rs",
+            "src/state/types.rs"
+          ],
           "importsFiles": [
             "src/scene/runner.rs",
             "src/scene/types.rs",
@@ -3793,43 +4596,69 @@
             "src/types.rs",
             "tests/common/mod.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/scene_system.rs",
           "testsInside": true
         },
         {
           "hash": "6331029c26b124338e8f78550ac31ddf2354e8a6d713bcc186347d395d601774",
+          "importOrder": [
+            "src/types.rs",
+            "src/combat/split_party.rs"
+          ],
           "importsFiles": [
             "src/combat/split_party.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/split_party.rs",
           "testsInside": true
         },
         {
           "hash": "c1439e547000e4d7ab1806352168dba989b0008531f0b1c97903622c0d74b8aa",
+          "importOrder": [
+            "src/types.rs",
+            "src/state/argument.rs",
+            "src/state/evidence.rs",
+            "src/state/investigation.rs"
+          ],
           "importsFiles": [
             "src/state/argument.rs",
             "src/state/evidence.rs",
             "src/state/investigation.rs",
             "src/types.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/state_systems.rs",
           "testsInside": true
         },
         {
           "hash": "94f7eedbaa403318294da358c4c6589ba254320f694860c7e29ab304231a402f",
+          "importOrder": [
+            "src/scene/types.rs",
+            "src/ui/text_reveal.rs",
+            "src/ui/theme.rs",
+            "src/types.rs"
+          ],
           "importsFiles": [
             "src/scene/types.rs",
             "src/types.rs",
             "src/ui/text_reveal.rs",
             "src/ui/theme.rs"
           ],
+          "library": "src/lib.rs",
           "path": "tests/ui_logic.rs",
           "testsInside": true
         },
         {
           "hash": "a4f5dcd8f7a1ebea98acc3cd018ba090731bd3b9a6b52fcf75cbcc91fe53a1c6",
           "path": "tests/version.rs",
+          "spawns": [
+            "src/main.rs"
+          ],
+          "spawnsInstalled": [
+            "src/main.rs"
+          ],
           "testsInside": true
         }
       ],
@@ -3840,6 +4669,9 @@
       "name": "tests",
       "origin": "authored",
       "role": "test",
+      "testRunners": [
+        "cargo test"
+      ],
       "testedBy": 0,
       "unresolvedSites": 0
     }
@@ -3849,23 +4681,63 @@
       "checksCount": 2,
       "commands": [
         {
+          "dir": "",
           "job": "check-test",
-          "step": "Atlas check",
-          "text": "npx --yes @dogfood-lab/atlas@1.19.0 check"
+          "programs": [
+            "npx"
+          ],
+          "step": "Atlas check"
         },
         {
+          "dir": "",
           "job": "check-test",
-          "step": "4",
-          "text": "cargo check"
+          "programs": [
+            "cargo"
+          ],
+          "step": "4"
         },
         {
+          "dir": "",
           "job": "check-test",
-          "step": "5",
-          "text": "cargo test"
+          "programs": [
+            "cargo"
+          ],
+          "step": "5"
         }
       ],
       "elsewhere": [],
       "file": ".github/workflows/ci.yml",
+      "jobs": [
+        {
+          "basis": "declared",
+          "name": "check-test",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ],
+          "setup": [
+            {
+              "ranges": [
+                {
+                  "from": "22",
+                  "range": ">=22.0.0 <23.0.0-0"
+                }
+              ],
+              "step": "Set up Node for the Atlas check",
+              "uses": "actions/setup-node",
+              "version": "22"
+            }
+          ]
+        }
+      ],
       "landings": [],
       "mentions": [],
       "name": "CI",
@@ -4235,6 +5107,14 @@
         "releases": false
       },
       "stages": [],
+      "tests": [
+        {
+          "files": 46,
+          "job": "check-test",
+          "runner": "cargo test",
+          "step": "5"
+        }
+      ],
       "triggers": [
         {
           "branches": [
@@ -4283,18 +5163,74 @@
       "checksCount": 0,
       "commands": [
         {
+          "dir": "site",
           "job": "build",
-          "step": "Install site dependencies",
-          "text": "npm ci"
+          "programs": [
+            "npm"
+          ],
+          "step": "Install site dependencies"
         },
         {
+          "dir": "site",
           "job": "build",
-          "step": "Build site",
-          "text": "npm run build"
+          "programs": [
+            "npm"
+          ],
+          "step": "Build site"
         }
       ],
       "elsewhere": [],
       "file": ".github/workflows/pages.yml",
+      "jobs": [
+        {
+          "basis": "declared",
+          "name": "build",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ],
+          "setup": [
+            {
+              "ranges": [
+                {
+                  "from": "22",
+                  "range": ">=22.0.0 <23.0.0-0"
+                }
+              ],
+              "step": "1",
+              "uses": "actions/setup-node",
+              "version": "22"
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "environment": {
+            "name": "github-pages"
+          },
+          "name": "deploy",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ]
+        }
+      ],
       "landings": [],
       "mentions": [],
       "name": "Deploy site to GitHub Pages",
@@ -4308,7 +5244,7 @@
         {
           "boundary": "site",
           "depth": 0,
-          "files": 3
+          "files": 5
         }
       ],
       "readers": [],
@@ -4366,62 +5302,114 @@
       "usesWorkflowToken": false
     },
     {
-      "checksCount": 2,
+      "checksCount": 1,
       "commands": [
         {
+          "dir": "",
           "job": "validate",
-          "step": "Extract expected version from tag",
-          "text": "TAG=\"${GITHUB_REF_NAME}\"\nVERSION=\"${TAG#v}\"\necho \"EXPECTED_VERSION=${VERSION}\" >> \"$GITHUB_ENV\"\necho \"Expected version from tag: ${VERSION}\"\n"
+          "programs": [
+            "echo"
+          ],
+          "step": "Extract expected version from tag"
         },
         {
+          "dir": "",
           "job": "validate",
-          "step": "Validate Cargo.toml version matches tag",
-          "text": "CARGO_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*\"\\(.*\\)\"/\\1/')\necho \"Cargo.toml version: ${CARGO_VERSION}\"\necho \"Tag version: ${EXPECTED_VERSION}\"\nif [ \"$CARGO_VERSION\" != \"$EXPECTED_VERSION\" ]; then\n  echo \"::error::Version mismatch! Cargo.toml has ${CARGO_VERSION} but tag says ${EXPECTED_VERSION}\"\n  exit 1\nfi\necho \"Version alignment confirmed: ${CARGO_VERSION}\"\n"
+          "programs": [
+            "echo",
+            "grep",
+            "head",
+            "sed"
+          ],
+          "step": "Validate Cargo.toml version matches tag"
         },
         {
+          "dir": "",
           "job": "validate",
-          "step": "Validate CHANGELOG.md has entry for this version",
-          "text": "if ! grep -q \"\\[${EXPECTED_VERSION}\\]\" CHANGELOG.md; then\n  echo \"::error::CHANGELOG.md has no entry for version ${EXPECTED_VERSION}\"\n  exit 1\nfi\necho \"CHANGELOG.md entry found for ${EXPECTED_VERSION}\"\n"
+          "programs": [
+            "echo",
+            "grep"
+          ],
+          "step": "Validate CHANGELOG.md has entry for this version"
         },
         {
+          "dir": "",
           "job": "build",
-          "step": "Build release binary",
-          "text": "cargo build --release"
+          "programs": [
+            "cargo"
+          ],
+          "step": "Build release binary"
         },
         {
+          "dir": "",
           "job": "build",
-          "step": "Rename binary",
-          "text": "set -e\nVERSION=${GITHUB_REF_NAME#v}\nif [ -z \"$VERSION\" ] || [ \"$VERSION\" = \"$GITHUB_REF_NAME\" ]; then\n  echo \"Tag-based version not available, falling back to cargo metadata...\"\n  VERSION=$(cargo metadata --no-deps --format-version 1 | python3 -c \"import sys,json; print(json.load(sys.stdin)['packages'][0]['version'])\")\nfi\nif [ -z \"$VERSION\" ]; then\n  echo \"ERROR: Failed to extract version\"\n  exit 1\nfi\necho \"Extracted version: ${VERSION}\"\nOUTNAME=\"${{ env.TOOL_NAME }}-${VERSION}-${{ matrix.target }}${{ matrix.ext }}\"\nmv \"target/release/${{ env.TOOL_NAME }}${{ matrix.ext }}\" \"target/release/${OUTNAME}\"\necho \"ASSET_NAME=${OUTNAME}\" >> \"$GITHUB_ENV\"\necho \"VERSION=${VERSION}\" >> \"$GITHUB_ENV\"\n"
+          "programs": [
+            "cargo",
+            "echo",
+            "mv",
+            "python3"
+          ],
+          "step": "Rename binary"
         },
         {
+          "dir": "",
           "job": "msix",
-          "step": "Build release binary",
-          "text": "cargo build --release"
+          "programs": [
+            "cargo"
+          ],
+          "step": "Build release binary"
         },
         {
+          "dir": "",
           "job": "msix",
-          "step": "Generate MSIX assets",
-          "text": "node msix/gen-assets.mjs"
+          "programs": [
+            "node"
+          ],
+          "step": "Generate MSIX assets"
         },
         {
+          "dir": "",
           "job": "msix",
-          "step": "Build MSIX",
-          "text": "$SdkBin = Get-ChildItem \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\*\\x64\\makeappx.exe\" |\n  Sort-Object FullName -Descending | Select-Object -First 1\n$MakeAppx = $SdkBin.FullName\n\n$LayoutDir = \"msix\\layout\"\nNew-Item -ItemType Directory -Path $LayoutDir -Force | Out-Null\nNew-Item -ItemType Directory -Path \"$LayoutDir\\Assets\" -Force | Out-Null\n\nCopy-Item \"target\\release\\saints-mile.exe\" -Destination $LayoutDir\nCopy-Item \"msix\\AppxManifest.xml\" -Destination $LayoutDir\nGet-ChildItem \"msix\\Assets\\*.png\" | ForEach-Object {\n  Copy-Item $_.FullName -Destination \"$LayoutDir\\Assets\"\n}\n\n& $MakeAppx pack /d $LayoutDir /p \"msix\\SaintsMile.msix\" /o\n"
+          "programs": [
+            "Copy-Item",
+            "ForEach-Object",
+            "Get-ChildItem",
+            "New-Item",
+            "Out-Null",
+            "Select-Object",
+            "Sort-Object"
+          ],
+          "step": "Build MSIX"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Generate checksums",
-          "text": "set -e\ncd artifacts\nVERSION=$(ls | head -1 | sed \"s/${TOOL_NAME}-//;s/-.*//\" )\nif [ -z \"$VERSION\" ]; then\n  echo \"ERROR: Failed to extract version from artifact names\"\n  exit 1\nfi\necho \"Extracted version for checksums: ${VERSION}\"\nsha256sum * > \"checksums-${VERSION}.txt\"\ncat \"checksums-${VERSION}.txt\"\n"
+          "programs": [
+            "cat",
+            "cd",
+            "echo",
+            "head",
+            "ls",
+            "sed",
+            "sha256sum"
+          ],
+          "step": "Generate checksums"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Upload to latest release (workflow_dispatch)",
-          "text": "TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName')\nfor f in artifacts/*; do\n  gh release upload \"$TAG\" \"$f\" --clobber\ndone\n"
+          "programs": [
+            "gh"
+          ],
+          "step": "Upload to latest release (workflow_dispatch)"
         },
         {
+          "dir": "",
           "job": "publish-crate",
-          "step": "Publish to crates.io",
-          "text": "cargo publish --allow-dirty"
+          "programs": [
+            "cargo"
+          ],
+          "step": "Publish to crates.io"
         }
       ],
       "elsewhere": [],
@@ -4435,13 +5423,111 @@
           ],
           "pushes": false,
           "sends": [
-            "publishesTo:crates.io",
-            "releases"
+            "publishesTo:crates.io"
           ],
           "stages": [],
           "when": {
             "event": "release"
           }
+        }
+      ],
+      "jobs": [
+        {
+          "basis": "declared",
+          "name": "validate",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "name": "build",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            },
+            {
+              "labels": [
+                "macos-latest"
+              ],
+              "platform": {
+                "cpu": "arm64",
+                "os": "darwin"
+              }
+            },
+            {
+              "labels": [
+                "windows-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "os": "win32"
+              }
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "name": "msix",
+          "runsOn": [
+            {
+              "labels": [
+                "windows-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "os": "win32"
+              }
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "name": "release",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "name": "publish-crate",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ]
         }
       ],
       "landings": [
@@ -4509,17 +5595,19 @@
           "via": "cargo build"
         },
         {
+          "built": true,
           "job": "build",
           "matched": true,
           "path": "src/main.rs",
-          "runKind": "checks",
+          "runKind": "executes",
           "via": "cargo build"
         },
         {
+          "built": true,
           "job": "msix",
           "matched": true,
           "path": "src/main.rs",
-          "runKind": "checks",
+          "runKind": "executes",
           "via": "cargo build"
         }
       ],
@@ -4529,6 +5617,12 @@
         "GITHUB_TOKEN"
       ],
       "sends": {
+        "assets": [
+          "binary:darwin-arm64",
+          "binary:linux-x64",
+          "binary:win-x64",
+          "msix"
+        ],
         "deploysPages": false,
         "dispatchesTo": [],
         "opensIssues": false,
@@ -4610,15 +5704,17 @@
       "to": "src"
     }
   ],
+  "engine": "1.24.0",
   "generatedFrom": {
-    "commit": "49f52661f44e1ab2c933189755506848617db8ff",
+    "commit": "18fa475285a51f90912f11e2984e018e2cb66167",
     "tracked": 168
   },
   "landings": [
     {
       "readers": [
         {
-          "by": ".github/workflows/release-binaries.yml"
+          "by": ".github/workflows/release-binaries.yml",
+          "confidence": "config"
         }
       ],
       "target": "CHANGELOG.md",
@@ -4627,7 +5723,8 @@
     {
       "readers": [
         {
-          "by": ".github/workflows/release-binaries.yml"
+          "by": ".github/workflows/release-binaries.yml",
+          "confidence": "config"
         }
       ],
       "target": "Cargo.toml",

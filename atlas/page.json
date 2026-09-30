@@ -27,48 +27,55 @@
     }
   ],
   "changes": {
-    "first": true
-  },
-  "changesTogether": [
-    {
-      "a": "src/combat/engine.rs",
-      "b": "src/combat/types.rs",
-      "either": 8,
-      "partLabels": [
-        "src",
-        "src"
-      ],
-      "parts": [
-        "src",
-        "src"
-      ],
-      "relation": "inside",
-      "shared": 4
+    "fileCounts": {
+      "added": 0,
+      "changed": 1,
+      "moved": 0,
+      "parts": 1,
+      "removed": 0
     },
-    {
-      "a": "src/combat/engine.rs",
-      "b": "src/ui/mod.rs",
-      "either": 8,
-      "partLabels": [
-        "src",
-        "src"
-      ],
-      "parts": [
-        "src",
-        "src"
-      ],
-      "relation": "inside",
-      "shared": 4
-    }
-  ],
+    "items": [
+      {
+        "kind": "sequence",
+        "sentence": "In src/ui/screens/combat.rs, `render_combat` gained a step, `locked_style`, before `lock_reason_style`.",
+        "subjects": [
+          "src/ui/screens/combat.rs"
+        ]
+      },
+      {
+        "kind": "sequence",
+        "sentence": "In src/ui/screens/combat.rs, `render_combat` gained a step, `lock_reason_style`, before `dim_style`.",
+        "subjects": [
+          "src/ui/screens/combat.rs"
+        ]
+      },
+      {
+        "kind": "sequence",
+        "sentence": "In src/ui/screens/status.rs, `render_status` gained a step, `ammo_color`, before `echo_style`.",
+        "subjects": [
+          "src/ui/screens/status.rs"
+        ]
+      },
+      {
+        "kind": "counts",
+        "sentence": "1 file changed content, across 1 part.",
+        "subjects": []
+      }
+    ],
+    "since": {
+      "commit": "49f52661f44e1ab2c933189755506848617db8ff",
+      "generatedAt": "2026-09-24T21:43:39.125Z"
+    },
+    "unchanged": false
+  },
+  "changesTogether": [],
   "changesTogetherNote": [
-    "Confidence is low: fewer than 20 source files reach 10 revisions in the window.",
-    "Window: 180 days; a pair counts from 3 shared commits, since 2 source files reach 10 revisions; the floor rises to 10 when 25 do."
+    "Window: 180 days; a pair counts from 3 shared commits, since the window holds fewer than 30 qualifying commits."
   ],
   "changesTogetherWithTests": 0,
-  "commit": "49f52661f44e1ab2c933189755506848617db8ff",
+  "commit": "18fa475285a51f90912f11e2984e018e2cb66167",
   "defaultBranch": "main",
-  "derived": "6 parts, mostly Rust (109 files). Work enters through 4 doors; CI and Release Binaries each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to crates.io. People run saints-mile.",
+  "derived": "6 parts, mostly Rust (109 files), JavaScript (3), CSS (2), TypeScript (2), Astro (1), PowerShell (1) and shell (1). Work enters through 4 doors; CI and Release Binaries each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to crates.io. It deploys a site to GitHub Pages. People run saints-mile.",
   "doors": [
     {
       "checks": [
@@ -147,17 +154,19 @@
       "sends": [],
       "stages": [],
       "triggers": [
-        "on a pull request touching 8 paths",
+        "on a pull request to main touching 8 paths",
         "on a push to main touching 8 paths",
         "or by hand"
       ]
     },
     {
-      "checks": [
-        "src/lib.rs",
+      "builds": [
         "src/main.rs"
       ],
-      "checksCount": 2,
+      "checks": [
+        "src/lib.rs"
+      ],
+      "checksCount": 1,
       "checksMore": 0,
       "file": ".github/workflows/release-binaries.yml",
       "id": ".github/workflows/release-binaries.yml",
@@ -184,8 +193,8 @@
       "runsCount": 1,
       "runsMore": 0,
       "sends": [
-        "publishes to crates.io on a release event",
-        "creates a GitHub release on a release event"
+        "builds src/main.rs into an MSIX package and binaries for darwin-arm64, linux-x64 and win-x64, and uploads them to the release",
+        "publishes to crates.io on a release event"
       ],
       "stages": [],
       "triggers": [
@@ -206,7 +215,7 @@
         {
           "boundary": "site",
           "depth": 0,
-          "files": 3
+          "files": 5
         }
       ],
       "runs": [
@@ -255,6 +264,7 @@
   "duplicatesLead": null,
   "duplicatesNote": [],
   "edges": [],
+  "engine": "1.24.0",
   "generated": [
     {
       "place": "msix/Assets/",
@@ -264,12 +274,13 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-24T21:43:39.125Z",
+  "generatedAt": "2026-09-30T20:12:45.901Z",
   "limits": [
-    "1 import site could not be resolved.",
-    "4 writes use paths built at run time and are not named here.",
-    "6 writes and 3 reads go to the directory the command is run in, the home directory, a temporary directory or a path its caller passes, not to this repository.",
-    "Statistics confidence is low: fewer than 20 source files reach 10 revisions in the window."
+    "1 import could not be resolved: `msix/resize-logo.mjs` imports `sharp`, which is not declared.",
+    "6 writes and 1 read go to a path their caller passes, not to this repository.",
+    "4 writes go to the directory the command is run in (saves/) or a path their caller passes, not to this repository.",
+    "2 reads go to the directory the command is run in (saves/), not to this repository.",
+    "Statistics confidence is low: fewer than 30 qualifying commits in the window, and fewer than 25 source files reach 10 revisions."
   ],
   "mainDoor": ".github/workflows/ci.yml",
   "partLabels": {
@@ -286,17 +297,23 @@
   "sequences": [],
   "startDoor": "Cargo.toml#saints-mile",
   "startHere": [
-    "src/main.rs"
+    "src/main.rs",
+    "src/lib.rs",
+    "src/ui/mod.rs",
+    "src/state/store.rs",
+    "src/ui/screens/title.rs",
+    "src/ui/screens/scene.rs",
+    "src/ui/screens/standoff.rs"
   ],
-  "startReason": "This path follows saints-mile (a command people run) from its entry, since CI runs only tests.",
+  "startReason": "This path follows saints-mile (a command people run) from its entry, since CI runs only tests and checks.",
   "summary": null,
   "summaryFrom": null,
   "testFiles": 47,
   "testedBy": {
     "msix": 0,
-    "src": 46
+    "src": 47
   },
-  "unnamedWrites": 4,
+  "unnamedWrites": 0,
   "unread": [],
   "unreadFiles": 0,
   "unreadNote": [],
@@ -307,6 +324,8 @@
       "testedBy": 0
     }
   ],
-  "untestedNote": [],
+  "untestedNote": [
+    "verify.sh runs in no workflow."
+  ],
   "written": 1
 }
