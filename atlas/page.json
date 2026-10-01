@@ -36,24 +36,10 @@
     },
     "items": [
       {
-        "kind": "sequence",
-        "sentence": "In src/ui/screens/combat.rs, `render_combat` gained a step, `locked_style`, before `lock_reason_style`.",
+        "kind": "door",
+        "sentence": "CI's pull request trigger no longer names `.github/workflows/**`, `Cargo.lock`, `Cargo.toml`, `atlas/**`, `site/astro.config.mjs`, `site/package-lock.json`, `site/package.json` and `src/**`.",
         "subjects": [
-          "src/ui/screens/combat.rs"
-        ]
-      },
-      {
-        "kind": "sequence",
-        "sentence": "In src/ui/screens/combat.rs, `render_combat` gained a step, `lock_reason_style`, before `dim_style`.",
-        "subjects": [
-          "src/ui/screens/combat.rs"
-        ]
-      },
-      {
-        "kind": "sequence",
-        "sentence": "In src/ui/screens/status.rs, `render_status` gained a step, `ammo_color`, before `echo_style`.",
-        "subjects": [
-          "src/ui/screens/status.rs"
+          ".github/workflows/ci.yml"
         ]
       },
       {
@@ -63,8 +49,8 @@
       }
     ],
     "since": {
-      "commit": "49f52661f44e1ab2c933189755506848617db8ff",
-      "generatedAt": "2026-09-24T21:43:39.125Z"
+      "commit": "18fa475285a51f90912f11e2984e018e2cb66167",
+      "generatedAt": "2026-09-30T20:12:45.901Z"
     },
     "unchanged": false
   },
@@ -73,7 +59,7 @@
     "Window: 180 days; a pair counts from 3 shared commits, since the window holds fewer than 30 qualifying commits."
   ],
   "changesTogetherWithTests": 0,
-  "commit": "18fa475285a51f90912f11e2984e018e2cb66167",
+  "commit": "f16183856f5b56f737cedd4e900368aca0cb29ca",
   "defaultBranch": "main",
   "derived": "6 parts, mostly Rust (109 files), JavaScript (3), CSS (2), TypeScript (2), Astro (1), PowerShell (1) and shell (1). Work enters through 4 doors; CI and Release Binaries each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to crates.io. It deploys a site to GitHub Pages. People run saints-mile.",
   "doors": [
@@ -154,7 +140,7 @@
       "sends": [],
       "stages": [],
       "triggers": [
-        "on a pull request to main touching 8 paths",
+        "on a pull request to main",
         "on a push to main touching 8 paths",
         "or by hand"
       ]
@@ -274,7 +260,7 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-30T20:12:45.901Z",
+  "generatedAt": "2026-10-01T02:12:59.851Z",
   "limits": [
     "1 import could not be resolved: `msix/resize-logo.mjs` imports `sharp`, which is not declared.",
     "6 writes and 1 read go to a path their caller passes, not to this repository.",

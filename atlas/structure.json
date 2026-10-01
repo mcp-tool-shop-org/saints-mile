@@ -21,7 +21,7 @@
           "path": ".github/pull_request_template.md"
         },
         {
-          "hash": "cf60ad12d405101062638a7cbf6942de50dd4763d779d712bf4db5b3090b1a0c",
+          "hash": "2168bdc655cb283f9835c07c59dce70b8d9f32306c9ef5527878f79cd02a7f9e",
           "path": ".github/workflows/ci.yml"
         },
         {
@@ -5120,17 +5120,7 @@
           "branches": [
             "main"
           ],
-          "event": "pull_request",
-          "paths": [
-            ".github/workflows/**",
-            "Cargo.lock",
-            "Cargo.toml",
-            "atlas/**",
-            "site/astro.config.mjs",
-            "site/package-lock.json",
-            "site/package.json",
-            "src/**"
-          ]
+          "event": "pull_request"
         },
         {
           "branches": [
@@ -5706,7 +5696,7 @@
   ],
   "engine": "1.24.0",
   "generatedFrom": {
-    "commit": "18fa475285a51f90912f11e2984e018e2cb66167",
+    "commit": "f16183856f5b56f737cedd4e900368aca0cb29ca",
     "tracked": 168
   },
   "landings": [
