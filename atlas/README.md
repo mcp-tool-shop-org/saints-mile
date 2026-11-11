@@ -1,15 +1,14 @@
 # saints-mile: how it works
 
-Mapped at 2026-10-01 from commit f161838 by Atlas 1.24.0.
+Mapped at 2026-11-11 from commit 7164c2f by Atlas 1.26.0.
 
 ## What this is
 
 6 parts, mostly Rust (109 files), JavaScript (3), CSS (2), TypeScript (2), Astro (1), PowerShell (1) and shell (1). Work enters through 4 doors; CI and Release Binaries each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to crates.io. It deploys a site to GitHub Pages. People run saints-mile.
 
-## What changed since 2026-09-30 (18fa475)
+## What changed since 2026-10-01 (f161838)
 
-- CI's pull request trigger no longer names `.github/workflows/**`, `Cargo.lock`, `Cargo.toml`, `atlas/**`, `site/astro.config.mjs`, `site/package-lock.json`, `site/package.json` and `src/**`.
-- 1 file changed content, across 1 part.
+Nothing structural changed since 2026-10-01; 2 files changed content.
 
 ## What comes in
 
@@ -69,7 +68,7 @@ People write .github/, the repository root and site/. Nothing in this repository
 
 ## Where to start
 
-src/main.rs → src/lib.rs → src/ui/mod.rs → src/state/store.rs → src/ui/screens/title.rs → src/ui/screens/scene.rs → src/ui/screens/standoff.rs
+src/main.rs → src/lib.rs → src/scene/mod.rs → src/scene/types.rs → src/types.rs
 
 Read those in order to follow one run of saints-mile end to end. This path follows saints-mile (a command people run) from its entry, since CI runs only tests and checks.
 
