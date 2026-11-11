@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- **Scene prose wraps at the terminal width.** It was drawn one logical line per
+  row with no wrapping, so at the 100×30 terminal PLAYTEST.md recommends, and the
+  80×24 minimum, the end of every long line was cut off at the right edge ("…drinks
+  from a nearly dry trough be"). The dialogue widget now word-wraps to the width
+  it draws at, keeps the two-space margin on continuation rows, and reveals
+  characters across rows that were wrapped from the full line, so words do not
+  jump rows as they type out. The auto-scroll counts wrapped rows, and it now
+  measures the inside of the border rather than the outer area, which was two
+  rows taller and let the newest line slip off the bottom. Found by
+  [ai-playtest](https://github.com/mcp-tool-shop-org/ai-playtest) driving the
+  release build through a pseudo-terminal.
+
 ## [1.0.2] - 2026-04-06
 
 ### Added

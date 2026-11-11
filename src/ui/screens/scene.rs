@@ -98,9 +98,6 @@ fn render_dialogue_area(
     memory_objects: &[MemoryObject],
     pacing: crate::scene::types::PacingTag,
 ) {
-    // Build the dialogue paragraph
-    let dialogue_para = dialogue::render_dialogue(lines, reveal, area.height);
-
     // Memory echoes (appended after dialogue when all text is revealed)
     let echo_lines = if reveal.all_complete {
         memory_echo::render_echoes(callbacks, memory_objects)
@@ -122,8 +119,11 @@ fn render_dialogue_area(
             .border_style(Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
     };
 
-    // For now render dialogue into the block area
+    // Wrap and scroll against the area the text is actually drawn into: the
+    // inside of the border, not the outer area (two rows and the full width
+    // larger), or the newest line scrolls off the bottom.
     let inner = block.inner(area);
+    let dialogue_para = dialogue::render_dialogue(lines, reveal, inner.width, inner.height);
     frame.render_widget(block, area);
     frame.render_widget(dialogue_para, inner);
 
